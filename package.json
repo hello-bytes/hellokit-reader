@@ -1,0 +1,30 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@highlightjs/vue-plugin": "^2.1.0",
+    "@nuxt/image": "^1.8.0",
+    "@nuxtjs/mdc": "^0.8.3",
+    "fast-xml-parser": "^4.4.1",
+    "file-saver": "^2.0.5",
+    "mime": "^4.0.4",
+    "nuxt": "^3.12.4",
+    "nzh": "^1.0.13",
+    "vue": "latest",
+    "vue-clipboard3": "^2.0.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@element-plus/nuxt": "^1.0.10",
+    "element-plus": "^2.8.0"
+  }
+}

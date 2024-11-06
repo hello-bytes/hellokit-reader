@@ -1,0 +1,3 @@
+<template>
+    <svg t="1730623215624" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10953" width="256" height="256"><path d="M959.6 663L698 924.6 662.6 960l-35.4-35.4-134.3-134.3 35.4-35.4 134.4 134.4 261.6-261.6 35.3 35.3zM172 114h680v479h50V64H122v896h366v-50H172V114z m90 537.2h226v-50H262v50zM762 281H452v50h310v-50zM262 491.1h500v-50H262v50z" fill="#707070" p-id="10954"></path></svg>
+</template>
