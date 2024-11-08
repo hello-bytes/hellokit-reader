@@ -122,6 +122,7 @@ export default {
             return this.postClientJsonAsync(url ,requestData);
         }
 
+        console.log(url);
         return new Promise((resolve, reject) => {
             let token = ""
             useFetch(url, {

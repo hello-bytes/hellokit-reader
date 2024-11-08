@@ -1,8 +1,16 @@
 <template>
     <div>
-        <div style="background-color: white;" :class="{ pc_tr_container: !isMobile,pc_default_inner:!isMobile, pc_default_container:!isMobile, mobile_tr_container: isMobile }">
-            sfla
+        <div style="height:80px;"></div>
+        <div style="text-align: center;">
+            <h1 class="brand_title">Hello Reader</h1>
+            <p style="font-weight: 500;font-size: 36px;text-align: center;margin-top:0px;">每一次阅读，都成为知识的深度探索之旅。</p>
+            <div>
+                <a class="button_link" href="/feed-item">先逛一下</a>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <a class="button_link" href="/feed-item">先逛一下</a>
+            </div>
         </div>
+        
     </div>
 </template>
 
@@ -25,4 +33,27 @@ export default defineNuxtComponent({
     }
 
 });
+
+definePageMeta({
+  layout: 'blank'
+})
 </script>
+
+<style scoped>
+.brand_title{
+    text-align: center;
+    color: #009a61;
+    font-size:80px;
+    margin-bottom:0px;
+}
+
+.button_link{
+    display: inline-block;
+    text-align: center;
+    padding:15px 25px;
+    font-size: 20px;
+    border:1px solid #009a61;
+    border-radius: 5px;
+}
+
+</style>

@@ -14,7 +14,7 @@ WORKDIR /app
 
 COPY ./.nuxt/ /app/.nuxt/
 COPY ./.output/ /app/.output/
-COPY ./files/ /app/files/
+# COPY ./files/ /app/files/
 
 COPY ./package.json /app/package.json
 COPY ./nuxt.config.ts /app/nuxt.config.ts

@@ -29,7 +29,7 @@
             </el-table>
             <div style="margin-top:20px;text-align: right;">
                 <span style="color:rgb(100,100,100);font-size:14px;">没有合适的文件夹？</span>
-                <el-button type="primary" ><el-icon :size="18"><FolderAdd /></el-icon>&nbsp;&nbsp;创建文件夹</el-button>
+                <el-button type="primary" @click="onAddFolder"><el-icon :size="18"><FolderAdd /></el-icon>&nbsp;&nbsp;创建文件夹</el-button>
             </div>
             
         </div>
@@ -55,12 +55,12 @@ import rssbiz from '@/service/rss/rss.js';
 import rssfolder from '@/service/rss/folder.js';
 
 export default defineNuxtComponent({
-    props:{
+    /* props:{
         feed : {
             type:Object,
             default:null,
         },
-    },
+    },*/
 
     components: {
         CloseBold,Finished,Cancel,FolderAdd,Folder,Select,FolderRemove
@@ -68,15 +68,23 @@ export default defineNuxtComponent({
 
     async asyncData() {
         return {
-            drawWidth:"35%",
+            drawWidth:"500",
             showDrawer:false,
             folderList:[],
+
+            feed:null,
         }
     },
 
     mounted(){
-        //this.loadFolderList();
-        
+        emitter.on("on_popup_selectfolder", (param) => {
+            this.show();
+
+            this.feed = null;
+            if (param != undefined){
+                this.feed = param.currentFeed;
+            }
+        });
     },
 
     methods:{
@@ -157,6 +165,11 @@ export default defineNuxtComponent({
                 }
             }
             return false;
+        },
+
+        onAddFolder(){
+            this.onCloseClick();
+            emitter.emit("on_popup_createfolder",{});
         }
     }
 })

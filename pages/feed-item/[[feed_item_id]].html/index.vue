@@ -5,7 +5,8 @@
             <p class="feed_item_container_time">{{ formatTime(feedItem.publish_time) }}</p>
         </div>
         <div style="padding:10px;">
-            <div v-html="feedItem.content"></div>
+            <MDC v-if="feedItem.content.length > 0" :value="feedItem.content" tag="article" />
+            <div v-else v-html="feedItem.desc" ></div>            
         </div>
         <div style="padding-top:30px;padding-bottom:30px;text-align: center;">
             <el-button size="large" style="width:100%;">访问网页原始链接</el-button>
@@ -39,7 +40,6 @@ export default defineNuxtComponent({
     },
 
     mounted() {
-        console.log(this.feedItem);
     },
 
     methods:{

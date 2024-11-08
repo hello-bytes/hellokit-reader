@@ -17,7 +17,7 @@
             </div>
         </div>
         <el-pagination background layout="prev, pager, next" :total="totalCount" style="width:100%;" :page-size="30" />
-        <FeedItemPopup :feed="feed" :feedItem="feedItem" ref="feedItemProp"></FeedItemPopup>
+        
         <div style="height:30px"></div>
     </div>
 </template>
@@ -29,12 +29,12 @@
 
 import helper from '@/utils/helper.js'
 import browser from '@/service/browser';
+import emitter from "@/service/event.js";
 
-import FeedItemPopup from '@/components/rss/popup/FeedItemPopup.vue';
 
 export default defineNuxtComponent({
     components: {
-        FeedItemPopup,
+        
     },
 
     props:{
@@ -55,10 +55,7 @@ export default defineNuxtComponent({
     },
 
     async asyncData() {
-        //console.log(this.feed);
         return {
-            feedItem:null, // 当前被先中（点击）的 FeedItem
-            isMobile: browser.isMobile(),
         }
     },
 
@@ -74,8 +71,7 @@ export default defineNuxtComponent({
         },
 
         showFeedItem(feedItem){
-            this.feedItem = feedItem;
-            this.$refs.feedItemProp.show();
+            emitter.emit("on_popup_feeditem_content",{ feedItem : feedItem, feed:this.feed })
         }
     }
 })

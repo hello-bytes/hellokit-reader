@@ -10,7 +10,7 @@
         <div v-for="(item, index) in feeds" :key="index" class="feed_container" >
             <img :src='item.icon_url' />
             <div style="flex:1;margin-left:10px;">
-                <a class="feed_name" :href='"/feed/" + item.feed_id'>{{ item.name }}</a>
+                <a class="feed_name" @click="onFeedClick(item)">{{ item.name }}</a>
                 <br/>
                 <a class="feed_url" :href='item.url'>{{ item.url }}</a>
                 <p class="feed_desc">{{ item.desc }}</p>
@@ -24,7 +24,6 @@
             </div>
         </div>
         <Pager :baseURL='"/feed/page"' :activeIndex="pageNumber" :totalCount="totalCount"></Pager>
-        <SelectFolder ref="selectFolderComp"  :feed="currentSelectFeed"></SelectFolder>
     </div>
 </template>
 
@@ -39,13 +38,12 @@ import folder from '@/service/rss/folder.js';
 import {Search,FolderAdd,FolderChecked} from "@element-plus/icons-vue"
 
 import Pager from "@/components/base/Pager.vue"
-import SelectFolder from "@/components/rss/popup/SelectFolder.vue"
 
 import emitter from "@/service/event.js";
 
 export default defineNuxtComponent({
     components: {
-        Search,SelectFolder,Pager,FolderAdd,FolderChecked
+        Search,Pager,FolderAdd,FolderChecked
     },
 
     async asyncData() {
@@ -111,8 +109,9 @@ export default defineNuxtComponent({
         },
 
         onSubscribeClick(feed){
-            this.currentSelectFeed = feed;
-            this.$refs.selectFolderComp.show();
+            //this.currentSelectFeed = feed;
+            emitter.emit("on_popup_selectfolder",{ currentFeed:feed }) 
+            //this.$refs.selectFolderComp.show();
         },
 
         async onFeedFolderUpdate(params){
@@ -129,6 +128,10 @@ export default defineNuxtComponent({
                     }
                 }
             }
+        },
+
+        onFeedClick(feed){
+            emitter.emit("on_popup_feed",{feed:feed}); 
         }
     }
 

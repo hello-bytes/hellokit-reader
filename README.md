@@ -101,19 +101,19 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ### 本地打包，服务器（Ubuntu）运行
 
 ```
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-nuxt-page:v1.0.35 .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1 .
 
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-nuxt-page:v1.0.35
+docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1
 
 
 -------------------------
 
 
-docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-nuxt-page:v1.0.35
+docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1
 
-docker stop hellokit-nuxt-app && docker rm hellokit-nuxt-app
+docker stop website-hellokit-reader && docker rm website-hellokit-reader
 
-docker run -d -p 3000:3000 --name "hellokit-nuxt-app" --network local_docker_bridge --network-alias hellokit-nuxt-app --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-nuxt-page:v1.0.35
+docker run -d --name "hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1
 ```
 
 

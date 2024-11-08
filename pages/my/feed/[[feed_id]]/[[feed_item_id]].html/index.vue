@@ -60,7 +60,7 @@ export default defineNuxtComponent({
 
         // get feed items
         let feedItems = [];
-        let feedItemsResponse = await rssbiz.queryFeedItemsByFeedID(feedID,30,0)
+        let feedItemsResponse = await rssbiz.queryFeedItemsByFeedID(true,feedID,30,0)
         if (helper.isResultOk(feedItemsResponse)){
             feedItems = feedItemsResponse.data.list;
         }

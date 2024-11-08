@@ -7,15 +7,12 @@
                     <img class="feed_item_img" :src='item.thumb_url' />
                     <div class="feed_item_list_content_container">
                         <p @click="showFeedItem(item)" class="feed_item_list_container_title">{{ item.title }}</p>
-                        <div class="feed_item_list_container_extra">
-                            <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                            <span>&nbsp;·&nbsp;</span>
-                            <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
-                        </div>
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                         <div style="display: flex;margin-top:5px;">
                             <div style="height:30px;line-height:30px;">
-                                <a target="_blank" :href='item.feed.url' class="feed_item_list_container_feed">{{ item.feed == null ? "" : item.feed.name }}</a>
+                                <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                                <span>&nbsp;·&nbsp;</span>
+                                <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
                             </div> 
                             <div style="flex:1"></div>
                             <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
@@ -56,15 +53,14 @@
             <div v-if="item.thumb_url.length == 0">
                 <a class="feed_item_list_container">
                     <p @click="showFeedItem(item)" class="feed_item_list_container_title">{{ item.title }}</p>
-                    <div>
-                        <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                    </div>
                     <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                 </a> 
                 <div style="display: flex;margin-top:5px;">
                     <div style="height:30px;line-height:30px;">
-                        <a target="_blank" :href='item.feed.url'  class="feed_item_list_container_feed">{{ item.feed == null ? "" : item.feed.name }}</a>
-                    </div> 
+                        <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                            <span>&nbsp;·&nbsp;</span>
+                            <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
+                        </div> 
                     <div style="flex:1"></div>
                     <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
                         <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
@@ -102,6 +98,7 @@
             
         </div>
         <el-pagination v-if="pageMode==1" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
+        
         <div style="height:30px"></div>
     </div>
 </template>
@@ -111,14 +108,16 @@
 // <el-icon><Paperclip /></el-icon><el-icon><CollectionTag /></el-icon>
 // 这个页面做为某一个Feed的Feed Item List合集展示，可以用在某个目录的Feed流，也可以用在某个特定时区的Feed流
 
+
 import helper from '@/utils/helper.js'
 import rssbiz from '@/service/rss/rss.js'
 import readLater from '@/service/rss/read_later.js'
 
+import emitter from "@/service/event.js";
+
 import browser from '@/service/browser';
 import devicebiz from '@/service/device';
 
-import emitter from "@/service/event.js";
 
 import { Refresh,Check,Select,Share,Reading,More,Link,Paperclip,FullScreen,CollectionTag } from "@element-plus/icons-vue"
 
@@ -135,15 +134,12 @@ export default defineNuxtComponent({
         readedMode : {
             type : Number,
             default : 0, // 0 全部显示， 1 只显示未读， 3 只显示已读
-        },
-        
+        }
     },
 
     components: {
         Check,Refresh,Select,Share,Reading,More,Link,Paperclip,FullScreen,CollectionTag
     },
-
-    
 
     async asyncData() {
         return {
@@ -279,7 +275,7 @@ export default defineNuxtComponent({
             //this.currentFeed = feedItem.feed;
             //this.feedItem = feedItem;
             //this.$refs.feedItemProp.show();
-            emitter.emit("on_popup_feeditem_content", { feed:feedItem.feed, feedItem:feedItem });
+            emitter.emit("on_popup_feeditem_content",{ feed:feedItem.feed,feedItem:feedItem })
         },
 
         loadMore(){

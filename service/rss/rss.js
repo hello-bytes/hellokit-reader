@@ -27,7 +27,7 @@ export default {
         return helper.postJsonAsync(true, "/api/tbs/rss/v1/feed/statics", params);
     },
     
-    async queryFeedItemsByFeedID(feedID,limit, offset){
+    async queryFeedItemsByFeedID(serverSideRequest, feedID,limit, offset){
         let params = {
             feed_id:feedID,
             state:1,
@@ -36,7 +36,7 @@ export default {
             offset:parseInt(offset),
         }
         //console.log(params);
-        return helper.postJsonAsync(true, "/api/tbs/rss/v1/feeditem/fetch", params);
+        return helper.postJsonAsync(serverSideRequest, "/api/tbs/rss/v1/feeditem/fetch", params);
     },
 
     async getFeedItemByID(feedItemID){

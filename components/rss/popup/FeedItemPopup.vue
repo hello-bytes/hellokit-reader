@@ -5,7 +5,7 @@
                 <CloseBold />
             </el-icon>
         </div>
-        <div style="max-width:800px;margin:0px auto;">
+        <div style="max-width:800px;margin:0px auto;" v-if="feedItem != null && feed != null">
             <p class="feed_item_title">{{ feedItem.title }}</p>
             <div>
                 <a :href='feed.url' class="feed_item_time">{{ feed.name }}</a>
@@ -16,7 +16,7 @@
             </div>
             
             <div class="feed_content_container">
-                <div v-if="feedItem.content.length > 0" v-html="feedItem.content"></div>
+                <MDC v-if="feedItem.content.length > 0" :value="feedItem.content" tag="article" />
                 <div v-else v-html="feedItem.desc" ></div>
             </div>
         </div>
@@ -29,8 +29,10 @@ import helper from '@/utils/helper.js'
 import browser from '@/service/browser';
 import { CloseBold } from "@element-plus/icons-vue"
 
+import emitter from "@/service/event.js";
+
 export default defineNuxtComponent({
-    props:{
+    /*props:{
         feed : {
             type:Object,
             default:null,
@@ -40,7 +42,7 @@ export default defineNuxtComponent({
             type:Object,
             default:null,
         },
-    },
+    },*/
 
     components: {
         CloseBold,
@@ -50,8 +52,18 @@ export default defineNuxtComponent({
         return {
             drawWidth:"70%",
             showDrawer:false,
-            isMobile: browser.isMobile(),
+            feed:null,
+            feedItem:null,
+
         }
+    },
+
+    mounted(){
+        emitter.on("on_popup_feeditem_content", (param) => {
+            this.feed = param.feed;
+            this.feedItem = param.feedItem;
+            this.show();
+        });
     },
 
     methods:{
@@ -65,7 +77,9 @@ export default defineNuxtComponent({
 
         formatTime(time){
             return helper.getHumanTime(time);
-        }
+        },
+
+        
     }
 })
 

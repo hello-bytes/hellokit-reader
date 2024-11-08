@@ -10,10 +10,10 @@
             <h2 style="margin-bottom:0px;font-size:34px;">创建文件夹</h2>
             <p style="margin-top:0px;font-size:18px;color:rgb(117, 117, 117);">根据您的喜好，将特定话题或类型的订阅源放到私有文件夹下</p>
             <p style="margin-bottom:0px;margin-top:30px;font-size:14px;">文件夹名称</p>
-            <el-input v-model="folderName" size="large" placeholder=""></el-input>
+            <el-input v-model="folderName" @keyup.enter.native="createFolderClick" size="large" placeholder=""></el-input>
             <div style="margin-top:20px;">
-                <el-button size="large" type=primary @click="createFolderClick"><el-icon :size="20"><Finished  /></el-icon>&nbsp;保存</el-button>
-                <el-button size="large">取消</el-button>
+                <el-button size="large" type=primary  @click="createFolderClick"><el-icon :size="20"><Finished  /></el-icon>&nbsp;保存</el-button>
+                <el-button size="large" @click="cancelFolderClick">取消</el-button>
             </div>
         </div>
     </el-drawer>
@@ -33,7 +33,7 @@ import devicebiz from '@/service/device.js'
 import userbiz from '@/service/user.js';
 import rssbiz from '@/service/rss/rss.js';
 import rssfolder from '@/service/rss/folder.js';
-
+import emitter from "@/service/event.js";
 
 export default defineNuxtComponent({
     components: {
@@ -42,10 +42,16 @@ export default defineNuxtComponent({
 
     async asyncData() {
         return {
-            drawWidth:"70%",
+            drawWidth:"500",
             showDrawer:false,
             folderName:"",
         }
+    },
+
+    mounted(){
+        emitter.on("on_popup_createfolder", (param) => {
+            this.show();
+        });
     },
 
     methods:{
@@ -55,6 +61,10 @@ export default defineNuxtComponent({
 
         onCloseClick(){
             this.showDrawer = false;
+        },
+
+        onKeyUp(k){
+            // onKeyUp(k)
         },
 
         async createFolderClick(){
@@ -71,7 +81,12 @@ export default defineNuxtComponent({
             }
 
             ElMessage.success("目录创建成功。");
+            emitter.emit("on_feed_folder_create", {});
 
+            this.onCloseClick();
+        },
+
+        cancelFolderClick(){
             this.onCloseClick();
         },
 

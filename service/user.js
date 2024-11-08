@@ -10,4 +10,17 @@ export default {
     isDeviceMode(deviceID,fileID){
         return helper.getUserToken().length == 0;
     },
+
+    getNickName(){
+        let mstObj = helper.getMst();
+        if (mstObj == null){
+            return "";
+        }
+
+        if (mstObj.n != undefined && mstObj.n.length > 0){
+            return mstObj.n;
+        }
+
+        return "";
+    },
 }
