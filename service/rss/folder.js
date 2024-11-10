@@ -27,6 +27,14 @@ export default {
         return helper.postClientJsonAsync("/api/tbs/rss/v1/device/folder/create", params);
     },
 
+    async deleteFolder(deviceID, folderID){
+        let params = {
+            device_id:deviceID,
+            folder_id:folderID,
+        }
+        return helper.postClientJsonAsync("/api/tbs/rss/v1/folder/delete", params);
+    },
+
     async queryFolderList(serverSide,deviceID, limit, offset){
         if (userbiz.isUserMode()){
             let params = {

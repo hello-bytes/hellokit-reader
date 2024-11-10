@@ -83,7 +83,28 @@ export default defineNuxtComponent({
 </script>
 
 <style>
+.user_info_name{
+    max-width: 210px;
+    overflow: hidden;
+    margin-bottom:0px;
+    margin-top:0px;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    white-space: nowrap;
+    color:rgb(51, 51, 51);
+    font-weight: 700;
+    font-size:16px;
+}
 
+.user_info_desc{
+    border-radius: 2px;
+    color: rgb(158, 158, 158);
+    font-size: 10px;
+    margin-right: 10px;
+    text-transform: uppercase;
+    margin-bottom:0px;
+    margin-top:0px;
+}
 
 .user_info_menu{
     font-size: 14px;

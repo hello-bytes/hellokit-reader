@@ -5,7 +5,7 @@
                 <CloseBold />
             </el-icon>
         </div>
-        <div style="height:30px;"></div>
+        <div style="height:10px;"></div>
         <div style="max-width:650px;margin:0px auto;">
             <p v-if="feed.folderList.length == 0" style="font-size:22px;">将“{{ feed.name }}”加到指定文件夹</p>
             <p v-if="feed.folderList.length > 0" style="font-size:22px;">您已订阅“{{ feed.name }}”</p>
@@ -20,10 +20,16 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="folder_name" label="操作" width="180"  >
+                <el-table-column prop="folder_name" label="操作" width="260"  >
                     <template #default="scope">
-                        <el-button v-if="!scope.row.isFeed" @click="addToFolder(scope.row)"><el-icon :size="18"><FolderAdd /></el-icon>&nbsp;&nbsp;添加</el-button>
-                        <el-button type="danger" v-else @click="removeFromFolder(scope.row)"><el-icon :size="18"><FolderRemove /></el-icon>&nbsp;&nbsp;移除</el-button>
+                        <el-link  v-if="!scope.row.isFeed" @click="addToFolder(scope.row)"><el-icon :size="18"><Plus /></el-icon>&nbsp;加入</el-link>
+                        <el-link type="danger" v-else @click="removeFromFolder(scope.row)"><el-icon :size="18"><Minus /></el-icon>&nbsp;移除</el-link>
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <el-popconfirm title="删除后其目录下的内容源都会被取消订阅，确认要删除此目录吗？" width="260" cancel-button-text="取消删除" @confirm="confirmDeleteFolder(scope.row)" @cancel="cancelDeleteFolder" confirm-button-text="确认删除">
+                            <template #reference>
+                                <el-link @click="deleteFolder(scope.row)"><el-icon :size="18"><FolderDelete /></el-icon>&nbsp;删除</el-link>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -40,7 +46,7 @@
 
 import helper from '@/utils/helper.js'
 import browser from '@/service/browser';
-import { CloseBold,Finished,FolderAdd,Folder,Select,FolderRemove } from "@element-plus/icons-vue"
+import { CloseBold,Finished,FolderAdd,Folder,Select,FolderRemove,FolderDelete,Plus, Minus } from "@element-plus/icons-vue"
 
 import Cancel from "@/icons/Cancel.vue"
 
@@ -53,6 +59,7 @@ import emitter from "@/service/event.js";
 
 import rssbiz from '@/service/rss/rss.js';
 import rssfolder from '@/service/rss/folder.js';
+import folder from '@/service/rss/folder.js';
 
 export default defineNuxtComponent({
     /* props:{
@@ -63,7 +70,7 @@ export default defineNuxtComponent({
     },*/
 
     components: {
-        CloseBold,Finished,Cancel,FolderAdd,Folder,Select,FolderRemove
+        CloseBold,Finished,Cancel,FolderAdd,Folder,Select,FolderRemove,FolderDelete,Plus, Minus
     },
 
     async asyncData() {
@@ -170,6 +177,33 @@ export default defineNuxtComponent({
         onAddFolder(){
             this.onCloseClick();
             emitter.emit("on_popup_createfolder",{});
+        },
+
+        deleteFolder(folderObj){
+            // 
+        },
+
+        cancelDeleteFolder(){
+            // console.log("sfdaf");deleteFolder
+        },
+
+        deleteFolderByFolderID(folderID){
+            for(let index in this.folderList){
+                if(this.folderList[index].folder_id == folderID){
+                    this.folderList.splice(index,1);
+                    break;
+                } 
+            }
+        },
+
+        async confirmDeleteFolder(folderObj){
+            let responseData = await folder.deleteFolder(devicebiz.getDeviceID(), folderObj.folder_id);
+            if (!helper.isResultOk(responseData)){
+                ElMessage.error("删除文件夹失败，请稍后再试。");
+                return;
+            }
+
+            this.deleteFolderByFolderID(folderObj.folder_id); 
         }
     }
 })

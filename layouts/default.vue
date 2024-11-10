@@ -18,23 +18,53 @@
                 </a>
             </el-tooltip>
             <div style="flex: 1;"></div>
-            <el-tooltip v-if="!isLogined" class="box-item" effect="dark" content="登录即可多设备同步阅读数据" placement="right-start" >
-                <div @click="onGotoLogin" class="rss_icon_bg">
-                    <User :width="28" :height="28"></User>
-                </div>
-            </el-tooltip>
-            <el-popover v-if="isLogined" placement="right" :width="290" trigger="click">
+            <el-popover placement="right" :width="290" trigger="click">
                 <template #reference>
                     <div class="rss_icon_bg">
                         <User :width="28" :height="28"></User>
                     </div>
                 </template>
                 <div class="user_info_popover">
-                    <UserPopover></UserPopover>
+                    <div v-if="isLogined" style="display: flex;padding-top:10px;padding-bottom:10px;border-bottom:1px solid #ccc;">
+                        <div>
+                            <img style="width:28px;" src="https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/user.svg">
+                        </div>
+                        <div style="margin-left:10px;">
+                            <p class="user_info_name">{{ userName }}</p>
+                            <p class="user_info_desc">{{ userAccount }}</p>
+                        </div>
+                    </div>
+                    <div v-if="!isLogined" style="display: flex;padding-top:10px;padding-bottom:10px;border-bottom:1px solid #ccc;">
+                        <a href="/user/login" style="font-size:18px;font-weight: bold;">注册 / 登录</a>
+                    </div>
+                    <div>
+                        <a class="user_info_menu" href="/">
+                            <el-icon :width="20"><WelcomeIcon /></el-icon>
+                            <span>欢迎您</span>
+                        </a>
+                        <a class="user_info_menu" href="/contact">
+                            <el-icon :width="18"><Service /></el-icon>
+                            <span>联系我们</span>
+                        </a>
+                        <a v-if="false" class="user_info_menu" href="/user/logout">
+                            <el-icon :width="18"><Share /></el-icon>
+                            <span>分享给朋友</span>
+                        </a>
+                        <a v-if="false" class="user_info_menu" href="/user/logout">
+                            <el-icon :width="18"><SwitchButton /></el-icon>
+                            <span>数据隐私协议</span>
+                        </a>
+                        <a class="user_info_menu" href="/about">
+                            <el-icon :width="18"><HelloReadLogo /></el-icon>
+                            <span>关于哈喽阅读</span>
+                        </a>
+                        <a class="user_info_menu" href="/user/logout">
+                            <el-icon :width="19"><LogoutIcon /></el-icon>
+                            <span>登出</span>
+                        </a>
+                    </div>
                 </div>
             </el-popover>
-            
-            <div style="height:5px;"></div>
         </div>
         <div v-show="showMiddlePanel" class="rss_middle_bar">
             <div style="height:50px;"></div>
@@ -123,10 +153,6 @@ import AllArticleIcon from "@/icons/AllArticleIcon.vue"
 
 import AllPopup from '~/components/rss/popup/AllPopup.vue'
 
-import UserPopover from '~/components/UserPopover.vue'
-
-//import CreateFolderPopup from '~/components/rss/popup/CreateFolderPopup.vue'
-
 import devicebiz from '@/service/device.js'
 
 import userbiz from '@/service/user.js';
@@ -139,10 +165,17 @@ import emitter from "@/service/event.js";
 import HelloReadLogo from "@/icons/HelloReadLogo.vue"
 import {ArrowRight,ArrowDown,Files,CollectionTag} from "@element-plus/icons-vue"
 
+import { SwitchButton,Service,Share } from "@element-plus/icons-vue"
+
+import LogoutIcon from "@/icons/LogoutIcon.vue"
+//import HelloReadLogo from "@/icons/HelloReadLogo.vue"
+import WelcomeIcon from "@/icons/WelcomeIcon.vue"
+
 
 export default defineNuxtComponent({
     components: {
-		RssLogo,SideBar,AddRss,User,RssLogoGray,CreateRssFolder,AllFeed,LaterRead,Recent,AllSubscribeFeed,AllFeedItem,Today,AllPopup,ArrowRight,ArrowDown,AllSubscribeFeedActive,Files,CollectionTag,ReadedIcon,AllArticleIcon,UserPopover,HelloReadLogo
+		RssLogo,SideBar,AddRss,User,RssLogoGray,CreateRssFolder,AllFeed,LaterRead,Recent,AllSubscribeFeed,AllFeedItem,Today,AllPopup,ArrowRight,ArrowDown,AllSubscribeFeedActive,Files,CollectionTag,ReadedIcon,AllArticleIcon,HelloReadLogo,
+        LogoutIcon,WelcomeIcon,SwitchButton,Service,Share
 	},
 
     async asyncData(params) {
@@ -198,6 +231,9 @@ export default defineNuxtComponent({
 
             isLogined : false,
 
+            userName:"",
+            userAccount:"",
+
             folderList:[],
         }
     },
@@ -214,6 +250,18 @@ export default defineNuxtComponent({
         emitter.on("on_feed_folder_update", (param) => {
 			this.loadFolderList();
         });
+
+        this.userName = userbiz.getNickName();
+        let mstObj = helper.getMst();
+        if (mstObj != null){
+            if (mstObj.p != undefined && mstObj.p.length > 0){
+                this.userAccount = mstObj.p;
+            }else if (mstObj.e != undefined && mstObj.e.length > 0){
+                this.userAccount = mstObj.e;
+            }else{
+                this.userAccount = "微信用户";
+            }
+        }
     },
 
     methods : {
@@ -430,5 +478,28 @@ export default defineNuxtComponent({
 
 .user_info_popover{
     width:275px;
+}
+
+.user_info_name{
+    max-width: 210px;
+    overflow: hidden;
+    margin-bottom:0px;
+    margin-top:0px;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    white-space: nowrap;
+    color:rgb(51, 51, 51);
+    font-weight: 700;
+    font-size:16px;
+}
+
+.user_info_desc{
+    border-radius: 2px;
+    color: rgb(158, 158, 158);
+    font-size: 14px;
+    margin-right: 10px;
+    text-transform: uppercase;
+    margin-bottom:0px;
+    margin-top:0px;
 }
 </style>

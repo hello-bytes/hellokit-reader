@@ -42,7 +42,7 @@ export default defineNuxtComponent({
 
     async asyncData() {
         return {
-            drawWidth:"500",
+            drawWidth:"600",
             showDrawer:false,
             folderName:"",
         }

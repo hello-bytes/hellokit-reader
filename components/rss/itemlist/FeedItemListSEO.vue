@@ -9,7 +9,7 @@
                     <div class="feed_item_list_img_container">
                         <img class="feed_item_img" :src='item.thumb_url' />
                         <div class="feed_item_list_content_container">
-                            <a :href='"/feed-item/" + item.feed_item_id + ".html"' class="feed_item_list_container_title">{{ item.title }}</a>
+                            <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
                             <div class="feed_item_list_container_extra">
                                 <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
                                 <span>&nbsp;·&nbsp;</span>
@@ -45,13 +45,13 @@
                     </div> 
                 </div>
                 <div v-if="item.thumb_url.length == 0">
-                    <a class="feed_item_list_container">
-                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' class="feed_item_list_container_title">{{ item.title }}</a>
+                    <div class="feed_item_list_container">
+                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
                         <div>
                             <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
                         </div>
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
-                    </a> 
+                    </div> 
                     <div style="display: flex;margin-top:5px;">
                         <div style="height:30px;line-height:30px;">
                             <a target="_blank" :href='item.feed.url'  class="feed_item_list_container_feed">{{ item.feed == null ? "" : item.feed.name }}</a>
@@ -74,8 +74,6 @@
                         <el-tooltip v-if="item.isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
                             <div @click="removeReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#009a61"><CollectionTag /></el-icon></div>
                         </el-tooltip>
-                        <span>&nbsp;</span>
-                        
                     </div>    
                 </div>
                 

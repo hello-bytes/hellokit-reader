@@ -67,10 +67,9 @@ export default defineNuxtComponent({
                 for(let index in readLaterItems){
                     feedItemIds.push(readLaterItems[index].feed_item_id);
                 }
-                // console.log(feedItemIds);
+                
                 await this.$refs.feedItemListComp.setFeedItemIDs(feedItemIds, totalCount);
                 this.viewState = 3;
-                //this.loadFeedForFeedItem(feedItems, totalCount);
             }
         },
 

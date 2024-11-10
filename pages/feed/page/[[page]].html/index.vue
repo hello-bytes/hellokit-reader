@@ -19,7 +19,7 @@
                 <el-tag v-if="false" type="primary"  style="margin-right:10px;">已订阅</el-tag>
                 <el-button v-if="item.folderList.length == 0" @click="onSubscribeClick(item)"><el-icon :size="16"><FolderAdd /></el-icon>&nbsp;订阅</el-button>
                 <el-tooltip v-if="item.folderList.length > 0" effect="dark" content="取消订阅或转移至其它目录" placement="right">
-                    <el-button  @click="onSubscribeClick(item)"><el-icon :size="16"><FolderChecked /></el-icon>&nbsp;编辑</el-button>
+                    <el-button  @click="onSubscribeClick(item)"><el-icon :size="16"><FolderChecked /></el-icon>&nbsp;修改</el-button>
                 </el-tooltip>
             </div>
         </div>
@@ -161,6 +161,7 @@ export default defineNuxtComponent({
     margin-bottom:0px;
     font-size:18px;
     display: inline-block;
+    cursor: pointer;
 }
 .feed_url{
     color:rgb(158, 158, 158);

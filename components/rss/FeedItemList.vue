@@ -6,7 +6,7 @@
                 <a class="feed_item_list_img_container">
                     <img class="feed_item_img" :src='item.thumb_url' />
                     <div class="feed_item_list_content_container">
-                        <p @click="showFeedItem(item)" class="feed_item_list_container_title">{{ item.title }}</p>
+                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
                         <div class="feed_item_list_container_extra">
                             <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
                             <span>&nbsp;·&nbsp;</span>
@@ -22,15 +22,11 @@
                                 <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
                             </el-tooltip>
                             <span>&nbsp;</span>
-                            <el-tooltip effect="dark" content="在新页面中打开" placement="top-start">
-                                <a class="article_link" :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank"><el-icon :size="20" color="#757575"><FullScreen /></el-icon></a>
+                            <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
+                                <div @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                             </el-tooltip>
-                            <span>&nbsp;</span>
-                            <el-tooltip effect="dark" content="标记为已读" placement="top-start">
-                                <div v-if="item.readState == 1" @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
-                            </el-tooltip>
-                            <el-tooltip effect="dark" content="标记为未读" placement="top-start">
-                                <div v-if="item.readState != 1" @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                            <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
+                                <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                             </el-tooltip>
                             <span>&nbsp;</span>
                             <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
@@ -55,7 +51,7 @@
             </div>
             <div v-if="item.thumb_url.length == 0">
                 <a class="feed_item_list_container">
-                    <p @click="showFeedItem(item)" class="feed_item_list_container_title">{{ item.title }}</p>
+                    <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
                     <div>
                         <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
                     </div>
@@ -70,15 +66,11 @@
                         <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
                     </el-tooltip>
                     <span>&nbsp;</span>
-                    <el-tooltip effect="dark" content="在新页面中打开" placement="top-start">
-                        <a class="article_link" :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank"><el-icon :size="20" color="#757575"><FullScreen /></el-icon></a>
+                    <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
+                        <div  @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                     </el-tooltip>
-                    <span>&nbsp;</span>
-                    <el-tooltip effect="dark" content="标记为已读" placement="top-start">
-                        <div v-if="item.readState == 1" @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
-                    </el-tooltip>
-                    <el-tooltip effect="dark" content="标记为未读" placement="top-start">
-                        <div v-if="item.readState != 1" @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                    <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
+                        <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                     </el-tooltip>
                     <span>&nbsp;</span>
                     <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
@@ -150,6 +142,8 @@ export default defineNuxtComponent({
             totalCount:0,
             feedItems:[],
 
+            readLaterList:[], // 里面有加入read later的时间，用来排序
+
             currentFeed:null,
             feedItem:null // 当前被选中（点击）的 FeedItem
         }
@@ -166,9 +160,19 @@ export default defineNuxtComponent({
                 feedItems = responseData.data;
                 await this.loadReadedFlag(feedItems);
                 await this.loadReadLaterFlag(feedItems);
-                await this.loadFeedForFeedItem(feedItems)
+                await this.loadFeedForFeedItem(feedItems);
 
-                this.feedItems = feedItems;
+                let sortFeedItems = [];
+                for(let i in feedItemIDs){
+                    for(let j in feedItems){
+                        if(feedItems[j].feed_item_id == feedItemIDs[i]){
+                            sortFeedItems.push(feedItems[j]);
+                            break
+                        }
+                    }
+                }
+
+                this.feedItems = sortFeedItems;
                 this.totalCount = totalCount;
             }
         },
@@ -180,6 +184,10 @@ export default defineNuxtComponent({
 
             this.feedItems = feedItems;
             this.totalCount = totalCount;
+        },
+
+        setReadLaterIDList(readLaterIDs){
+            this.readLaterList = readLaterIDs;
         },
 
         notifyFeedItemChange(){

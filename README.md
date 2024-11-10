@@ -101,21 +101,22 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ### 本地打包，服务器（Ubuntu）运行
 
 ```
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1 .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.3 .
 
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1
+docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.3
 
 
 -------------------------
 
 
-docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1
+docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.3
 
 docker stop website-hellokit-reader && docker rm website-hellokit-reader
 
-docker run -d --name "hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.1
+docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.3
 ```
 
+docker stop hellokit-reader && docker rm hellokit-reader
 
 
 ### 本地打包，本地运行（Mac Arm64）
@@ -204,3 +205,8 @@ https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/brand-font/WsRmSf
 
 
 http://localhost:3000/rss/subscript/124/291717071253934080.html
+
+
+## 待办
+
+- 文章页，支持扫码手机阅读。

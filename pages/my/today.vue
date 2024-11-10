@@ -23,7 +23,6 @@
         </div>
         
         <FeedItemList @feedItemCountChange="onFeedItemCountChange" :readedMode="1" :pageMode="1" v-show="viewState == 5"  ref="feedItemListComp"></FeedItemList>
-        
     </div>
 </template>
 

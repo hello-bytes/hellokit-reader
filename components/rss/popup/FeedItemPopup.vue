@@ -16,8 +16,8 @@
             </div>
             
             <div class="feed_content_container">
-                <MDC v-if="feedItem.content.length > 0" :value="feedItem.content" tag="article" />
-                <div v-else v-html="feedItem.desc" ></div>
+                <div v-if="feedItem.content.length > 0" v-html="feedItem.content" tag="article" ></div>
+                <MDC v-else :value="feedItem.desc" tag="article" ></MDC>
             </div>
         </div>
     </el-drawer>
@@ -30,6 +30,7 @@ import browser from '@/service/browser';
 import { CloseBold } from "@element-plus/icons-vue"
 
 import emitter from "@/service/event.js";
+import feedItemBiz from "@/service/rss/feedItem";
 
 export default defineNuxtComponent({
     /*props:{
@@ -59,6 +60,10 @@ export default defineNuxtComponent({
     },
 
     mounted(){
+        if(this.feedItem != null){
+            feedItemBiz.increaseFeedItemReadCount(false,this.feedItem.feed_item_id);
+        }
+        
         emitter.on("on_popup_feeditem_content", (param) => {
             this.feed = param.feed;
             this.feedItem = param.feedItem;
@@ -119,9 +124,18 @@ export default defineNuxtComponent({
     font-size: 16px;
     padding:10px;
 }
+
+.feed_content_container p{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+}
+
+
 .feed_content_container img{
     max-width: 100%;
     height:auto;
 }
+
 </style>
 

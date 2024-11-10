@@ -7,7 +7,7 @@
         <div v-if="viewState == 2" style="width:800px;margin:0px auto;text-align: center;">
             <img src="https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/reader/read-latre.svg">
             <p style="margin-bottom:0px;font-size:30px;">空空如也</p>
-            <p style="margin-bottom:0px;font-size:16px;">你标记成“已读”的文章会出现在这里。</p>
+            <p style="margin-bottom:0px;font-size:16px;">你标记为“已读”的文章会出现在这里。</p>
         </div>
         <FeedItemList  @feedItemCountChange="onFeedItemCountChange" :readedMode="2" :pageMode="1" v-show="viewState == 3"  ref="feedItemListComp"></FeedItemList>
     </div>
@@ -68,7 +68,7 @@ export default defineNuxtComponent({
                 for(let index in readLaterItems){
                     feedItemIds.push(readLaterItems[index].feed_item_id);
                 }
-                console.log(feedItemIds);
+                
                 await this.$refs.feedItemListComp.setFeedItemIDs(feedItemIds, totalCount);
                 this.viewState = 3;
                 //this.loadFeedForFeedItem(feedItems, totalCount);
