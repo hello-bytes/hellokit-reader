@@ -1,31 +1,36 @@
 <template>
     <div>
-        <div style="height:80px;"></div>
-        <div style="text-align: center;">
-            <h1 class="brand_title">Hello Reader</h1>
-            <p style="font-weight: 500;font-size: 36px;text-align: center;margin-top:0px;">每一次阅读，都成为知识的深度探索之旅。</p>
-            <div>
-                <a class="button_link" href="/feed-item">先逛一下</a>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <a class="button_link" href="/feed-item">先逛一下</a>
-            </div>
+        <div style="width:100%;height:100vh;background-color: white;">
+            <div class="hello_reader_logo">哈喽阅读</div>
         </div>
-        
+        <div v-if="showArticles">
+            <div class>Hello, Reader</div>
+        </div>
     </div>
 </template>
 
 <script>
 
-import browser from '@/service/browser';
+import helper from "@/utils/helper"
 
 export default defineNuxtComponent({
     async asyncData() {
         return {
-            isMobile: browser.isMobile()
+            showArticles : true,
         }
     },
 
     mounted() {
+        this.showArticles = false;
+        let state = helper.getK("hellokit.reader.state");
+        if (state == undefined || state == ""){
+            this.showArticles = false;
+            window.location.href = "/guide";  
+        }else{
+            if (state == "inited"){
+                window.location.href = "/my/today";
+            }
+        }
     },
 
     methods: {
@@ -40,20 +45,17 @@ definePageMeta({
 </script>
 
 <style scoped>
-.brand_title{
+.hello_reader_logo{
+    position: absolute;
+    top: 50vh;
+    left: 0;
+    transform: translateX(0) translateY(-50%);
+    font-size: 44px;
+    color: #d6d6d6;
+    font-weight: 700;
+    font-family: helvetica, sans-serif;
+    letter-spacing: -.04em;
     text-align: center;
-    color: #009a61;
-    font-size:80px;
-    margin-bottom:0px;
+    width: 100%;
 }
-
-.button_link{
-    display: inline-block;
-    text-align: center;
-    padding:15px 25px;
-    font-size: 20px;
-    border:1px solid #009a61;
-    border-radius: 5px;
-}
-
 </style>

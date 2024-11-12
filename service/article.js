@@ -36,29 +36,6 @@ export default {
     },
 
     async searchText(text, limit, offset){
-        //console.log(1111111);
-        
-        /*let params = {
-            q:text,
-            limit:parseInt(limit),
-            offset:parseInt(offset),
-            attributesToSearchOn:["summary","title"],
-        }
-        const t = await useFetch('http://search.hellobit.com.cn/indexes/hellokit_webtools/search',{
-                method: 'POST',
-                body: params,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': "Bearer " + "searchservicewillmakemelaunch20220817",
-                },
-                onResponse({ request, response, options }) {
-                    console.log(response);
-                    //resolve({ errorType : 0, code : 0, data :JSON.parse(response._data).data}); 
-                },
-        });*/
-        //console.log(t);
-        //console.log("he");
-
         let params = {
             q:text,
             limit:parseInt(limit),
@@ -66,8 +43,6 @@ export default {
             attributesToSearchOn:["summary","title"],
         }
         return helper.searchJsonAsync("http://search.hellobit.com.cn/indexes/hellokit_webtools/search","searchservicewillmakemelaunch20220817",params);
-
-        //$data = httpapi_post_json_auth_header(ArticleService::searchURL("/indexes/hellokit_webtools/search"), "searchservicewillmakemelaunch20220817" , $json);
     }
 
 

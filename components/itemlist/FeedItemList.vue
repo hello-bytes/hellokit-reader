@@ -93,14 +93,13 @@
             </div>
             
         </div>
-        <el-pagination v-if="pageMode==1" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
+        <el-pagination v-if="pageMode==1" @current-change="handlePageChange" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
         <div style="height:30px"></div>
     </div>
 </template>
 
 <script>
 
-// <el-icon><Paperclip /></el-icon><el-icon><CollectionTag /></el-icon>
 // 这个页面做为某一个Feed的Feed Item List合集展示，可以用在某个目录的Feed流，也可以用在某个特定时区的Feed流
 
 import helper from '@/utils/helper.js'
@@ -174,6 +173,8 @@ export default defineNuxtComponent({
 
                 this.feedItems = sortFeedItems;
                 this.totalCount = totalCount;
+
+                // window.scrollTo(0, 0);
             }
         },
 
@@ -294,6 +295,10 @@ export default defineNuxtComponent({
             if (this.pageMode == 1){
                 return;
             }
+        },
+
+        handlePageChange(pageNumber){
+            this.$emit('onPageChange', {pageNumber:parseInt(pageNumber)});
         },
 
         removeByFeedItemID(feedItemID){

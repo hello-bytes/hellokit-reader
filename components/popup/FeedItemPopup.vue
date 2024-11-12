@@ -8,11 +8,11 @@
         <div style="max-width:800px;margin:0px auto;" v-if="feedItem != null && feed != null">
             <p class="feed_item_title">{{ feedItem.title }}</p>
             <div>
-                <a :href='feed.url' class="feed_item_time">{{ feed.name }}</a>
+                <a :href='feed.url' class="feed_item_url">{{ feed.name }}</a>
                 <span>&nbsp;&nbsp;</span>
                 <span class="feed_item_time">{{ formatTime(feedItem.publish_time) }}</span>
                 <span>&nbsp;&nbsp;</span>
-                <span class="feed_item_time">{{ feed.read_count }}次阅读</span>
+                <span class="feed_item_time">{{ feedItem.read_count }}次阅读</span>
             </div>
             
             <div class="feed_content_container">
@@ -33,18 +33,6 @@ import emitter from "@/service/event.js";
 import feedItemBiz from "@/service/rss/feedItem";
 
 export default defineNuxtComponent({
-    /*props:{
-        feed : {
-            type:Object,
-            default:null,
-        },
-
-        feedItem : {
-            type:Object,
-            default:null,
-        },
-    },*/
-
     components: {
         CloseBold,
     },
@@ -60,18 +48,23 @@ export default defineNuxtComponent({
     },
 
     mounted(){
-        if(this.feedItem != null){
-            feedItemBiz.increaseFeedItemReadCount(false,this.feedItem.feed_item_id);
-        }
-        
         emitter.on("on_popup_feeditem_content", (param) => {
-            this.feed = param.feed;
-            this.feedItem = param.feedItem;
-            this.show();
+            this.showFeedItem(param.feed,param.feedItem);
         });
     },
 
     methods:{
+        showFeedItem(feed, feedItem){
+            this.feed = feed;
+            this.feedItem = feedItem;
+
+            if(this.feedItem != null){
+                feedItemBiz.increaseFeedItemReadCount(false,this.feedItem.feed_item_id);
+            }
+
+            this.show();
+        },
+
         show(){
             this.showDrawer = true;
         },
@@ -98,6 +91,16 @@ export default defineNuxtComponent({
     font-weight:700;
     margin-top:5px;
     margin-bottom:5px;
+}
+.feed_item_url{
+    margin-top:0px;
+    margin-bottom:0px;
+    font-size:12px;
+    font-weight:400;
+    color:rgb(132, 134, 143);
+}
+.feed_item_url:hover{
+    text-decoration: underline;
 }
 .feed_item_time{
     margin-top:0px;

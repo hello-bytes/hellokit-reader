@@ -188,3 +188,9 @@ definePageMeta({
     height:auto;
 }
 </style>
+
+<style>
+body{
+    background-color: white;
+}
+</style>

@@ -87,7 +87,7 @@ export default defineNuxtComponent({
         //this.$refs.feedItemsComp.appendFeedItems()
         //console.log(this.feed);
         //console.log(this.feedItems);
-        console.log(this.currentFeedItem);
+        // console.log(this.currentFeedItem);
         
     },
 

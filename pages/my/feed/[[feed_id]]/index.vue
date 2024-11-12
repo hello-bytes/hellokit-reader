@@ -3,7 +3,7 @@
         <div style="height:30px;"></div>
         <div style="display: flex;">
             <div>
-                <h2 class="feed_name">{{ feed.name }}</h2>
+                <h2 class="feed_name">{{ feed == null ? "" : feed.name }}</h2>
                 <div class="feed_info_desc">
                     <span>{{ followCount }}&nbsp;位订阅用户</span>
                     <span>&nbsp;&nbsp;｜&nbsp;&nbsp;</span>
@@ -16,7 +16,11 @@
             </div>
         </div>
         <div style="height:20px;"></div>
-        <FeedDetail ref="feedItemsComp" :feed="feed" :feedItems="feedItems" :totalCount="feedItemCount" ></FeedDetail>
+        <Loading v-if="viewState == 1"></Loading>
+        <ErrorView ref="errorViewComp" v-if="viewState == 2"></ErrorView>
+        <EmptyFeed v-if="viewState == 3"></EmptyFeed>
+        <AllDoneFeed v-if="viewState == 4"></AllDoneFeed>
+        <FeedItemList1  v-show="viewState == 5" @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="1" ref="feedItemListComp"></FeedItemList1>
     </div>
 </template>
 
@@ -24,17 +28,20 @@
 
 import browser from '@/service/browser';
 import rssbiz from '@/service/rss/rss.js';
+import devicebiz from '@/service/device';
 
-import FeedDetail from '~/components/rss/FeedDetail.vue'
-import FeedItemDesc from '@/components/rss/FeedItemDesc.vue'
+import Loading from '~/components/base/Loading.vue';
+import ErrorView from '@/components/base/ErrorView.vue';
+import EmptyFeed from '@/components/feed/EmptyFeed.vue';
+import AllDoneFeed from '@/components/feed/AllDoneFeed.vue';
+import FeedItemList1 from '@/components/itemlist/FeedItemList1.vue'
 
 
 import {Refresh} from "@element-plus/icons-vue"
 
-
 export default defineNuxtComponent({
     components: {
-        FeedDetail,FeedItemDesc,Refresh,
+        Refresh,FeedItemList1,Loading,EmptyFeed,ErrorView,AllDoneFeed
     },
     
     async asyncData() {
@@ -49,33 +56,11 @@ export default defineNuxtComponent({
                 feedObj = feedResponse.data.list[0];
             }
         }
-        
-        let feedName = "";
-        let iconURL = "";
-        if (feedObj != null){
-            iconURL = feedObj.icon_url;// "//nettools1.oxyry.com/favicon?domain=decohack.com&size=16"
-            feedName = feedObj.name;
-        }
-
-        // get feed items
-        let feedItems = [];
-        let feedItemsResponse = await rssbiz.queryFeedItemsByFeedID(true,feedID,30,0)
-        if (helper.isResultOk(feedItemsResponse)){
-            feedItems = feedItemsResponse.data.list;
-        }
-
-        for (var index in feedItems){
-            feedItems[index].feed_icon = iconURL;
-            feedItems[index].feed_name = feedName;
-        }
-
-        // get current feed item
-        let currentFeedItem = feedItems[0];
 
         // 获取统计信息
         let followCount = 0;
         let feedItemCount = 0;
-        let feedStaticsResponse = await rssbiz.queryFeedStaticsByIDs([feedID]);
+        let feedStaticsResponse = await rssbiz.queryFeedStaticsByIDs(true,[feedID]);
         if (helper.isResultOk(feedStaticsResponse)){
             if(feedStaticsResponse.data.length == 1){
                 followCount = feedStaticsResponse.data[0].follow_count;
@@ -85,24 +70,54 @@ export default defineNuxtComponent({
         
         return {
             feed : feedObj,
-            feedItems:feedItems,
+            feedItems:[],
             followCount:followCount,
             feedItemCount:feedItemCount,
-            currentFeedItem:currentFeedItem,
-            isMobile: browser.isMobile()
+            viewState:1,
         }
     },
 
     mounted() {
-        //this.$refs.feedItemsComp.appendFeedItems()
-        //console.log(this.feed);
-        //console.log(this.feedItems);
-        console.log(this.currentFeedItem);
-        
+        this.loadFeedItems();
     },
 
     methods: {
+        async loadFeedItems(pageNumber){
+            if (this.feed == null ){
+                return;
+            }
+            
+            let responseData = await rssbiz.getUserFeedItemsV3(devicebiz.getDeviceID(),"0", this.feed.feed_id, 1,30, (pageNumber-1) * 30);
+            if (!helper.isResultOk(responseData)){
+                ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
+                return;
+            }
 
+            let feedItems = responseData.data.list;
+            let totalCount = responseData.data.total_count;
+            if (this.feedItemCount == 0 ){
+                // 订阅源下没有文章
+                this.viewState = 3;
+            }else{
+                if(totalCount == 0){
+                    this.viewState = 4;
+                }else{
+                    await this.$refs.feedItemListComp.setFeedItems(feedItems, totalCount);
+                    this.viewState = 5;
+                }
+            }
+        },
+
+        async onPageChange(obj){
+            await this.loadFeedItems(obj.pageNumber);
+            ElMessage.success("已为您加载新的内容。")
+        },
+
+        onFeedItemCountChange(feedItemCount){
+            if (feedItemCount == 0){
+                this.viewState = 4;
+            }
+        },
     }
 
 });

@@ -20,11 +20,11 @@ export default {
         return helper.postJsonAsync(serverSideReq, "/api/tbs/rss/v1/feed/get", params);
     },
 
-    async queryFeedStaticsByIDs(feedIDs){
+    async queryFeedStaticsByIDs(serverSideReq,feedIDs){
         let params = {
             feed_ids:feedIDs,
         }
-        return helper.postJsonAsync(true, "/api/tbs/rss/v1/feed/statics", params);
+        return helper.postJsonAsync(serverSideReq, "/api/tbs/rss/v1/feed/statics", params);
     },
     
     async queryFeedItemsByFeedID(serverSideRequest, feedID,limit, offset){
@@ -87,6 +87,7 @@ export default {
             read_state:1,
             hide_state:1,
             folder_id : "0",
+            feed_id:"0",
         }
         if (userbiz.isUserMode()){
             return helper.postJsonAsync(false, "/api/tbs/rss/v1/user/feeditem", params);
@@ -106,6 +107,7 @@ export default {
             read_state:parseInt(readState),
             hide_state:1,
             folder_id : "0",
+            feed_id : "0",
         }
         if (userbiz.isUserMode()){
             return helper.postJsonAsync(false, "/api/tbs/rss/v1/user/feeditem", params);
@@ -123,6 +125,25 @@ export default {
             read_state:parseInt(readState),
             hide_state:1,
             folder_id : folderID,
+            feed_id : "0",
+        }
+        if (userbiz.isUserMode()){
+            return helper.postJsonAsync(false, "/api/tbs/rss/v1/user/feeditem", params);
+        }else{
+            return helper.postJsonAsync(false, "/api/tbs/rss/v1/device/feeditem", params);
+        }
+    },
+
+    async getUserFeedItemsV3(deviceID, folderID, feedID, readState, limit, offset){
+        let params = {
+            device_id:deviceID,
+            limit:parseInt(limit),
+            offset:parseInt(offset),
+            only_today:false,
+            read_state:parseInt(readState),
+            hide_state:1,
+            folder_id : folderID,
+            feed_id : feedID,
         }
         if (userbiz.isUserMode()){
             return helper.postJsonAsync(false, "/api/tbs/rss/v1/user/feeditem", params);

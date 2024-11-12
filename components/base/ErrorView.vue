@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <p>正在加载...</p>
-    </div>
+    <div></div>
 </template>
 
 <script>
@@ -9,7 +7,6 @@
 export default defineNuxtComponent({
     async asyncData() {
         return {
-            
         }
     },
 
@@ -20,6 +17,3 @@ export default defineNuxtComponent({
 
 
 </script>
-
-<style scoped>
-</style>

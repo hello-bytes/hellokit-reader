@@ -1,6 +1,6 @@
 <template>
-    <div style="max-width:800px;margin:0px auto;margin-top:30px;">
-        <h2 style="font-size: 34px;font-weight: 700;margin-top:40px;margin-bottom:10px;">已读文章</h2>
+    <div class="page_root_container">
+        <h2 class="page_root_title">已读文章</h2>
         <el-divider></el-divider>
         
         <Loading v-if="viewState == 1"></Loading>
@@ -9,7 +9,7 @@
             <p style="margin-bottom:0px;font-size:30px;">空空如也</p>
             <p style="margin-bottom:0px;font-size:16px;">你标记为“已读”的文章会出现在这里。</p>
         </div>
-        <FeedItemList  @feedItemCountChange="onFeedItemCountChange" :readedMode="2" :pageMode="1" v-show="viewState == 3"  ref="feedItemListComp"></FeedItemList>
+        <FeedItemList  @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="2" :pageMode="1" v-show="viewState == 3"  ref="feedItemListComp"></FeedItemList>
     </div>
 </template>
 
@@ -21,14 +21,14 @@ import rssbiz from '@/service/rss/rss.js';
 import readLater from '@/service/rss/read_later.js';
 import devicebiz  from '@/service/device.js';
 
-import Loading from '@/components/rss/Loading.vue';
+import Loading from '~/components/base/Loading.vue';
 
 
-import FeedItemList from '@/components/rss/FeedItemList.vue';
+import FeedItemList from '~/components/itemlist/FeedItemList.vue';
 import AddRssWhite from "@/icons/AddRssWhite.vue"
 
-import EmptyFolder from "@/components/rss/folder/EmptyFolder.vue"
-import AllDoneFolder from "@/components/rss/folder/AllDoneFolder.vue"
+import EmptyFolder from "@/components/folder/EmptyFolder.vue"
+import AllDoneFolder from "@/components/folder/AllDoneFolder.vue"
 import Good from "@/icons/Good.vue"
 
 export default defineNuxtComponent({
@@ -39,21 +39,18 @@ export default defineNuxtComponent({
     async asyncData() {
         return {
             viewState : 1,
-            pageNumber: 1,
             totalCount : 0,
         }
     },
 
     mounted() {
-        this.loadFeedItems();
+        this.loadFeedItems(1);
     },
 
     methods: {
-        async loadFeedItems(){
-            if (this.pageNumber < 1) {
-                this.pageNumber = 1;
-            }
-            let responseData = await rssbiz.getUserFeedItems(devicebiz.getDeviceID(),2, 30, (this.pageNumber-1) * 30);
+        async loadFeedItems(pageNumber){
+            
+            let responseData = await rssbiz.getUserFeedItems(devicebiz.getDeviceID(),2, 30, (pageNumber-1) * 30);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -71,7 +68,6 @@ export default defineNuxtComponent({
                 
                 await this.$refs.feedItemListComp.setFeedItemIDs(feedItemIds, totalCount);
                 this.viewState = 3;
-                //this.loadFeedForFeedItem(feedItems, totalCount);
             }
         },
 
@@ -83,6 +79,12 @@ export default defineNuxtComponent({
             if (feedItemCount == 0){
                 this.viewState = 2;
             }
+        },
+
+        async onPageChange(obj){
+            // window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            await this.loadFeedItems(obj.pageNumber);
+            ElMessage.success("已为您加载新的内容。")
         },
     }
 });

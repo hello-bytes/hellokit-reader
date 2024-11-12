@@ -19,11 +19,11 @@
                                 <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
                             </el-tooltip>
                             <span>&nbsp;</span>
-                            <el-tooltip effect="dark" content="标记为已读" placement="top-start">
-                                <div v-if="item.readState == 1" @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                            <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
+                                <div  @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                             </el-tooltip>
-                            <el-tooltip effect="dark" content="标记为未读" placement="top-start">
-                                <div v-if="item.readState != 1" @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                            <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
+                                <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                             </el-tooltip>
                             <span>&nbsp;</span>
                             <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
@@ -62,11 +62,11 @@
                         <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
                     </el-tooltip>
                     <span>&nbsp;</span>
-                    <el-tooltip effect="dark" content="标记为已读" placement="top-start">
-                        <div v-if="item.readState == 1" @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                    <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
+                        <div  @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                     </el-tooltip>
-                    <el-tooltip effect="dark" content="标记为未读" placement="top-start">
-                        <div v-if="item.readState != 1" @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                    <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
+                        <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
                     </el-tooltip>
                     <span>&nbsp;</span>
                     <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
@@ -89,7 +89,7 @@
             </div>
             
         </div>
-        <el-pagination v-if="pageMode==1" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
+        <el-pagination v-if="pageMode==1" @current-change="handlePageChange" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
         
         <div style="height:30px"></div>
     </div>
@@ -326,6 +326,10 @@ export default defineNuxtComponent({
                 }
                 feedItem.isReadLater = false;
             }
+        },
+
+        handlePageChange(pageNumber){
+            this.$emit('onPageChange', {pageNumber:parseInt(pageNumber)});
         },
 
         onShareArticle(){

@@ -9,7 +9,7 @@
 import browser from '@/service/browser';
 import rssbiz from '@/service/rss/rss.js';
 
-import FeedItemListSEO from '~/components/rss/itemlist/FeedItemListSEO.vue';
+import FeedItemListSEO from '~/components/itemlist/FeedItemListSEO.vue';
 
 export default defineNuxtComponent({
     components: {

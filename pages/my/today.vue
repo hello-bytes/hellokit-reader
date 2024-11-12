@@ -1,7 +1,7 @@
 <template>
-    <div style="max-width:800px;margin:0px auto;margin-top:30px;">
-        <h2 style="font-size: 34px;font-weight: 700;margin-top:40px;margin-bottom:10px;">今日阅读</h2>
-        <p style="margin-top:0px;font-size: 20px;color:rgb(117, 117, 117);font-weight: 500;margin-bottom:10px;">唯有日日翻卷，方能洞见常新。</p>
+    <div class="page_root_container">
+        <h2 class="page_root_title">今日阅读</h2>
+        <p class="page_root_desc">唯有日日翻卷，方能洞见常新。</p>
         <el-divider></el-divider>
         <Loading v-if="viewState == 1"></Loading>
         <div v-if="viewState == 2" style="max-width:800px;margin:0px auto;text-align: center;">
@@ -22,21 +22,19 @@
             <p style="margin-top:16px;margin-bottom:20px;">遇到未知错误，请稍后再试。</p>
         </div>
         
-        <FeedItemList @feedItemCountChange="onFeedItemCountChange" :readedMode="1" :pageMode="1" v-show="viewState == 5"  ref="feedItemListComp"></FeedItemList>
+        <FeedItemList  @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="1" :pageMode="1" v-show="viewState == 5"  ref="feedItemListComp"></FeedItemList>
     </div>
 </template>
 
 <script>
 
-import browser from '@/service/browser';
-
 import rssbiz from '@/service/rss/rss.js';
 import devicebiz  from '@/service/device.js';
 
-import Loading from '@/components/rss/Loading.vue';
+import Loading from '~/components/base/Loading.vue';
 
 
-import FeedItemList from '@/components/rss/FeedItemList.vue';
+import FeedItemList from '~/components/itemlist/FeedItemList.vue';
 import AddRssWhite from "@/icons/AddRssWhite.vue"
 import EmptyFolder from "@/icons/EmptyFolder.vue"
 import Good from "@/icons/Good.vue"
@@ -56,15 +54,12 @@ export default defineNuxtComponent({
     },
 
     mounted() {
-        this.loadFeedItems();
+        this.loadFeedItems(1);
     },
 
     methods: {
-        async loadFeedItems(){
-            if (this.pageNumber < 1) {
-                this.pageNumber = 1;
-            }
-            let responseData = await  rssbiz.getTodayFeedItems(devicebiz.getDeviceID(), 30, (this.pageNumber-1) * 30);
+        async loadFeedItems(pageNumber){
+            let responseData = await  rssbiz.getTodayFeedItems(devicebiz.getDeviceID(), 30, (pageNumber-1) * 30);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -87,45 +82,9 @@ export default defineNuxtComponent({
                     this.viewState = 4;
                 }
             }else{
-                //this.viewState = 3;
-                this.loadFeedForFeedItem(feedItems, totalCount);
-                //this.$refs.feedItemListComp.setFeedItems(feedItems, totalCount);
+                await this.$refs.feedItemListComp.setFeedItems(feedItems, totalCount);
+                this.viewState = 5;
             }
-        },
-
-        async isFeedIdExist(feedID, feedIds){
-            for(let index in feedIds) {
-                if(feedIds[index] == feedID){
-                    return true;
-                }
-            }
-            return false;
-        },
-
-        async loadFeedForFeedItem(feedItems, totalCount){
-            let feedIds = [];
-            for(let index in feedItems){
-                feedItems[index].feed = null;
-                if(!this.isFeedIdExist(feedItems[index].feed_id, feedIds)){
-                    feedIds.push(feedItems[index].feed_id);
-                }
-            }
-
-
-            let responseData = await rssbiz.queryFeedByIDs(false,feedIds);
-            if (helper.isResultOk(responseData)){
-                let feedList = responseData.data.list;
-                for(let index in feedItems){
-                    for(let j in feedList){
-                        if (feedList[j].feed_id = feedItems[index].feed_id){
-                            feedItems[index].feed = feedList[j];
-                        }
-                    }
-                }
-            }
-
-            this.viewState = 5;
-            this.$refs.feedItemListComp.setFeedItems(feedItems, totalCount);
         },
 
         onSubscribeFeed(){
@@ -138,6 +97,10 @@ export default defineNuxtComponent({
             }
         },
 
+        async onPageChange(obj){
+            await this.loadFeedItems(obj.pageNumber);
+            ElMessage.success("已为您加载新的内容。")
+        },
 
     }
 

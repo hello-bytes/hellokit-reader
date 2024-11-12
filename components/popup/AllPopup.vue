@@ -9,10 +9,10 @@
 
 <script>
 
-import CreateFolderPopup from '@/components/rss/popup/CreateFolderPopup.vue'
-import SelectFolder from '@/components/rss/popup/SelectFolder.vue'
-import FeedDescriptPopup from '~/components/rss/popup/FeedDescriptPopup.vue'
-import FeedItemPopup from '@/components/rss/popup/FeedItemPopup.vue'
+import CreateFolderPopup from '@/components/popup/CreateFolderPopup.vue'
+import SelectFolder from '@/components/popup/SelectFolder.vue'
+import FeedDescriptPopup from '~/components/popup/FeedDescriptPopup.vue'
+import FeedItemPopup from '@/components/popup/FeedItemPopup.vue'
 
 export default defineNuxtComponent({
     components: {

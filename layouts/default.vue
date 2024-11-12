@@ -58,7 +58,7 @@
                             <el-icon :width="18"><HelloReadLogo /></el-icon>
                             <span>关于哈喽阅读</span>
                         </a>
-                        <a class="user_info_menu" href="/user/logout">
+                        <a v-if="isLogined" class="user_info_menu" href="/user/logout">
                             <el-icon :width="19"><LogoutIcon /></el-icon>
                             <span>登出</span>
                         </a>
@@ -151,7 +151,7 @@ import AllFeedItem from "@/icons/AllFeedItem.vue"
 import Today from "@/icons/Today.vue"
 import AllArticleIcon from "@/icons/AllArticleIcon.vue"
 
-import AllPopup from '~/components/rss/popup/AllPopup.vue'
+import AllPopup from '~/components/popup/AllPopup.vue'
 
 import devicebiz from '@/service/device.js'
 
@@ -251,6 +251,7 @@ export default defineNuxtComponent({
 			this.loadFolderList();
         });
 
+        // 用户信息
         this.userName = userbiz.getNickName();
         let mstObj = helper.getMst();
         if (mstObj != null){
@@ -476,10 +477,38 @@ export default defineNuxtComponent({
     border-radius: 3px;
 }
 
+/* user info css */
 .user_info_popover{
     width:275px;
 }
-
+.user_info_menu{
+    font-size: 14px;
+    padding:8px;
+    cursor: pointer;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    color: #333333;
+}
+.user_info_menu:hover{
+    color:#009a61;
+    background-color: #eee;
+}
+.user_info_menu > span{
+    padding-left:8px;
+}
+.user_info_menu > i {
+    color: #333333;
+    fill:#333333;
+}
+.user_info_menu > i > svg {
+    color: #333333;
+    fill:#333333;
+}
+.user_info_menu > i > svg > path {
+    color: #333333;
+    fill:#333333;
+}
 .user_info_name{
     max-width: 210px;
     overflow: hidden;
@@ -492,7 +521,6 @@ export default defineNuxtComponent({
     font-weight: 700;
     font-size:16px;
 }
-
 .user_info_desc{
     border-radius: 2px;
     color: rgb(158, 158, 158);

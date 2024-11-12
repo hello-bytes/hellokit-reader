@@ -41,7 +41,7 @@ import { FolderAdd } from "@element-plus/icons-vue"
 
 import emitter from "@/service/event.js";
 
-import FeedItemList1 from "@/components/rss/itemlist/FeedItemList1.vue";
+import FeedItemList1 from "@/components/itemlist/FeedItemList1.vue";
 
 export default defineNuxtComponent({
     components: {
@@ -66,10 +66,23 @@ export default defineNuxtComponent({
             this.feed = param.feed;
             this.show();
             this.loadFeedItems();
+            this.loadStatics();
         });
     },
 
     methods:{
+        async loadStatics(){
+            let followCount = 0;
+            let feedItemCount = 0;
+            let feedStaticsResponse = await rssbiz.queryFeedStaticsByIDs(false,[this.feed.feed_id]);
+            if (helper.isResultOk(feedStaticsResponse)){
+                if(feedStaticsResponse.data.length == 1){
+                    this.followCount = feedStaticsResponse.data[0].follow_count;
+                    this.articleCount = feedStaticsResponse.data[0].feed_item_count;
+                }
+            }
+        },
+
         show(){
             this.showDrawer = true;
         },

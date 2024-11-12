@@ -11,6 +11,7 @@ html{
     /* font-family:  "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;*/
     font-family: "PingFang SC", "Microsoft YaHei","微软雅黑", sans-serif,Arial;
     background-color: #f1f5f9;
+    scroll-behavior: smooth;
 }
 body{
     /* font-family:  "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;*/
@@ -627,4 +628,16 @@ article > blockquote{
 
 .el-dropdown :focus-visible {
     outline: none;
+}
+
+.page_root_container{
+    max-width:800px;margin:0px auto;margin-top:30px;
+}
+
+.page_root_title{
+    font-size: 34px;font-weight: 700;margin-top:0px;margin-bottom:10px;
+}
+
+.page_root_desc{
+    margin-top:0px;font-size: 20px;color:rgb(117, 117, 117);font-weight: 500;margin-bottom:10px;
 }
