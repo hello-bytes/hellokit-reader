@@ -89,7 +89,7 @@
             </div>
             
         </div>
-        <el-pagination v-if="pageMode==1" @current-change="handlePageChange" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
+        <el-pagination v-if="pageMode==1" :current-page="currentPage" @current-change="handlePageChange" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
         
         <div style="height:30px"></div>
     </div>
@@ -138,6 +138,8 @@ export default defineNuxtComponent({
             totalCount:0,
             feedItems:[],
 
+            currentPage:1,
+
             currentFeed:null,
             feedItem:null // 当前被选中（点击）的 FeedItem
         }
@@ -161,11 +163,12 @@ export default defineNuxtComponent({
             }
         },
 
-        async setFeedItems(feedItems, totalCount){
+        async setFeedItems(feedItems, pageNumber, totalCount){
             await this.loadReadedFlag(feedItems);
             await this.loadReadLaterFlag(feedItems);
             await this.loadFeedForFeedItem(feedItems)
 
+            this.currentPage = pageNumber;
             this.feedItems = feedItems;
             this.totalCount = totalCount;
         },
@@ -329,11 +332,16 @@ export default defineNuxtComponent({
         },
 
         handlePageChange(pageNumber){
+            this.currentPage = pageNumber;
             this.$emit('onPageChange', {pageNumber:parseInt(pageNumber)});
         },
 
         onShareArticle(){
 
+        },
+
+        setPageIndex(currentPage){
+            this.currentPage = currentPage;
         }
     }
 })

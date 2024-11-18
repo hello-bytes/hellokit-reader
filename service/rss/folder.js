@@ -110,5 +110,24 @@ export default {
         }else{
             return helper.postJsonAsync(false, "/api/tbs/rss/v2/feed/get-device-folder-id", params);
         }
-    }    
+    },
+
+    async setFolderAllRead(deviceID, folderID, readState ){
+        let params = {
+            device_id:deviceID,
+            folder_id:folderID,
+            read_state: readState,
+        }
+        return helper.postJsonAsync(false, "/api/tbs/rss/v1/folder/set-read-state", params);
+    },
+
+    async setFeedAllRead(deviceID, feedID, readState){
+        let params = {
+            user_type : userbiz.isUserMode() ? 2:1,
+            device_id:deviceID,
+            feed_id:feedID,
+            read_state: readState,
+        }
+        return helper.postClientJsonAsync("/api/tbs/rss/v1/user/feed/set-read-state", params);
+    },
 }

@@ -11,10 +11,12 @@
                 </div>
             </div>
             <div style="flex:1"></div>
-            <div style="margin-top:15px;">
-                <a class="svg_icon_container"><el-icon :size="30"><Refresh /></el-icon></a>
+            <div style="padding-top:25px;">
+                <div @click="onSetAllReaded" class="svg_icon_container"><el-icon :size="28"><Check /></el-icon></div>
+                <div @click="onRefresh" class="svg_icon_container"><el-icon :size="28"><Refresh /></el-icon></div>
             </div>
         </div>
+        <div style="height:1px;background-color: #dcdfe6;margin-top:10px;margin-bottom:24px;"></div>
         <div style="height:20px;"></div>
         <Loading v-if="viewState == 1"></Loading>
         <ErrorView ref="errorViewComp" v-if="viewState == 2"></ErrorView>
@@ -28,6 +30,7 @@
 
 import browser from '@/service/browser';
 import rssbiz from '@/service/rss/rss.js';
+import rssfolder from '@/service/rss/folder.js';
 import devicebiz from '@/service/device';
 
 import Loading from '~/components/base/Loading.vue';
@@ -37,11 +40,11 @@ import AllDoneFeed from '@/components/feed/AllDoneFeed.vue';
 import FeedItemList1 from '@/components/itemlist/FeedItemList1.vue'
 
 
-import {Refresh} from "@element-plus/icons-vue"
+import { Refresh, Check } from "@element-plus/icons-vue"
 
 export default defineNuxtComponent({
     components: {
-        Refresh,FeedItemList1,Loading,EmptyFeed,ErrorView,AllDoneFeed
+        Refresh,FeedItemList1,Loading,EmptyFeed,ErrorView,AllDoneFeed,Check
     },
     
     async asyncData() {
@@ -102,7 +105,7 @@ export default defineNuxtComponent({
                 if(totalCount == 0){
                     this.viewState = 4;
                 }else{
-                    await this.$refs.feedItemListComp.setFeedItems(feedItems, totalCount);
+                    await this.$refs.feedItemListComp.setFeedItems(feedItems, pageNumber, totalCount);
                     this.viewState = 5;
                 }
             }
@@ -118,6 +121,21 @@ export default defineNuxtComponent({
                 this.viewState = 4;
             }
         },
+
+        onRefresh(){
+            this.loadFeedItems(1);
+            //this.$refs.feedItemListComp.setPageIndex(1);
+        },
+
+        async onSetAllReaded(){
+            let responseData = await rssfolder.setFeedAllRead(devicebiz.getDeviceID(), this.feed.feed_id, 2);
+            if (!helper.isResultOk(responseData)){
+                ElMessage.error("标记为已读失败，请稍后再试。");
+                return;
+            }
+
+            this.viewState = 4;
+        }
     }
 
 });
@@ -157,12 +175,5 @@ export default defineNuxtComponent({
     background-color: white;
     border-right: solid 0px rgb(235, 235, 235);
 }
-.svg_icon_container{
-    display: inline-block;
-    padding:3px;
-    border-radius: 4px;
-}
-.svg_icon_container:hover{
-    background-color: #eee;
-}
+
 </style>

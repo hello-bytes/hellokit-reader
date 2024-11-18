@@ -82,7 +82,7 @@ export default defineNuxtComponent({
                     this.viewState = 4;
                 }
             }else{
-                await this.$refs.feedItemListComp.setFeedItems(feedItems, totalCount);
+                await this.$refs.feedItemListComp.setFeedItems(feedItems,pageNumber, totalCount);
                 this.viewState = 5;
             }
         },

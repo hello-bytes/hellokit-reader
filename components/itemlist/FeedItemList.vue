@@ -93,7 +93,7 @@
             </div>
             
         </div>
-        <el-pagination v-if="pageMode==1" @current-change="handlePageChange" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
+        <el-pagination v-if="pageMode==1" @current-page="currentPage" @current-change="handlePageChange" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
         <div style="height:30px"></div>
     </div>
 </template>
@@ -141,6 +141,8 @@ export default defineNuxtComponent({
             totalCount:0,
             feedItems:[],
 
+            currentPage:1,
+
             readLaterList:[], // 里面有加入read later的时间，用来排序
 
             currentFeed:null,
@@ -178,11 +180,12 @@ export default defineNuxtComponent({
             }
         },
 
-        async setFeedItems(feedItems, totalCount){
+        async setFeedItems(feedItems, pageNumber, totalCount){
             await this.loadReadedFlag(feedItems);
             await this.loadReadLaterFlag(feedItems);
             await this.loadFeedForFeedItem(feedItems)
 
+            this.currentPage = pageNumber;
             this.feedItems = feedItems;
             this.totalCount = totalCount;
         },
@@ -355,6 +358,10 @@ export default defineNuxtComponent({
 
         onShareArticle(){
 
+        },
+
+        setPageIndex(currentPage){
+            this.currentPage = currentPage;
         }
     }
 })

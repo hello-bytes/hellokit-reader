@@ -101,19 +101,19 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ### 本地打包，服务器（Ubuntu）运行
 
 ```
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.8 .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9 .
 
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.8
+docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9
 
 
 -------------------------
 
 
-docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.8
+docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9
 
 docker stop website-hellokit-reader && docker rm website-hellokit-reader
 
-docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.8
+docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9
 ```
 
 docker stop hellokit-reader && docker rm hellokit-reader
@@ -209,4 +209,16 @@ http://localhost:3000/rss/subscript/124/291717071253934080.html
 
 ## 待办
 
+- 右侧滑动出来的页面，增加Toolbar
+- 最左侧的文件夹，Feed支持支持Feed总数
+- Folder,Feed全被标记为已读时，view all应该显示已读的。
 - 文章页，支持扫码手机阅读。
+- 设置页面，方块有：文件夹管理，
+
+
+已完成
+
+- /my/feed/299010652503150592 支持下划线
+- 上面链接，支持全部已读
+- /my/folder/300874475715563520/1.html 及  /my/feed/299010652503150592 全部已读后，支持查看所有；
+- 右侧滑动出来的页面，最下面支持阅读原文

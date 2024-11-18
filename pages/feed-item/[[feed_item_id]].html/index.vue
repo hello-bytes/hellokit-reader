@@ -30,7 +30,7 @@
                 <MDC v-else :value="feedItem.desc" tag="article" ></MDC>
             </div>
             <div style="padding-top:40px;padding-bottom:40px;text-align: center;">
-                <el-button size="large" style="width:100%;">访问网页原始链接</el-button>
+                <el-button @click="onGotoSourceURL" size="large" style="width:100%;">访问网页原始链接</el-button>
             </div>
         </div>
     </div>
@@ -137,6 +137,10 @@ export default defineNuxtComponent({
 				ElMessage.error('复制失败，可能您的浏览器不支持复制。');
 			}
         },
+
+        onGotoSourceURL(){
+            window.open(this.feedItem.feed_url);
+        }
     }
 })
 

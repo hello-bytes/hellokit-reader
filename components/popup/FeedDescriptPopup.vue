@@ -100,7 +100,7 @@ export default defineNuxtComponent({
             //
             let list = responseData.data.list;
             let totalCount = responseData.data.total_count;
-            this.$refs.feedItemListComp.setFeedItems(list, totalCount);
+            this.$refs.feedItemListComp.setFeedItems(list, 1,totalCount);
         },
 
         onFeedItemCountChange(feedItemCount){

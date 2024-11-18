@@ -3,7 +3,8 @@
         <FolderBar @onSetAllReaded="onSetAllReaded" @onRefreshItems="onRefreshFeedItems" :folder="folder"></FolderBar>
         <Loading v-if="viewState == 1"></Loading>
         <EmptyFolder v-if="viewState == 2" :folder="folder"></EmptyFolder>
-        <FeedItemList v-show="viewState == 3"  @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange":readedMode="1" :pageMode="1"  ref="feedItemListComp"></FeedItemList>
+        <AllDoneFolder v-if="viewState == 3"></AllDoneFolder>
+        <FeedItemList v-show="viewState == 4"  @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange":readedMode="1" :pageMode="1"  ref="feedItemListComp"></FeedItemList>
     </div>
 </template>
 
@@ -16,12 +17,12 @@ import rssfolder from '@/service/rss/folder.js';
 import Loading from '~/components/base/Loading.vue';
 import FolderBar from '@/components/folder/FolderBar.vue';
 import EmptyFolder from '@/components/folder/EmptyFolder.vue';
-
+import AllDoneFolder from "@/components/folder/AllDoneFolder.vue"
 import FeedItemList from '~/components/itemlist/FeedItemList.vue';
 
 export default defineNuxtComponent({
     components: {
-        Loading, FolderBar, EmptyFolder, FeedItemList
+        Loading, FolderBar, EmptyFolder, FeedItemList,AllDoneFolder
     },
 
     async asyncData() {
@@ -63,11 +64,26 @@ export default defineNuxtComponent({
             let feedItems = responseData.data.list;
             let totalCount = responseData.data.total_count;
             if (totalCount == 0 ){
-                this.viewState = 2;
+                // 检查是否有订阅过内容
+                this.checkFeedCount();
             }else{
-                this.viewState = 3;
-                this.$refs.feedItemListComp.setFeedItems(feedItems, totalCount);
+                //this.viewState = 3;
+                await this.$refs.feedItemListComp.setFeedItems(feedItems,pageNumber, totalCount);
+                this.viewState = 4;
             }
+        },
+
+        async checkFeedCount(){
+            let responseData = await rssfolder.getFolderCount(false, [this.folderID]);
+            if (helper.isResultOk(responseData)){
+                let staticsFolderList = responseData.data;
+                if(staticsFolderList.length == 1){
+                    let feedCount = staticsFolderList[0].feed_count;
+                    this.viewState = feedCount == 0 ? 2 : 3;
+                    return;
+                }
+            }
+            this.viewState =  2;
         },
 
         onRefreshFeedItems(){
@@ -75,13 +91,19 @@ export default defineNuxtComponent({
             ElMessage.success("已为您加载最新内容");
         },
 
-        onSetAllReaded(){
+        async onSetAllReaded(){
+            let responseData = await rssfolder.setFolderAllRead(devicebiz.getDeviceID(), this.folderID, 2);
+            if (!helper.isResultOk(responseData)){
+                ElMessage.error("标记为已读失败，请稍后再试。");
+                return;
+            }
 
+            this.viewState = 3;
         },
 
         onFeedItemCountChange(feedItemCount){
             if (feedItemCount == 0){
-                this.viewState = 2;
+                this.viewState = 3;
             }
         },
 
