@@ -17,11 +17,10 @@
             </div>
         </div>
         <div style="height:1px;background-color: #dcdfe6;margin-top:10px;margin-bottom:24px;"></div>
-        <div style="height:20px;"></div>
         <Loading v-if="viewState == 1"></Loading>
         <ErrorView ref="errorViewComp" v-if="viewState == 2"></ErrorView>
         <EmptyFeed v-if="viewState == 3"></EmptyFeed>
-        <AllDoneFeed v-if="viewState == 4"></AllDoneFeed>
+        <AllDoneFeed @viewAllFeedItem="viewAllFeedItem" v-if="viewState == 4"></AllDoneFeed>
         <FeedItemList1  v-show="viewState == 5" @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="1" ref="feedItemListComp"></FeedItemList1>
     </div>
 </template>
@@ -77,11 +76,12 @@ export default defineNuxtComponent({
             followCount:followCount,
             feedItemCount:feedItemCount,
             viewState:1,
+            showAllFeedItem:false,
         }
     },
 
     mounted() {
-        this.loadFeedItems();
+        this.loadFeedItems(1);
     },
 
     methods: {
@@ -89,8 +89,12 @@ export default defineNuxtComponent({
             if (this.feed == null ){
                 return;
             }
-            
-            let responseData = await rssbiz.getUserFeedItemsV3(devicebiz.getDeviceID(),"0", this.feed.feed_id, 1,30, (pageNumber-1) * 30);
+
+            let readState = 1;
+            if (this.showAllFeedItem){
+                readState = 0;
+            }
+            let responseData = await rssbiz.getUserFeedItemsV3(devicebiz.getDeviceID(),"0", this.feed.feed_id, readState, 30, (pageNumber-1) * 30);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -135,6 +139,12 @@ export default defineNuxtComponent({
             }
 
             this.viewState = 4;
+        },
+
+        viewAllFeedItem(){
+            this.viewState = 1;
+            this.showAllFeedItem = true;
+            this.loadFeedItems(1);
         }
     }
 

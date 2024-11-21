@@ -92,6 +92,8 @@
                 <div style="width:2px;"></div>
                 <el-icon :size="18"><Files></Files></el-icon>
                 <span>所有内容</span>
+                <div style="flex:1"></div>
+                <span class="folder_number">{{ totalUnreadFeedItemCount == -1 ? "-" : totalUnreadFeedItemCount }}</span>
             </a>
             <div v-for="(folderItem, index) in folderList" :key="index" >
                 <div :class="{middle_entry_active:folderItem.isActive}" class="middle_entry folder_entry"  @click="onSelectFolder(folderItem)">
@@ -99,7 +101,7 @@
                     <el-icon v-if="folderItem.expand == true" @click="onToggleFolder(folderItem)" :size="20" style="vertical-align: center;"><ArrowDown></ArrowDown></el-icon>
                     <span>{{ folderItem.folder_name }}</span>
                     <div style="flex:1"></div>
-                    <span class="folder_number">{{ folderItem.feedCount == -1 ? "-" : folderItem.feedCount }}</span>
+                    <span class="folder_number">{{ folderItem.unReadFeedItemCount == -1 ? "-" : folderItem.unReadFeedItemCount }}</span>
                 </div>
                 <div v-if="folderItem.expand" v-for="(feed, feedIndex) in folderItem.feeds" :key="feedIndex">
                     <a :href='"/my/feed/" + feed.feed_id'>
@@ -108,6 +110,8 @@
                             <AllSubscribeFeedActive v-if="false" :width="20" :height="20"></AllSubscribeFeedActive>
                             <img class="feed_icon_img" :src='feed.icon_url' >
                             <span>{{ feed.name }}</span>
+                            <div style="flex:1"></div>
+                            <span class="folder_number">{{ feed.unreadFeedItemCount == -1 ? "-" : feed.unreadFeedItemCount }}</span>
                         </div>
                     </a>
                 </div>
@@ -234,6 +238,8 @@ export default defineNuxtComponent({
             userName:"",
             userAccount:"",
 
+            totalUnreadFeedItemCount:-1,
+
             folderList:[],
         }
     },
@@ -263,28 +269,39 @@ export default defineNuxtComponent({
                 this.userAccount = "微信用户";
             }
         }
+
+        // 添加阅读次数
+        rssbiz.addViewNumber();
     },
 
     methods : {
         async loadFolderList(){
+            let expandIndex = -1;
             let responseData = await rssfolder.queryFolderList(false, devicebiz.getDeviceID(),100,0);
             if (helper.isResultOk(responseData)){
                 let folderList = responseData.data.page;
                 for(let index in folderList){
+                    folderList[index].expand = false;
                     folderList[index].isActive = false;
                     if (this.currentFolderID == folderList[index].folder_id){
                         folderList[index].isActive = true;
+                        expandIndex = index;
                     }
                     
-                    folderList[index].expand = false;
                     folderList[index].feedCount = -1;
+                    folderList[index].unReadFeedItemCount = -1;
                     folderList[index].feeds = [];
                 }
                 this.folderList = folderList;
             }
+            
+            await this.loadFolderFeedCount();
+            await this.loadAllFolderStatics();
+            await this.checkFeedFolder();
 
-            this.loadFolderFeedCount();
-            this.checkFeedFolder();
+            if (expandIndex >= 0){
+                this.expandFolder(this.folderList[expandIndex]);
+            }
         },
 
         async loadFolderFeedCount(){
@@ -294,17 +311,25 @@ export default defineNuxtComponent({
                 folderIDs.push(folder.folder_id);
             }
 
-            let responseData = await rssfolder.getFolderCount(false, folderIDs);
+            let responseData = await rssfolder.getFolderCount(false, devicebiz.getDeviceID(), folderIDs);
             if (helper.isResultOk(responseData)){
                 let staticsFolderList = responseData.data;
                 for (let index in this.folderList){
                     for(let i in staticsFolderList){
                         if (staticsFolderList[i].folder_id == this.folderList[index].folder_id){
                             this.folderList[index].feedCount = staticsFolderList[i].feed_count;
+                            this.folderList[index].unReadFeedItemCount = staticsFolderList[i].unread_feed_item_count;
                             break;
                         }
                     }
                 }
+            }
+        },
+
+        async loadAllFolderStatics(){
+            let responseData = await rssfolder.getUserAllFolderStatics(devicebiz.getDeviceID());
+            if (helper.isResultOk(responseData)){
+                this.totalUnreadFeedItemCount = responseData.data.unread_feed_item_count;
             }
         },
 
@@ -341,7 +366,6 @@ export default defineNuxtComponent({
         onToggleFolder(folderItem){
             this.currentExpandTick = Date.now();
             folderItem.expand = !folderItem.expand;
-
             if (folderItem.expand){
                 this.loadFolderFeed(folderItem);
             }
@@ -364,6 +388,7 @@ export default defineNuxtComponent({
                 let feeds = responseData.data.page;
                 for (let index in feeds){
                     feeds[index].isActive = false;
+                    feeds[index].unreadFeedItemCount = -1;
                     if(feeds[index].icon_url.length == 0){
                         feeds[index].icon_url = "https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/reader/default-rss-icon.svg";
                     }
@@ -373,11 +398,31 @@ export default defineNuxtComponent({
                 }
                 folder.feeds = feeds;
             }
+            this.loadUnreadCountByFeedIds(folder);
+        },
+
+        async loadUnreadCountByFeedIds(folder){
+            let feedIDs = [];
+            for (let index in folder.feeds){
+                feedIDs.push(folder.feeds[index].feed_id);
+            }
+
+            let responseData = await rssfolder.getUserFeedStatics(devicebiz.getDeviceID(),feedIDs)
+            if(helper.isResultOk(responseData)){
+                for(let i in responseData.data){
+                    for(let j in folder.feeds){
+                        if(folder.feeds[j].feed_id == responseData.data[i].feed_id){
+                            folder.feeds[j].unreadFeedItemCount = responseData.data[i].unread_feed_item_count;
+                            break;
+                        }
+                    }
+                }
+            }
         },
 
         onSelectFolder(folder){
             if (Date.now() - this.currentExpandTick > 700) {
-                window.location.href = "/my/folder/" + folder.folder_id + "/1" + ".html";    
+                window.location.href = "/my/folder/" + folder.folder_id + ".html";    
             }
         },
 

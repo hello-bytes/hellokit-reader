@@ -12,7 +12,13 @@ export default defineNuxtConfig({
 
             //charset: 'utf-8',<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
             //viewport: 'width=device-width, initial-scale=1',
+            // <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="favicon.ico">
+            // <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+            // <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+            // <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
             "link": [
+                { rel: 'apple-touch-icon',sizes:'256x256', href: "https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/reader/favicon-256x256.png" },
+                { rel: 'icon',type:'image/x-icon', sizes:'16x16 32x32 48x48', href: "https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/reader/favicon.ico" },
             ],
             "style": [],
             "script": [
@@ -41,8 +47,8 @@ export default defineNuxtConfig({
         server: {
             proxy: {
                 '/api': {
-                  // target: 'https://hellokit.com.cn', // 线上环境
-                  target: 'http://127.0.0.1:9016', // 本地环境
+                  target: 'https://hellokit.com.cn', // 线上环境
+                  // target: 'http://127.0.0.1:9016', // 本地环境
                   "secure": false,
                 },
               },
@@ -53,8 +59,8 @@ export default defineNuxtConfig({
     nitro: {
         routeRules: {
             '/api/**': {
-                // proxy: 'https://www.hellokit.com.cn/api/**'
-                proxy: 'http://127.0.0.1:9016/api/**', // 本地环境
+                proxy: 'https://www.hellokit.com.cn/api/**'
+                // proxy: 'http://127.0.0.1:9016/api/**', // 本地环境
             }
         }
     },

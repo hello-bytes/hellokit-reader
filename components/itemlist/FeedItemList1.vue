@@ -3,15 +3,15 @@
     <div>
         <div v-for="(item, index) in feedItems" :key="index" style="margin-top:20px;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:10px;">
             <div v-if="item.thumb_url.length > 0">
-                <a class="feed_item_list_img_container">
+                <div class="feed_item_list_img_container">
                     <img class="feed_item_img" :src='item.thumb_url' />
                     <div class="feed_item_list_content_container">
-                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
+                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                         <div style="display: flex;margin-top:5px;">
                             <div style="height:30px;line-height:30px;">
                                 <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                                <span>&nbsp;·&nbsp;</span>
+                                <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
                                 <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
                             </div> 
                             <div style="flex:1"></div>
@@ -44,19 +44,19 @@
                             </el-dropdown>
                         </div>   
                     </div>
-                </a> 
+                </div> 
             </div>
             <div v-if="item.thumb_url.length == 0">
                 <a class="feed_item_list_container">
-                    <a  :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
+                    <a  :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                     <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                 </a> 
                 <div style="display: flex;margin-top:5px;">
                     <div style="height:30px;line-height:30px;">
                         <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                            <span>&nbsp;·&nbsp;</span>
-                            <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
-                        </div> 
+                        <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
+                        <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
+                    </div> 
                     <div style="flex:1"></div>
                     <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
                         <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
@@ -204,10 +204,11 @@ export default defineNuxtComponent({
             }
 
             let userFeedItemList = responseData.data;
-            for(let index in feedItems){
+            for(let i in feedItems){
                 for(let j in userFeedItemList){
-                    if (userFeedItemList[j].feed_item_id == feedItems[index].feed_item_id){
-                        feedItems[index].readState = userFeedItemList[j].readed;
+                    if (feedItems[i].feed_item_id == userFeedItemList[j].feed_item_id){
+                        feedItems[i].readState = userFeedItemList[j].readed;
+                        break;
                     }
                 }
             }
@@ -403,6 +404,9 @@ export default defineNuxtComponent({
     margin-top:0px;
     margin-bottom:2px;
     cursor: pointer;
+}
+.feed_item_list_container_title_readed{
+    color:rgb(136, 136, 136)!important;
 }
 .feed_item_list_container_desc{
     overflow: hidden;

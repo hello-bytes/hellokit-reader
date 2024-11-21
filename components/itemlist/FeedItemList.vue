@@ -3,13 +3,13 @@
     <div>
         <div v-for="(item, index) in feedItems" :key="index" style="margin-top:20px;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:10px;">
             <div v-if="item.thumb_url.length > 0">
-                <a class="feed_item_list_img_container">
+                <div class="feed_item_list_img_container">
                     <img class="feed_item_img" :src='item.thumb_url' />
                     <div class="feed_item_list_content_container">
-                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
+                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                         <div class="feed_item_list_container_extra">
                             <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                            <span>&nbsp;·&nbsp;</span>
+                            <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
                             <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
                         </div>
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
@@ -47,13 +47,15 @@
                             </el-dropdown>
                         </div>   
                     </div>
-                </a> 
+                </div> 
             </div>
             <div v-if="item.thumb_url.length == 0">
                 <a class="feed_item_list_container">
-                    <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
+                    <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                     <div>
                         <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                        <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
+                        <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
                     </div>
                     <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                 </a> 
@@ -423,6 +425,9 @@ export default defineNuxtComponent({
     margin-top:0px;
     margin-bottom:2px;
     cursor: pointer;
+}
+.feed_item_list_container_title_readed{
+    color:rgb(136, 136, 136)!important;
 }
 .feed_item_list_container_desc{
     overflow: hidden;

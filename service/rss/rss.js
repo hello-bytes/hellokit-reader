@@ -31,7 +31,7 @@ export default {
         let params = {
             feed_id:feedID,
             state:1,
-            order:1,
+            order:2,
             limit:parseInt(limit),
             offset:parseInt(offset),
         }
@@ -183,7 +183,14 @@ export default {
             feed_item_ids:feedItemID,
         };
         return helper.postJsonAsync(false, "/api/tbs/rss/v1/user/feed-item/fetch-by-ids", params);   
-    }
+    },
+
+    async addViewNumber(){
+        let params = {
+            articleid:733569166,
+        }
+        return helper.postJsonAsync(false,"/api/article/v1/update/viewnumber",params);
+    },
 
     
     

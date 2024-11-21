@@ -1,7 +1,10 @@
 <template>
     <div style="background-color: white;">
+        <Head>
+            <Title>{{ title }} - 深度探索你的兴趣世界 - https://reader.hellokit.cn/</Title>
+        </Head>
         <div style="height:50px;border-bottom: 1px solid #eee;">
-            <div class="content_wrapper" style="padding-top:3px;">
+            <div class="content_wrapper" style="padding-top:3px;display: flex;">
                 <el-tooltip v-if="!isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
                     <div @click="setReadLater" class="svg_icon_container"><el-icon :size="20" color="#757575"><ReadLaterIcon /></el-icon></div>
                 </el-tooltip>
@@ -11,7 +14,10 @@
                 <el-tooltip effect="dark" content="复制文章链接" placement="top-start" style="margin-left:5px;">
                     <div @click="copyURL" class="svg_icon_container"><el-icon :size="20" color="#009a61"><LinkIcon /></el-icon></div>
                 </el-tooltip>
-                
+                <div style="flex:1"></div>
+                <el-tooltip effect="dark" content="阅读原文" placement="top-start" style="margin-left:5px;">
+                    <div @click="readSource" class="svg_icon_container"><el-icon :size="20" color="#009a61"><OutLinkIcon /></el-icon></div>
+                </el-tooltip>
             </div>
         </div>
         <div class="content_wrapper" style="margin-top:20px;">
@@ -49,13 +55,21 @@ import LinkIcon  from '~/icons/LinkIcon.vue';
 import ReadLaterIcon from '~/icons/ReadLaterIcon.vue';
 import ReadLaterFillIcon from '~/icons/ReadLaterFillIcon.vue';
 
+import OutLinkIcon from '~/icons/OutLink.vue';
+
 import readLater from '@/service/rss/read_later.js'
 import devicebiz from '@/service/device';
 
 export default defineNuxtComponent({
     components: {
-        CollectionTag,LinkIcon,ReadLaterIcon,ReadLaterFillIcon
+        CollectionTag,LinkIcon,ReadLaterIcon,ReadLaterFillIcon,OutLinkIcon
     },
+/*
+    head(){
+        return {
+            title : "Hello",
+        }
+    },*/
 
     async asyncData() {
         const route = useRoute();
@@ -83,6 +97,7 @@ export default defineNuxtComponent({
             feed:feed,
             feedItem:feedItem,
             isReadLater : false,
+            title:feedItem.title,
         }
     },
 
@@ -139,15 +154,29 @@ export default defineNuxtComponent({
         },
 
         onGotoSourceURL(){
-            window.open(this.feedItem.feed_url);
+            window.location.href = this.feedItem.feed_url;
+        },
+
+        readSource(){
+            this.onGotoSourceURL();
         }
     }
 })
 
 definePageMeta({
-  layout: 'blank'
+  layout: 'blank',
 })
 
+/*
+useHead(
+    {
+        titleTemplate: 'sddd' + ' - %s',
+        meta: [
+            { name: 'description', content: "sss bbb ccc" },
+        ],
+    }    
+)
+*/
 </script>
 
 <style scoped>

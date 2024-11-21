@@ -80,8 +80,10 @@ export default {
         return helper.postClientJsonAsync("/api/tbs/rss/v1/folder/feed/delete", params);   
     },
     
-    async getFolderCount(serverSide,folderIDs){
+    async getFolderCount(serverSide, deviceID, folderIDs){
         let params = {
+            user_type : userbiz.isUserMode() ? 2:1,
+            device_id:deviceID,
             folder_ids:folderIDs,
         }
         return helper.postJsonAsync(serverSide, "/api/tbs/rss/v1/folder/feed/statics", params);
@@ -129,5 +131,22 @@ export default {
             read_state: readState,
         }
         return helper.postClientJsonAsync("/api/tbs/rss/v1/user/feed/set-read-state", params);
+    },
+
+    async getUserAllFolderStatics(deviceID){
+        let params = {
+            user_type : userbiz.isUserMode() ? 2:1,
+            device_id:deviceID,
+        }
+        return helper.postClientJsonAsync("/api/tbs/rss/v1/folder/all_statics", params);
+    },
+
+    async getUserFeedStatics(deviceID, feedIDList){
+        let params = {
+            user_type : userbiz.isUserMode() ? 2:1,
+            device_id:deviceID,
+            feed_id_list:feedIDList,
+        }
+        return helper.postClientJsonAsync("/api/tbs/rss/v1/user/feeditem/statics", params);
     },
 }

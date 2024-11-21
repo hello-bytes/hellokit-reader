@@ -6,21 +6,44 @@
                 <el-button ><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>
             </template>
         </el-input>
-        <p style="margin-bottom:5px;margin-top:30px;">共&nbsp;{{ totalCount }}&nbsp;个频道</p>
+        <p style="margin-bottom:5px;margin-top:30px;">共&nbsp;{{ totalCount }}&nbsp;个频道，{{ totalFeedItemCount }}&nbsp;篇文章。</p>
         <div v-for="(item, index) in feeds" :key="index" class="feed_container" >
-            <img :src='item.icon_url' />
-            <div style="flex:1;margin-left:10px;">
-                <a class="feed_name" @click="onFeedClick(item)">{{ item.name }}</a>
-                <br/>
-                <a class="feed_url" :href='item.url'>{{ item.url }}</a>
-                <p class="feed_desc">{{ item.desc }}</p>
+            <div class="feed_container_top">
+                <img :src='item.icon_url' />
+                <div style="flex:1;margin-left:10px;">
+                    <a class="feed_name" @click="onFeedClick(item)">{{ item.name }}</a>
+                    <br/>
+                    <a class="feed_url" :href='item.url'>{{ item.url }}</a>
+                    <p class="feed_desc">{{ item.desc }}</p>
+                </div>
+                <div>
+                    <el-tag v-if="false" type="primary"  style="margin-right:10px;">已订阅</el-tag>
+                    <el-button v-if="item.folderList.length == 0" @click="onSubscribeClick(item)"><el-icon :size="16"><FolderAdd /></el-icon>&nbsp;订阅</el-button>
+                    <el-tooltip v-if="item.folderList.length > 0" effect="dark" content="取消订阅或转移至其它目录" placement="right">
+                        <el-button  @click="onSubscribeClick(item)"><el-icon :size="16"><FolderChecked /></el-icon>&nbsp;修改</el-button>
+                    </el-tooltip>
+                </div>
             </div>
-            <div>
-                <el-tag v-if="false" type="primary"  style="margin-right:10px;">已订阅</el-tag>
-                <el-button v-if="item.folderList.length == 0" @click="onSubscribeClick(item)"><el-icon :size="16"><FolderAdd /></el-icon>&nbsp;订阅</el-button>
-                <el-tooltip v-if="item.folderList.length > 0" effect="dark" content="取消订阅或转移至其它目录" placement="right">
-                    <el-button  @click="onSubscribeClick(item)"><el-icon :size="16"><FolderChecked /></el-icon>&nbsp;修改</el-button>
-                </el-tooltip>
+            <div style="display: flex;padding-left:50px;margin-top:15px;">
+                <div class="feed_counter">
+                    <p>{{ wrapCountDisplay(item.follow_count) }}</p>
+                    <p>订阅</p>
+                </div>
+                <div style="flex: 1;"></div>
+                <div class="feed_counter">
+                    <p>{{ wrapCountDisplay(item.read_count) }}</p>
+                    <p>累计阅读</p>
+                </div>
+                <div style="flex: 1;"></div>
+                <div class="feed_counter" >
+                    <p>{{ wrapCountDisplay(item.feed_item_count) }}</p>
+                    <p>文章</p>
+                </div>
+                <div style="flex: 1;"></div>
+                <div class="feed_counter">
+                    <p>{{ wrapCountDisplay(item.recent_feeditem_count) }}</p>
+                    <p>最近更新</p>
+                </div>
             </div>
         </div>
         <Pager :baseURL='"/feed/page"' :activeIndex="pageNumber" :totalCount="totalCount"></Pager>
@@ -54,6 +77,7 @@ export default defineNuxtComponent({
         }
 
         let feeds = [];
+        let feedIDs = [];
         let feedsCount = 0;
 
         let feedListResponse = await rssbiz.queryFeedList(1,30,(pageNumber-1)*30);
@@ -64,16 +88,47 @@ export default defineNuxtComponent({
 
         for (let index in feeds){
             feeds[index].folderList = [];
+
+            feeds[index].feed_item_count = 0;
+            feeds[index].recent_feeditem_count = 0;
+            feeds[index].read_count = 0;
+            feeds[index].follow_count = 0;
+
+            feedIDs.push(feeds[index].feed_id);
         }
 
-        //feedsCount = 100000;
+        // 获取Feed的统计信息
+        let feedStaticsResponse = await rssbiz.queryFeedStaticsByIDs(true,feedIDs);
+        if (helper.isResultOk(feedStaticsResponse)){
+            let feedStatcisList = feedStaticsResponse.data;
+            for (let index in feedStatcisList){
+                for (let j in feeds){
+                    if(feeds[j].feed_id == feedStatcisList[index].feed_id){
+                        feeds[j].feed_item_count = feedStatcisList[index].feed_item_count;
+                        feeds[j].recent_feeditem_count = feedStatcisList[index].recent_feeditem_count;
+                        feeds[j].read_count = feedStatcisList[index].read_count;
+                        feeds[j].follow_count = feedStatcisList[index].follow_count;
+                        break;
+                    }
+                }
+            }
+        }
+
+        let totalFeedItemCount = 0;
+        let feedItemCountResponse = await rssbiz.queryFeedStaticsByIDs(true,["0"]);
+        if (helper.isResultOk(feedItemCountResponse)){
+            if(feedItemCountResponse.data.length == 1){
+                totalFeedItemCount = feedItemCountResponse.data[0].feed_item_count;
+            }
+        }
+
         return {
             feeds:feeds,
             searchFeedName:"",
             totalCount:feedsCount,
+            totalFeedItemCount : totalFeedItemCount,
             pageNumber:pageNumber,
             currentSelectFeed:null, // 供选择文件夹组件使用
-            isMobile: browser.isMobile()
         }
     },
 
@@ -106,6 +161,19 @@ export default defineNuxtComponent({
                     }
                 }
             }
+        },
+
+        wrapCountDisplay(count){
+            if (count < 1000){
+                return count
+            }else if (count < 1000 * 1000){
+                return (count / 1000).toFixed(2) + "K"
+            }else if (count < 1000 * 1000 * 1000){
+                return (count / (1000 * 1000)).toFixed(2) + "M"
+            }else if (count < 1000 * 1000 * 1000 * 1000){
+                return (count / (1000 * 1000 * 1000)).toFixed(2) + "B"
+            }
+            return "Infinity";
         },
 
         onSubscribeClick(feed){
@@ -145,15 +213,19 @@ export default defineNuxtComponent({
     border: 1px solid #eee;
     margin-bottom:15px;
     padding:20px 20px;
-    display: flex;
 }
+
 .feed_container:hover{
     /*border: 1px solid #009a61; */
 }
-.feed_container > img{
+
+.feed_container_top{
+    display: flex;   
+}
+.feed_container_top > img{
     width:50px;max-height:50px;border-radius: 5px;
 }
-.feed_container > div > a > h3{
+.feed_container_top > div > a > h3{
     margin-bottom:8px;
 }
 
@@ -175,5 +247,15 @@ export default defineNuxtComponent({
     color:rgb(158, 158, 158);
     font-size:14px;
     margin-top:10px;
+}
+.feed_counter{
+
+}
+.feed_counter > p{
+    margin-top:0px;
+    margin-bottom:0px;
+    font-size: 14px;
+    color:gray;
+    text-align: center;
 }
 </style>

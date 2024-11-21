@@ -20,8 +20,9 @@
                     <el-button type="primary" size="large">&nbsp;&nbsp;<el-icon :size="20"><FolderAdd /></el-icon>&nbsp;订&nbsp;阅&nbsp;&nbsp;&nbsp;</el-button>
                 </div>
             </div>
+            <Loading v-if="viewState == 1"></Loading>
             <div style="margin-top:30px;">
-                <FeedItemList1 @feedItemCountChange="onFeedItemCountChange" :pageMode="1" v-show="viewState == 3"  ref="feedItemListComp"></FeedItemList1>
+                <FeedItemList1 @onPageChange="onPageChange" @feedItemCountChange="onFeedItemCountChange" :pageMode="1" v-show="viewState == 3"  ref="feedItemListComp"></FeedItemList1>
             </div>
             
         </div>
@@ -41,11 +42,12 @@ import { FolderAdd } from "@element-plus/icons-vue"
 
 import emitter from "@/service/event.js";
 
+import Loading from '~/components/base/Loading.vue';
 import FeedItemList1 from "@/components/itemlist/FeedItemList1.vue";
 
 export default defineNuxtComponent({
     components: {
-        CloseBold,FolderAdd,FeedItemList1
+        CloseBold,FolderAdd,FeedItemList1,Loading
     },
 
     async asyncData() {
@@ -54,7 +56,7 @@ export default defineNuxtComponent({
             drawWidth:"70%",
             showDrawer:false,
 
-            viewState:3,
+            viewState:1,
             
             followCount:0,
             articleCount:0,
@@ -63,17 +65,17 @@ export default defineNuxtComponent({
 
     mounted(){
         emitter.on("on_popup_feed", (param) => {
+            this.viewState = 1;
             this.feed = param.feed;
+
             this.show();
-            this.loadFeedItems();
+            this.loadFeedItems(1);
             this.loadStatics();
         });
     },
 
     methods:{
         async loadStatics(){
-            let followCount = 0;
-            let feedItemCount = 0;
             let feedStaticsResponse = await rssbiz.queryFeedStaticsByIDs(false,[this.feed.feed_id]);
             if (helper.isResultOk(feedStaticsResponse)){
                 if(feedStaticsResponse.data.length == 1){
@@ -91,20 +93,26 @@ export default defineNuxtComponent({
             this.showDrawer = false;
         },
 
-        async loadFeedItems(){
-            let responseData = await rssbiz.queryFeedItemsByFeedID(false,this.feed.feed_id,30,0);
+        async loadFeedItems(pageNumber){
+            let responseData = await rssbiz.queryFeedItemsByFeedID(false,this.feed.feed_id,30,(pageNumber-1)*30);
             if (!helper.isResultOk(responseData)){
                 return;
             }
 
-            //
             let list = responseData.data.list;
             let totalCount = responseData.data.total_count;
-            this.$refs.feedItemListComp.setFeedItems(list, 1,totalCount);
+            await this.$refs.feedItemListComp.setFeedItems(list, pageNumber, totalCount);
+
+            this.viewState = 3;
         },
 
         onFeedItemCountChange(feedItemCount){
             // 
+        },
+
+        async onPageChange(obj){
+            await this.loadFeedItems(obj.pageNumber);
+            ElMessage.success("已为您加载新的内容。")
         },
 
         formatTime(time){

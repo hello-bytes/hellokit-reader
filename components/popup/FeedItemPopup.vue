@@ -1,9 +1,22 @@
 <template>
     <el-drawer v-model="showDrawer" :with-header="false" :destroy-on-close="true" :size="drawWidth">
-        <div class="close_wrapper" @click="onCloseClick">
-            <el-icon :size="30">
-                <CloseBold />
-            </el-icon>
+        <div style="height:50px;border-bottom: 1px solid #eee;">
+            <div class="content_wrapper" style="display: flex;margin-top:-15px;">
+                <div @click="onCloseClick" class="svg_icon_container"><el-icon :size="20" color="#757575"><CloseBold /></el-icon></div>
+                <el-tooltip v-if="!isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
+                    <div @click="setReadLater" class="svg_icon_container"><el-icon :size="20" color="#757575"><ReadLaterIcon /></el-icon></div>
+                </el-tooltip>
+                <el-tooltip v-if="isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
+                    <div @click="removeReadLater" class="svg_icon_container"><el-icon :size="20" color="#009a61"><ReadLaterFillIcon /></el-icon></div>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="复制文章链接" placement="top-start" style="margin-left:5px;">
+                    <div @click="copyURL" class="svg_icon_container"><el-icon :size="20" color="#009a61"><LinkIcon /></el-icon></div>
+                </el-tooltip>
+                <div style="flex:1"></div>
+                <el-tooltip effect="dark" content="阅读原文" placement="top-start" style="margin-left:5px;">
+                    <div @click="readSource" class="svg_icon_container"><el-icon :size="20" color="#009a61"><OutLinkIcon /></el-icon></div>
+                </el-tooltip>
+            </div>
         </div>
         <div style="max-width:800px;margin:0px auto;" v-if="feedItem != null && feed != null">
             <p class="feed_item_title">{{ feedItem.title }}</p>
@@ -35,9 +48,18 @@ import { CloseBold } from "@element-plus/icons-vue"
 import emitter from "@/service/event.js";
 import feedItemBiz from "@/service/rss/feedItem";
 
+import Clipboard from 'vue-clipboard3';
+
+import { CollectionTag } from "@element-plus/icons-vue"
+import LinkIcon  from '~/icons/LinkIcon.vue';
+import ReadLaterIcon from '~/icons/ReadLaterIcon.vue';
+import ReadLaterFillIcon from '~/icons/ReadLaterFillIcon.vue';
+
+import OutLinkIcon from '~/icons/OutLink.vue';
+
 export default defineNuxtComponent({
     components: {
-        CloseBold,
+        CloseBold,CollectionTag,LinkIcon,ReadLaterIcon,ReadLaterFillIcon,OutLinkIcon
     },
 
     async asyncData() {
@@ -76,12 +98,30 @@ export default defineNuxtComponent({
             this.showDrawer = false;
         },
 
+        async copyURL(){
+            const { toClipboard } = Clipboard();
+			try {
+                let url = "https://reader.hellokit.com.cn/feed-item/" + this.feedItem.feed_item_id + ".html";
+				await toClipboard(url);
+				ElMessage({
+					message: '文章地址已复制到剪贴板。',
+					type: 'success',
+				})
+			} catch (e) {
+				ElMessage.error('复制失败，可能您的浏览器不支持复制。');
+			}
+        },
+
         formatTime(time){
             return helper.getHumanTime(time);
         },
 
         onGotoSourceURL(){
             window.open(this.feedItem.feed_url);
+        },
+
+        readSource(){
+            this.onGotoSourceURL();
         }
         
     }
@@ -90,6 +130,10 @@ export default defineNuxtComponent({
 </script>
 
 <style scoped>
+
+.el-drawer__body{
+    padding-top:0px;
+}
 
 .feed_item_title{
     color:rgb(27, 27, 31);

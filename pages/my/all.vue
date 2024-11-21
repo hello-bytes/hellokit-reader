@@ -4,7 +4,7 @@
         <el-divider></el-divider>
         <Loading v-if="viewState == 1"></Loading>
         <EmptyFolder v-if="viewState == 2"></EmptyFolder>
-        <AllDoneFolder v-if="viewState == 3"></AllDoneFolder>
+        <AllDoneFolder @viewAllFeedItem="viewAllFeedItem" v-if="viewState == 3"></AllDoneFolder>
         <FeedItemList @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="1" :pageMode="1" v-show="viewState == 4"  ref="feedItemListComp"></FeedItemList>
     </div>
 </template>
@@ -32,6 +32,7 @@ export default defineNuxtComponent({
 
     async asyncData() {
         return {
+            showAllFeedItem:false,
             viewState : 1,
             totalCount : 0,
         }
@@ -43,7 +44,11 @@ export default defineNuxtComponent({
 
     methods: {
         async loadFeedItems(pageNumber){
-            let responseData = await rssbiz.getUserFeedItems(devicebiz.getDeviceID(),1, 30, (pageNumber-1) * 30);
+            let readState = 1;
+            if (this.showAllFeedItem){
+                readState = 0;
+            }
+            let responseData = await rssbiz.getUserFeedItems(devicebiz.getDeviceID(),readState, 30, (pageNumber-1) * 30);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -88,6 +93,13 @@ export default defineNuxtComponent({
                 this.viewState = 3;
             }
         },
+
+        viewAllFeedItem(){
+            this.viewState = 1;
+            this.showAllFeedItem = true;
+            
+            this.loadFeedItems(1);
+        }
     }
 });
 

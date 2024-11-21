@@ -101,19 +101,19 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ### 本地打包，服务器（Ubuntu）运行
 
 ```
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9 .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15 .
 
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9
+docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15
 
 
 -------------------------
 
 
-docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9
+docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15
 
 docker stop website-hellokit-reader && docker rm website-hellokit-reader
 
-docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.9
+docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15
 ```
 
 docker stop hellokit-reader && docker rm hellokit-reader
@@ -200,20 +200,15 @@ https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/brand-font/WsRmSf
 - 文字图标生成：https://github.com/airyland/logo.surf/tree/main
 
 
-
-
-
-
 http://localhost:3000/rss/subscript/124/291717071253934080.html
 
 
 ## 待办
 
-- 右侧滑动出来的页面，增加Toolbar
-- 最左侧的文件夹，Feed支持支持Feed总数
-- Folder,Feed全被标记为已读时，view all应该显示已读的。
+- 设置页面，方块有：文件夹管理，支持删除文件夹，创建文件夹等逻辑；
+- 设置页面，增加通用设置，包括：点文章标题跳新页面还是右侧弹出，是不是右侧弹出就算已读，
 - 文章页，支持扫码手机阅读。
-- 设置页面，方块有：文件夹管理，
+
 
 
 已完成
@@ -222,3 +217,12 @@ http://localhost:3000/rss/subscript/124/291717071253934080.html
 - 上面链接，支持全部已读
 - /my/folder/300874475715563520/1.html 及  /my/feed/299010652503150592 全部已读后，支持查看所有；
 - 右侧滑动出来的页面，最下面支持阅读原文
+- 右侧滑出来的Feed的文章list，需要支持分页
+- + rss 列出来的Feed list ，要显示其文章数和Follow数
+- + rss 列出来所有的FeedCount和文章数
+- 右侧滑动出来的页面，增加Toolbar
+- 最左侧的文件夹，Feed支持支持Feed总数
+- Folder,Feed全被标记为已读时，view all应该显示已读的。
+- 修改HTML title
+- /my/folder/300874776560406528/1.html, 文件夹页面，直接展开文件夹
+- /feed/page/1.html ，点了公众号以后，没有loading的页面。

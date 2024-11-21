@@ -3,7 +3,7 @@
         <FolderBar @onSetAllReaded="onSetAllReaded" @onRefreshItems="onRefreshFeedItems" :folder="folder"></FolderBar>
         <Loading v-if="viewState == 1"></Loading>
         <EmptyFolder v-if="viewState == 2" :folder="folder"></EmptyFolder>
-        <AllDoneFolder v-if="viewState == 3"></AllDoneFolder>
+        <AllDoneFolder @viewAllFeedItem="viewAllFeedItem" v-if="viewState == 3"></AllDoneFolder>
         <FeedItemList v-show="viewState == 4"  @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange":readedMode="1" :pageMode="1"  ref="feedItemListComp"></FeedItemList>
     </div>
 </template>
@@ -33,7 +33,8 @@ export default defineNuxtComponent({
         return {
             folder : null,
             folderID : folderID,
-            viewState : 1
+            viewState : 1,
+            showAllFeedItem : false,
         }
     },
 
@@ -55,7 +56,12 @@ export default defineNuxtComponent({
                 pageNumber = 1;
             }
 
-            let responseData = await rssbiz.getUserFeedItemsV2(devicebiz.getDeviceID(),this.folderID,1,30, (pageNumber-1) * 30);
+            let readState = 1;
+            if (this.showAllFeedItem){
+                readState = 0;
+            }
+
+            let responseData = await rssbiz.getUserFeedItemsV2(devicebiz.getDeviceID(),this.folderID,readState,30, (pageNumber-1) * 30);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -74,7 +80,7 @@ export default defineNuxtComponent({
         },
 
         async checkFeedCount(){
-            let responseData = await rssfolder.getFolderCount(false, [this.folderID]);
+            let responseData = await rssfolder.getFolderCount(false, devicebiz.getDeviceID(),[this.folderID]);
             if (helper.isResultOk(responseData)){
                 let staticsFolderList = responseData.data;
                 if(staticsFolderList.length == 1){
@@ -111,6 +117,13 @@ export default defineNuxtComponent({
             await this.loadFeedItems(obj.pageNumber);
             ElMessage.success("已为您加载新的内容。");
         },
+
+        viewAllFeedItem(){
+            this.viewState = 1;
+            this.showAllFeedItem = true;
+            
+            this.loadFeedItems(1);
+        }
     }
 });
 
