@@ -3,65 +3,64 @@
     <div>
         <div v-for="(item, index) in feedItems" :key="index" style="margin-top:20px;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:10px;">
             <div v-if="item.thumb_url.length > 0">
-                <div class="feed_item_list_img_container">
-                    <img class="feed_item_img" :src='item.thumb_url' />
-                    <div class="feed_item_list_content_container">
-                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
-                        <div class="feed_item_list_container_extra">
-                            <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                            <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
-                            <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
+                <div>
+                    <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                    <div class="feed_item_list_img_container">
+                        <img class="feed_item_img" :src='item.thumb_url' />
+                        <div class="feed_item_list_content_container">
+                            <a @click="showFeedItem(item)"  class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
+                            <p class="feed_item_list_container_desc">{{ item.desc }}</p>
+                            <div style="display: flex;margin-top:5px;">
+                                <div style="height:30px;line-height:30px;">
+                                    <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                                    <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
+                                    <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
+                                </div> 
+                                <div style="flex:1"></div>
+                                <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
+                                    <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
+                                </el-tooltip>
+                                <span>&nbsp;</span>
+                                <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
+                                    <div @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                                </el-tooltip>
+                                <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
+                                    <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                                </el-tooltip>
+                                <span>&nbsp;</span>
+                                <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
+                                    <div @click="setReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><CollectionTag /></el-icon></div>
+                                </el-tooltip>
+                                <el-tooltip v-if="item.isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
+                                    <div @click="removeReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#009a61"><CollectionTag /></el-icon></div>
+                                </el-tooltip>
+                                <span>&nbsp;</span>
+                                <el-dropdown placement="bottom-end">
+                                    <div class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><More /></el-icon></div>
+                                    <template #dropdown>
+                                        <el-dropdown-menu>
+                                            <el-dropdown-item><a class="article_link" @click="onShareArticle" target="_blank"><el-icon :size="18"><Share /></el-icon>分享给朋友</a></el-dropdown-item>
+                                            <el-dropdown-item><a class="article_link" :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank"><el-icon :size="18"><FullScreen /></el-icon>在新窗口打开</a></el-dropdown-item>
+                                            <el-dropdown-item><a class="article_link" :href='item.feed_url' target="_blank"><el-icon :size="18"><Paperclip /></el-icon>原文链接</a></el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </template>
+                                </el-dropdown>
+                            </div>   
                         </div>
-                        <p class="feed_item_list_container_desc">{{ item.desc }}</p>
-                        <div style="display: flex;margin-top:5px;">
-                            <div style="height:30px;line-height:30px;">
-                                <a target="_blank" :href='item.feed.url' class="feed_item_list_container_feed">{{ item.feed == null ? "" : item.feed.name }}</a>
-                            </div> 
-                            <div style="flex:1"></div>
-                            <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
-                                <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
-                            </el-tooltip>
-                            <span>&nbsp;</span>
-                            <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
-                                <div @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
-                            </el-tooltip>
-                            <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
-                                <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
-                            </el-tooltip>
-                            <span>&nbsp;</span>
-                            <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
-                                <div @click="setReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><CollectionTag /></el-icon></div>
-                            </el-tooltip>
-                            <el-tooltip v-if="item.isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
-                                <div @click="removeReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#009a61"><CollectionTag /></el-icon></div>
-                            </el-tooltip>
-                            <span>&nbsp;</span>
-                            <el-dropdown placement="bottom-end">
-                                <div class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><More /></el-icon></div>
-                                <template #dropdown>
-                                    <el-dropdown-menu>
-                                        <el-dropdown-item><a class="article_link" @click="onShareArticle" target="_blank"><el-icon :size="18"><Share /></el-icon>分享给朋友</a></el-dropdown-item>
-                                        <el-dropdown-item><a class="article_link" :href='item.feed_url' target="_blank"><el-icon :size="18"><Paperclip /></el-icon>原文链接</a></el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </template>
-                            </el-dropdown>
-                        </div>   
-                    </div>
-                </div> 
+                    </div> 
+                </div>
             </div>
             <div v-if="item.thumb_url.length == 0">
+                <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
                 <a class="feed_item_list_container">
-                    <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
-                    <div>
-                        <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                        <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
-                        <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
-                    </div>
+                    <a @click="showFeedItem(item)" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                     <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                 </a> 
                 <div style="display: flex;margin-top:5px;">
                     <div style="height:30px;line-height:30px;">
-                        <a target="_blank" :href='item.feed.url'  class="feed_item_list_container_feed">{{ item.feed == null ? "" : item.feed.name }}</a>
+                        <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                        <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
+                        <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
                     </div> 
                     <div style="flex:1"></div>
                     <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
@@ -87,6 +86,7 @@
                         <template #dropdown>
                             <el-dropdown-menu>
                                 <el-dropdown-item><a class="article_link" @click="onShareArticle" target="_blank"><el-icon :size="18"><Share /></el-icon>分享给朋友</a></el-dropdown-item>
+                                <el-dropdown-item><a class="article_link" :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank"><el-icon :size="18"><FullScreen /></el-icon>在新窗口打开</a></el-dropdown-item>
                                 <el-dropdown-item><a class="article_link" :href='item.feed_url' target="_blank"><el-icon :size="18"><Paperclip /></el-icon>原文链接</a></el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
@@ -102,10 +102,14 @@
 
 <script>
 
-// 这个页面做为某一个Feed的Feed Item List合集展示，可以用在某个目录的Feed流，也可以用在某个特定时区的Feed流
+// 这个页面做为【我的所有】【我的文件夹】【我的Feed】的Feed Item List合集展示
+// 不需要考虑SEO
+
+// :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank"
 
 import helper from '@/utils/helper.js'
 import rssbiz from '@/service/rss/rss.js'
+import feedItem from '@/service/rss/feedItem.js'
 import readLater from '@/service/rss/read_later.js'
 
 import browser from '@/service/browser';
@@ -164,6 +168,7 @@ export default defineNuxtComponent({
                 await this.loadReadedFlag(feedItems);
                 await this.loadReadLaterFlag(feedItems);
                 await this.loadFeedForFeedItem(feedItems);
+                await this.loadAuthorForFeedItem(feedItems);
 
                 let sortFeedItems = [];
                 for(let i in feedItemIDs){
@@ -186,6 +191,7 @@ export default defineNuxtComponent({
             await this.loadReadedFlag(feedItems);
             await this.loadReadLaterFlag(feedItems);
             await this.loadFeedForFeedItem(feedItems)
+            await this.loadAuthorForFeedItem(feedItems);
 
             this.currentPage = pageNumber;
             this.feedItems = feedItems;
@@ -279,6 +285,31 @@ export default defineNuxtComponent({
                             if (feedList[j].feed_id = feedItems[index].feed_id){
                                 feedItems[index].feed = feedList[j];
                             }
+                        }
+                    }
+                }
+            }
+        },
+
+        async loadAuthorForFeedItem(feedItems){
+            let feedItemIds = [];
+            for(let index in feedItems){
+                feedItems[index].authorList = [];
+                if(this.isFeedIdExist(feedItems[index].feed_item_id, feedItemIds)){
+                }else{
+                    feedItemIds.push(feedItems[index].feed_item_id);
+                }
+            }
+
+            let responseData = await feedItem.fetchAuthor( false,feedItemIds);
+            console.log(responseData);
+            if (helper.isResultOk(responseData)){
+                let authorList = responseData.data;
+                for(let i in authorList){
+                    for(let j in feedItems){
+                        if (authorList[i].feed_item_id == feedItems[j].feed_item_id){
+                            feedItems[j].authorList.push(authorList[i]);
+                            break;
                         }
                     }
                 }
@@ -436,7 +467,7 @@ export default defineNuxtComponent({
     line-height: 20px;
     overflow: hidden;
     word-break: break-word;
-    margin-top: 4px;
+    margin-top: 8px;
     margin-bottom:4px;
     letter-spacing:0.25px;
     -webkit-box-orient:vertical;
@@ -470,6 +501,18 @@ export default defineNuxtComponent({
 .feed_item_img{
     width:150px;
     max-height: 100px;
+}
+.feed_name_img{
+    display: flex;
+    align-items: center;
+    line-height: 12px;
+    font-size:14px;
+    color: rgb(158, 158, 158);
+    margin-bottom:8px;
+}
+.feed_name_img > img{
+    height:14px;
+    margin-right:3px;
 }
 </style>
 

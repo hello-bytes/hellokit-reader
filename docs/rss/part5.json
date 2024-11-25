@@ -1,0 +1,24 @@
+[
+    {
+        "name":"钛媒体",
+        "url":"https://www.tmtpost.com/",
+        "feed_url":"http://www.tmtpost.com/rss.xml",
+        "desc":"钛媒体致力于成为全球财经科技信息服务平台，形成了“新媒体、全球技术专家网络、科技IP与创意产品服务、科技股数据服务”四大业务板块和“钛媒体国际”业务布局，现已成为国际领先、国内极具影响力的财经信息服务商和新媒体标杆之一。",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/tmtpost.ico",
+        "language":"zh-cn"
+    },{
+        "name":"量子位",
+        "url":"https://www.qbitai.com/",
+        "feed_url":"https://www.qbitai.com/feed",
+        "desc":"追踪人工智能新趋势，报道科技行业新突破。",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/qbitai.ico",
+        "language":"zh-cn"
+    },{
+        "name":"极客公园",
+        "url":"https://www.geekpark.net/",
+        "feed_url":"http://www.geekpark.net/rss",
+        "desc":"极客公园聚焦互联网领域，跟踪新鲜的科技新闻动态，关注极具创新精神的科技产品。",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/geekpark.png",
+        "language":"zh-cn"
+    }
+]

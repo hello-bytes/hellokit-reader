@@ -13,7 +13,5 @@ export default {
         }
 
         return deviceType.isMobile(userAgent);
-        //console.log(deviceType);
-        //return true;
     }
 }

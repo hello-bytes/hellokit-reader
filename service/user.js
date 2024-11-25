@@ -13,7 +13,6 @@ export default {
 
     getNickName(){
         let mstObj = helper.getMst();
-        //console.log(mstObj);
         if (mstObj == null){
             return "";
         }

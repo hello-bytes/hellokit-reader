@@ -49,9 +49,6 @@ export default defineNuxtComponent({
     },
 
     mounted(){
-        //console.log(this.totalCount);
-        //console.log(parseInt(this.totalCount / this.countPerPage));
-        //console.log(parseInt(this.totalCount / this.countPerPage) + (this.totalCount % this.countPerPage == 0 ? 0 : 1));
     },
 
 })

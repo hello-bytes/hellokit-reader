@@ -101,114 +101,47 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ### 本地打包，服务器（Ubuntu）运行
 
 ```
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15 .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.18 .
 
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15
+docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.18
 
 
 -------------------------
 
 
-docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15
+docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.18
 
 docker stop website-hellokit-reader && docker rm website-hellokit-reader
 
-docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.15
+docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.18
 ```
 
 docker stop hellokit-reader && docker rm hellokit-reader
 
-
-### 本地打包，本地运行（Mac Arm64）
-
-```
-docker build -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-nuxt-page:v1.0.1 .
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-nuxt-page:v1.0.1
-
---- 
-
-docker stop hellokit-nuxt-app && docker rm hellokit-nuxt-app
-
-docker run -p 3000:3000 --name "hellokit-nuxt-app" registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-nuxt-page:v1.0.1
-
-
-```
-
-
-```
-# 基于Node.js官方镜像
-FROM node:lts-alpine
- 
-# 设置工作目录
-WORKDIR /app
- 
-# 复制`package.json`和`package-lock.json`（如果有）
-COPY package*.json ./
- 
-# 安装项目依赖
-RUN npm install
- 
-# 复制项目文件到工作目录
-COPY . .
- 
-# 构建Nuxt.js应用
-RUN yarn run build
- 
-```
-
-"type": "module",
-
-
-## 已完成转换的工具
-
-/app/tiobe
-/og-meta => /app/og-meta
-/browser => /app/browser
-/clearxml => /app/clearxml
-/url-encode => /app/url-encode
-/url-decode => /app/url-decode
 
 
 ## 使用的开源库
 
 - https://github.com/cnwhy/nzh
 
+## COPY的开源项目
+
+- 文字图标生成：https://github.com/airyland/logo.surf/tree/main
+
 ## yarn add 之后修复
 
 cp vue3-clipboard.package.json ./node_modules/vue-clipboard3/package.json
 
 
-
-
-
-
-/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
-@font-face {
-  font-family: "brandfont";src: url("https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/brand-font/WsRmSfnlhKQE.woff2") format("woff2"),
-  url("https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/brand-font/WsRmSfnlhKQE.woff") format("woff");
-  font-display: swap;
-}
-
-
-https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/brand-font/WsRmSfnlhKQE.woff2
-
-https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/brand-font/WsRmSfnlhKQE.woff2
-
-
-基于开源项目
-
-- 文字图标生成：https://github.com/airyland/logo.surf/tree/main
-
-
-http://localhost:3000/rss/subscript/124/291717071253934080.html
-
-
 ## 待办
 
+- 支持显示作者
+- 支持搜索RSS
+- 后台可以查看每个RSS的文章
+- 后台可以查看RSS用户
 - 设置页面，方块有：文件夹管理，支持删除文件夹，创建文件夹等逻辑；
 - 设置页面，增加通用设置，包括：点文章标题跳新页面还是右侧弹出，是不是右侧弹出就算已读，
 - 文章页，支持扫码手机阅读。
-
 
 
 已完成
@@ -226,3 +159,5 @@ http://localhost:3000/rss/subscript/124/291717071253934080.html
 - 修改HTML title
 - /my/folder/300874776560406528/1.html, 文件夹页面，直接展开文件夹
 - /feed/page/1.html ，点了公众号以后，没有loading的页面。
+- + RSS页面中，RSS的排序 (使用last_publish)排序
+- 不需要SEO的页面，点标题统一在右侧弹出；

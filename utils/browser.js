@@ -574,8 +574,6 @@ function getBrowserInfo() {
 	  _this.engine = 'Blink';
 	}
 
-	//console.log(_this);
-	//return _this.browser + '（版本: ' + _this.browserVersion + '&nbsp;&nbsp;内核: ' + _this.engine + '）'
 	return {
 		browser : _this.browser,
 		browserVersion : _this.browserVersion,

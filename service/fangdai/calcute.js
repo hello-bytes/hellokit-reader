@@ -1,8 +1,6 @@
 var calcute = {
     //商贷-公积金贷款统一函数
     singleDk: function (type, num, year, lilv) {
-        console.log(type, num, year, lilv);
-
         var _this = this;
         // type:1等额本息 2等额本金，num 贷款金额 year贷款年限，lilv：贷款基准利率
         if (type == 1) {
@@ -146,7 +144,7 @@ var calcute = {
             if (realmonth > 12) {
                 realmonth = realmonth - 12
             }
-            //console.log(realmonth)
+            
             //每月应还利息=贷款本金×月利率×〔(1+月利率)^还款月数-(1+月利率)^(还款月序号-1)〕÷〔(1+月利率)^还款月数-1〕
             var yuelixi = dknum * monthlilv * (Math.pow((1 + monthlilv), month) - Math.pow((1 + monthlilv), i - 1)) / (Math.pow((1 + monthlilv), month) - 1);
             //每月应还本金=贷款本金×月利率×(1+月利率)^(还款月序号-1)÷〔(1+月利率)^还款月数-1〕

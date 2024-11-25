@@ -3,7 +3,7 @@
 import article from "@/service/article"
 
 export default function (context) {
-    //console.log(process);
+    
     // @ts-ignore
 
 

@@ -1,0 +1,17 @@
+,{
+        "name":"澎湃新闻",
+        "url":"https://www.thepaper.cn/",
+        "feed_url":"https://www.thepaper.cn/rss/toutiao.xml",
+        "desc":"",
+        "icon_url":"",
+        "language":"zh-cn"
+    }
+
+    ,{
+        "name":"新华网/新华社新闻",
+        "url":"",
+        "feed_url":"http://news.cn/rss/china.xml",
+        "desc":"",
+        "icon_url":"",
+        "language":"zh-cn"
+    }

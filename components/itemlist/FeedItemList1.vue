@@ -6,7 +6,7 @@
                 <div class="feed_item_list_img_container">
                     <img class="feed_item_img" :src='item.thumb_url' />
                     <div class="feed_item_list_content_container">
-                        <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
+                        <a @click="showFeedItem(item)"  class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                         <div style="display: flex;margin-top:5px;">
                             <div style="height:30px;line-height:30px;">
@@ -38,6 +38,7 @@
                                 <template #dropdown>
                                     <el-dropdown-menu>
                                         <el-dropdown-item><a class="article_link" @click="onShareArticle" target="_blank"><el-icon :size="18"><Share /></el-icon>分享给朋友</a></el-dropdown-item>
+                                        <el-dropdown-item><a class="article_link" :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank"><el-icon :size="18"><FullScreen /></el-icon>在新窗口打开</a></el-dropdown-item>
                                         <el-dropdown-item><a class="article_link" :href='item.feed_url' target="_blank"><el-icon :size="18"><Paperclip /></el-icon>原文链接</a></el-dropdown-item>
                                     </el-dropdown-menu>
                                 </template>
@@ -48,7 +49,7 @@
             </div>
             <div v-if="item.thumb_url.length == 0">
                 <a class="feed_item_list_container">
-                    <a  :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
+                    <a  @click="showFeedItem(item)" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                     <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                 </a> 
                 <div style="display: flex;margin-top:5px;">
@@ -81,6 +82,7 @@
                         <template #dropdown>
                             <el-dropdown-menu>
                                 <el-dropdown-item><a class="article_link" @click="onShareArticle" target="_blank"><el-icon :size="18"><Share /></el-icon>分享给朋友</a></el-dropdown-item>
+                                <el-dropdown-item><a class="article_link" :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank"><el-icon :size="18"><FullScreen /></el-icon>在新窗口打开</a></el-dropdown-item>
                                 <el-dropdown-item><a class="article_link" :href='item.feed_url' target="_blank"><el-icon :size="18"><Paperclip /></el-icon>原文链接</a></el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
@@ -97,8 +99,9 @@
 
 <script>
 
-// <el-icon><Paperclip /></el-icon><el-icon><CollectionTag /></el-icon>
-// 这个页面做为某一个Feed的Feed Item List合集展示，可以用在某个目录的Feed流，也可以用在某个特定时区的Feed流
+
+// 这个页面做为某一个Feed的Feed Item List合集展示
+// 不需要考虑SEO
 
 
 import helper from '@/utils/helper.js'
@@ -130,7 +133,7 @@ export default defineNuxtComponent({
     },
 
     components: {
-        Check,Refresh,Select,Share,Reading,More,Link,Paperclip,FullScreen,CollectionTag
+        Check,Refresh,Select,Share,Reading,More,Link,Paperclip,FullScreen,CollectionTag,FullScreen
     },
 
     async asyncData() {

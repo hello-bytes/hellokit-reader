@@ -6,55 +6,58 @@
             <el-divider></el-divider>
             <div v-for="(item, index) in feedItems" :key="index" class="feed_item_root_container">
                 <div v-if="item.thumb_url.length > 0">
-                    <div class="feed_item_list_img_container">
-                        <img class="feed_item_img" :src='item.thumb_url' />
-                        <div class="feed_item_list_content_container">
-                            <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
-                            <div class="feed_item_list_container_extra">
-                                <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                                <span>&nbsp;·&nbsp;</span>
-                                <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
+                    <div>
+                        <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><div style="flex:1"></div><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                        <div class="feed_item_list_img_container">
+                            <img class="feed_item_img" :src='item.thumb_url' />
+                            <div class="feed_item_list_content_container">
+                                <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
+                                <div class="feed_item_list_container_extra">
+                                    <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                                    <span>&nbsp;·&nbsp;</span>
+                                    <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
+                                </div>
+                                <p class="feed_item_list_container_desc">{{ item.desc }}</p>
+                                <div style="display: flex;margin-top:5px;">
+                                    <div style="height:30px;line-height:30px;">
+                                        <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                                        <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
+                                        <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
+                                    </div> 
+                                    <div style="flex:1"></div>
+                                    <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
+                                        <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
+                                    </el-tooltip>
+                                    <span>&nbsp;</span>
+                                    <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
+                                        <div  @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                                    </el-tooltip>
+                                    <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
+                                        <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
+                                    </el-tooltip>
+                                    <span>&nbsp;</span>
+                                    <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
+                                        <div @click="setReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><CollectionTag /></el-icon></div>
+                                    </el-tooltip>
+                                    <el-tooltip v-if="item.isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
+                                        <div @click="removeReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#009a61"><CollectionTag /></el-icon></div>
+                                    </el-tooltip>
+                                </div>   
                             </div>
-                            <p class="feed_item_list_container_desc">{{ item.desc }}</p>
-                            <div style="display: flex;margin-top:5px;">
-                                <div style="height:30px;line-height:30px;">
-                                    <a target="_blank" :href='item.feed.url' class="feed_item_list_container_feed">{{ item.feed == null ? "" : item.feed.name }}</a>
-                                </div> 
-                                <div style="flex:1"></div>
-                                <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
-                                    <div @click="showFeedItem(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Reading /></el-icon></div>
-                                </el-tooltip>
-                                <span>&nbsp;</span>
-                                <el-tooltip v-if="item.readState == 1" effect="dark" content="标记为已读" placement="top-start">
-                                    <div  @click="onSetFeedItemState(item,2)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
-                                </el-tooltip>
-                                <el-tooltip v-if="item.readState != 1" effect="dark" content="标记为未读" placement="top-start">
-                                    <div  @click="onSetFeedItemState(item,1)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><Check /></el-icon></div>
-                                </el-tooltip>
-                                <span>&nbsp;</span>
-                                <el-tooltip v-if="!item.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
-                                    <div @click="setReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#757575"><CollectionTag /></el-icon></div>
-                                </el-tooltip>
-                                <el-tooltip v-if="item.isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
-                                    <div @click="removeReadLater(item)" class="svg_icon_container_mini"><el-icon :size="20" color="#009a61"><CollectionTag /></el-icon></div>
-                                </el-tooltip>
-                                <span>&nbsp;</span>
-                                
-                            </div>   
-                        </div>
-                    </div> 
+                        </div> 
+                    </div>
                 </div>
                 <div v-if="item.thumb_url.length == 0">
                     <div class="feed_item_list_container">
+                        <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><div style="flex:1"></div><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
                         <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
-                        <div>
-                            <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
-                        </div>
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                     </div> 
                     <div style="display: flex;margin-top:5px;">
                         <div style="height:30px;line-height:30px;">
-                            <a target="_blank" :href='item.feed.url'  class="feed_item_list_container_feed">{{ item.feed == null ? "" : item.feed.name }}</a>
+                            <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
+                            <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
+                            <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
                         </div> 
                         <div style="flex:1"></div>
                         <el-tooltip effect="dark" content="快速阅读此文章" placement="top-start">
@@ -319,6 +322,18 @@ export default defineNuxtComponent({
 .feed_item_img{
     width:150px;
     max-height: 100px;
+}
+.feed_name_img{
+    display: flex;
+    align-items: center;
+    line-height: 12px;
+    font-size:14px;
+    color: rgb(158, 158, 158);
+    margin-bottom:8px;
+}
+.feed_name_img > img{
+    height:14px;
+    margin-right:3px;
 }
 </style>
 

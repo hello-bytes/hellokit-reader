@@ -184,7 +184,6 @@ export default defineNuxtComponent({
         },
 
         cancelDeleteFolder(){
-            // console.log("sfdaf");deleteFolder
         },
 
         deleteFolderByFolderID(folderID){

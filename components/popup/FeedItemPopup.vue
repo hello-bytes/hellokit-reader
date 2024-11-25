@@ -13,6 +13,9 @@
                     <div @click="copyURL" class="svg_icon_container"><el-icon :size="20" color="#009a61"><LinkIcon /></el-icon></div>
                 </el-tooltip>
                 <div style="flex:1"></div>
+                <el-tooltip effect="dark" content="全屏阅读" placement="top-start" style="margin-left:5px;">
+                    <div @click="readFullScreen" class="svg_icon_container"><el-icon :size="20" ><FullScreen /></el-icon></div>
+                </el-tooltip>
                 <el-tooltip effect="dark" content="阅读原文" placement="top-start" style="margin-left:5px;">
                     <div @click="readSource" class="svg_icon_container"><el-icon :size="20" color="#009a61"><OutLinkIcon /></el-icon></div>
                 </el-tooltip>
@@ -43,7 +46,7 @@
 
 import helper from '@/utils/helper.js'
 import browser from '@/service/browser';
-import { CloseBold } from "@element-plus/icons-vue"
+import { CloseBold, FullScreen } from "@element-plus/icons-vue"
 
 import emitter from "@/service/event.js";
 import feedItemBiz from "@/service/rss/feedItem";
@@ -59,7 +62,7 @@ import OutLinkIcon from '~/icons/OutLink.vue';
 
 export default defineNuxtComponent({
     components: {
-        CloseBold,CollectionTag,LinkIcon,ReadLaterIcon,ReadLaterFillIcon,OutLinkIcon
+        CloseBold,CollectionTag,LinkIcon,ReadLaterIcon,ReadLaterFillIcon,OutLinkIcon,FullScreen
     },
 
     async asyncData() {
@@ -122,6 +125,11 @@ export default defineNuxtComponent({
 
         readSource(){
             this.onGotoSourceURL();
+        },
+
+        readFullScreen(){
+            let url = "https://reader.hellokit.com.cn/feed-item/" + this.feedItem.feed_item_id + ".html";
+            window.open(url);
         }
         
     }

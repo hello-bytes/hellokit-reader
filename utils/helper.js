@@ -89,9 +89,6 @@ export default {
     // ===================== 网络请求 =========================
     async postClientJsonAsync(url, data){
         return new Promise((resolve, reject) => {
-            //url = this.wrapURL(url);
-            //console.log(url);
-
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open("POST",url,true);
 
@@ -168,14 +165,6 @@ export default {
                 },
 
                 onResponse({ request, response, options }) {
-                    //console.log("onResponse========");
-                    //console.log("data : " + response._data);
-                    // try{
-                    //     // console.log(JSON.parse(response._data)); 
-                    // }catch(e){
-                    //     console.log(err);
-                    //     console.log("----------");
-                    // }
                     try{
                         resolve({ errorType : 0, code : 0, data : response._data}); 
                     }catch(e){
@@ -185,7 +174,6 @@ export default {
 
                 onResponseError({ request, response, options }) {
                     // 处理响应错误
-                    //console.log("==aaaaaa======");
                     resolve({ errorType : 1, code : 500, data :null}); 
                 }
             });            
@@ -261,7 +249,6 @@ export default {
 
     async getToolInfo(toolID){
         let responseData = await this.postJsonAsync("/api/article/v2/get",{articleid:parseInt(toolID)});
-        //console.log(responseData);
         if(!this.isResultOk(responseData)){
             return null;
         }
@@ -306,6 +293,10 @@ export default {
         var thisDate = new Date(date)
         //thisDate.setHours(thisDate.getHours())
         return this.dateFormat("YYYY-mm-dd HH:MM:SS",thisDate)
+    },
+
+    getHumanTime_zh(date){
+        return this.dateFormat("YYYY年mm月dd日 HH:MM:SS",date);
     },
     
     getHumanTimeEx(dateObj){

@@ -1,12 +1,12 @@
 <template>
     <div style="width:800px;margin:0px auto;padding-top:35px;">
         <h2>搜索您想看的频道</h2>
-        <el-input v-model="searchFeedName" size="large" placeholder="" class="input-with-select">
+        <el-input v-model="text" size="large" placeholder="" class="input-with-select">
             <template #append>
-                <el-button @click="onSearchClick" ><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>
+                <el-button @click="onSearchClick"><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>
             </template>
         </el-input>
-        <p style="margin-bottom:5px;margin-top:30px;">共&nbsp;{{ totalCount }}&nbsp;个频道，{{ totalFeedItemCount }}&nbsp;篇文章。</p>
+        <p style="margin-bottom:5px;margin-top:30px;">共&nbsp;{{ totalCount }}&nbsp;条结果</p>
         <div v-for="(item, index) in feeds" :key="index" class="feed_container" >
             <div class="feed_container_top">
                 <img :src='item.icon_url' />
@@ -46,27 +46,18 @@
                 </div>
             </div>
         </div>
-        <Pager :baseURL='"/feed/page"' :activeIndex="pageNumber" :totalCount="totalCount"></Pager>
+        <el-pagination background layout="prev, pager, next" @current-change="handlePageChange" :page-size="30" :total="totalCount" />
     </div>
 </template>
 
 <script>
 
-
-import browser from '@/service/browser';
-import devicebiz from '@/service/device';
-import rssbiz from '@/service/rss/rss.js';
-import folder from '@/service/rss/folder.js';
-
 import {Search,FolderAdd,FolderChecked} from "@element-plus/icons-vue"
-
-import Pager from "@/components/base/Pager.vue"
-
 import emitter from "@/service/event.js";
-
+import rssbiz from '@/service/rss/rss.js';
 export default defineNuxtComponent({
     components: {
-        Search,Pager,FolderAdd,FolderChecked
+        Search,FolderAdd,FolderChecked
     },
 
     async asyncData() {
@@ -75,12 +66,15 @@ export default defineNuxtComponent({
         if (pageNumber < 1) {
             pageNumber = 1;
         }
+        let text = route.params.text;
+        if (text == null || text == undefined) {
+            text = "";
+        }
 
         let feeds = [];
         let feedIDs = [];
         let feedsCount = 0;
-
-        let feedListResponse = await rssbiz.queryFeedList(2, 30, (pageNumber-1) * 30);
+        let feedListResponse = await rssbiz.searchFeed(true, text, 2, 30 , 0);
         if(helper.isResultOk(feedListResponse)){
             feeds = feedListResponse.data.list;
             feedsCount = feedListResponse.data.total_count;
@@ -114,21 +108,13 @@ export default defineNuxtComponent({
             }
         }
 
-        let totalFeedItemCount = 0;
-        let feedItemCountResponse = await rssbiz.queryFeedStaticsByIDs(true,["0"]);
-        if (helper.isResultOk(feedItemCountResponse)){
-            if(feedItemCountResponse.data.length == 1){
-                totalFeedItemCount = feedItemCountResponse.data[0].feed_item_count;
-            }
-        }
-
         return {
             feeds:feeds,
-            searchFeedName:"",
+            text:text,
+            urlText:text,
             totalCount:feedsCount,
-            totalFeedItemCount : totalFeedItemCount,
-            pageNumber:pageNumber,
-            currentSelectFeed:null, // 供选择文件夹组件使用
+            totalFeedItemCount : 0,
+            pageNumber:1,
         }
     },
 
@@ -163,19 +149,6 @@ export default defineNuxtComponent({
             }
         },
 
-        wrapCountDisplay(count){
-            if (count < 1000){
-                return count
-            }else if (count < 1000 * 1000){
-                return (count / 1000).toFixed(2) + "K"
-            }else if (count < 1000 * 1000 * 1000){
-                return (count / (1000 * 1000)).toFixed(2) + "M"
-            }else if (count < 1000 * 1000 * 1000 * 1000){
-                return (count / (1000 * 1000 * 1000)).toFixed(2) + "B"
-            }
-            return "Infinity";
-        },
-
         onSubscribeClick(feed){
             //this.currentSelectFeed = feed;
             emitter.emit("on_popup_selectfolder",{ currentFeed:feed }) 
@@ -198,12 +171,66 @@ export default defineNuxtComponent({
             }
         },
 
-        onFeedClick(feed){
-            emitter.emit("on_popup_feed",{feed:feed}); 
+        wrapCountDisplay(count){
+            if (count < 1000){
+                return count
+            }else if (count < 1000 * 1000){
+                return (count / 1000).toFixed(2) + "K"
+            }else if (count < 1000 * 1000 * 1000){
+                return (count / (1000 * 1000)).toFixed(2) + "M"
+            }else if (count < 1000 * 1000 * 1000 * 1000){
+                return (count / (1000 * 1000 * 1000)).toFixed(2) + "B"
+            }
+            return "Infinity";
         },
 
         onSearchClick(){
-            window.location.href = "/feed/search/" + this.searchFeedName;
+            window.location.href = "/feed/search/" + this.text;
+        },
+
+        async loadPage(pageNumber){
+            let feeds = [];
+            let feedIDs = [];
+            let feedsCount = 0;
+            let feedListResponse = await rssbiz.searchFeed(true, urlText, 2, 30 , (pageNumber-1) * 30);
+            if(helper.isResultOk(feedListResponse)){
+                feeds = feedListResponse.data.list;
+                feedsCount = feedListResponse.data.total_count;
+            }
+
+            for (let index in feeds){
+                feeds[index].folderList = [];
+
+                feeds[index].feed_item_count = 0;
+                feeds[index].recent_feeditem_count = 0;
+                feeds[index].read_count = 0;
+                feeds[index].follow_count = 0;
+
+                feedIDs.push(feeds[index].feed_id);
+            }
+
+            // 获取Feed的统计信息
+            let feedStaticsResponse = await rssbiz.queryFeedStaticsByIDs(true,feedIDs);
+            if (helper.isResultOk(feedStaticsResponse)){
+                let feedStatcisList = feedStaticsResponse.data;
+                for (let index in feedStatcisList){
+                    for (let j in feeds){
+                        if(feeds[j].feed_id == feedStatcisList[index].feed_id){
+                            feeds[j].feed_item_count = feedStatcisList[index].feed_item_count;
+                            feeds[j].recent_feeditem_count = feedStatcisList[index].recent_feeditem_count;
+                            feeds[j].read_count = feedStatcisList[index].read_count;
+                            feeds[j].follow_count = feedStatcisList[index].follow_count;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            this.feeds = feeds;
+        },
+
+        handlePageChange(currentPage){
+            this.loadPage(parseInt(currentPage));
         }
     }
 

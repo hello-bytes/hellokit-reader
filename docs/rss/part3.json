@@ -1,0 +1,94 @@
+[
+    {
+        "name":"四火的唠叨",
+        "url":"raychase.net",
+        "feed_url":"https://www.raychase.net/feed",
+        "desc":"我是一名喜欢并且习惯于表达观点的啰嗦的程序员。我的生活充满了爱和恨。我爱设计、爱编码、爱开源、爱旅行、爱音乐、爱英超、爱曼联、爱打篮球、爱暗黑破坏神、爱鲜榨的奇异果果汁，爱蛙蛙叫的干锅牛蛙，还爱我的朋友和家人……",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/raychase.ico",
+        "language":"zh-cn"
+    },{
+        "name":"Trinea",
+        "url":"https://www.trinea.cn/",
+        "feed_url":"https://www.trinea.cn/feed/",
+        "desc":"Author of the Dev Tools App, https://coolapk.com/apk/cn.trinea.android.developertools",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/trinea.png",
+        "language":"zh-cn"
+    },{
+        "name":"老罗的Android之旅",
+        "url":"https://blog.csdn.net/luoshengyang",
+        "feed_url":"https://rss.csdn.net/luoshengyang/rss/map",
+        "desc":"爱生活，爱Android",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/lsy.jpg",
+        "language":"zh-cn"
+    },{
+        "name":"Tricky Android",
+        "url":"https://trickyandroid.com/",
+        "feed_url":"https://trickyandroid.com/feed/",
+        "desc":"Tech Blog",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/tricky-android.png",
+        "language":"zh-cn"
+    },{
+        "name":"风雪之隅",
+        "url":"https://www.laruence.com",
+        "feed_url":"https://www.laruence.com/feed",
+        "desc":"左手代码右手诗",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/laruence.ico",
+        "language":"zh-cn"
+    },{
+        "name":"技术小黑屋",
+        "url":"https://droidyue.com/",
+        "feed_url":"https://droidyue.com/atom.xml",
+        "desc":"Android 工程师, Infoq译者, GDG 北京线下演讲者,droidcon Beijing 2016演讲嘉宾",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/droidyue.png",
+        "language":"zh-cn"
+    },{
+        "name":"鸿洋_",
+        "url":"https://blog.csdn.net/lmj623565791",
+        "feed_url":"https://rss.csdn.net/lmj623565791/rss/map",
+        "desc":"关注领域：JavaEE,Android,Javascript,HTML5,MySQL,Hadoop,Linux",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/lmj623565791.jpg",
+        "language":"zh-cn"
+    },{
+        "name":"Peng的技术小站",
+        "url":"https://greenrobot.me/",
+        "feed_url":"https://greenrobot.me/feed/",
+        "desc":"专注于 Android & Java.",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/greenrobot.png",
+        "language":"zh-cn"
+    },{
+        "name":"Antonio Leiva’s Blog",
+        "url":"https://antonioleiva.com/",
+        "feed_url":"https://antonioleiva.com/rss.xml",
+        "desc":"Everything Android, Kotlin and other random topics",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/antonioleiva.webp",
+        "language":"en-us"
+    },{
+        "name":"singwhatiwanna",
+        "url":"https://blog.csdn.net/singwhatiwanna",
+        "feed_url":"https://rss.csdn.net/singwhatiwanna/rss/map",
+        "desc":"有创新精神的Android技术分享者，Android资深工程师",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/singwhatiwanna.jpg",
+        "language":"zh-cn"
+    },{
+        "name":"",
+        "url":"",
+        "feed_url":"",
+        "desc":"",
+        "icon_url":"",
+        "language":"zh-cn"
+    },{
+        "name":"",
+        "url":"",
+        "feed_url":"",
+        "desc":"",
+        "icon_url":"",
+        "language":"zh-cn"
+    },{
+        "name":"",
+        "url":"",
+        "feed_url":"",
+        "desc":"",
+        "icon_url":"",
+        "language":"zh-cn"
+    }
+]

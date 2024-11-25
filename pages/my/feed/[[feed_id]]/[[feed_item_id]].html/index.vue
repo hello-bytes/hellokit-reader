@@ -84,11 +84,6 @@ export default defineNuxtComponent({
     },
 
     mounted() {
-        //this.$refs.feedItemsComp.appendFeedItems()
-        //console.log(this.feed);
-        //console.log(this.feedItems);
-        // console.log(this.currentFeedItem);
-        
     },
 
     methods: {

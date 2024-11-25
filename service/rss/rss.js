@@ -35,7 +35,6 @@ export default {
             limit:parseInt(limit),
             offset:parseInt(offset),
         }
-        //console.log(params);
         return helper.postJsonAsync(serverSideRequest, "/api/tbs/rss/v1/feeditem/fetch", params);
     },
 
@@ -43,7 +42,6 @@ export default {
         let params = {
             feed_item_id:feedItemID,
         }
-        //console.log(params);
         return helper.postJsonAsync(true, "/api/tbs/rss/v1/feeditem/get", params);
     },
 
@@ -192,6 +190,16 @@ export default {
         return helper.postJsonAsync(false,"/api/article/v1/update/viewnumber",params);
     },
 
-    
-    
+    async searchFeed(serverSideReq, text,order,limit, offset){
+        let params = {
+            text : text,
+            state : 1,
+            order:parseInt(order),
+            limit:parseInt(limit),
+            offset:parseInt(offset),
+        }
+        return helper.postJsonAsync(serverSideReq, "/api/tbs/rss/v1/feed/search", params);   
+        
+    }
+
 }
