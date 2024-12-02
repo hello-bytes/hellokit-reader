@@ -7,11 +7,12 @@
         </div>
         <div style="height:10px;"></div>
         <div style="max-width:650px;margin:0px auto;">
-            <p v-if="feed.folderList.length == 0" style="font-size:22px;">将“{{ feed.name }}”加到指定文件夹</p>
-            <p v-if="feed.folderList.length > 0" style="font-size:22px;">您已订阅“{{ feed.name }}”</p>
-            <div style="text-align: right;margin-bottom:10px;" v-if="feed.folderList.length > 0">
+            <p v-if="feed != null && feed.folderList.length == 0" style="font-size:22px;">将“{{ feed.name }}”加到指定文件夹</p>
+            <p v-if="feed != null && feed.folderList.length > 0" style="font-size:22px;">您已订阅“{{ feed.name }}”</p>
+            <div style="text-align: right;margin-bottom:10px;" v-if="feed != null && feed.folderList.length > 0">
                 <el-button type="danger"><el-icon :size="18"><FolderRemove /></el-icon>&nbsp;移除所有</el-button>
             </div>
+            <p v-if="action == 3" style="font-size:22px;">将所有订阅源导入到指定目录</p>
             <el-table :data="folderList" border style="width: 100%" :stripe="true">
                 <el-table-column prop="folder_name" label="文件夹名称" >
                     <template #default="scope">
@@ -22,14 +23,19 @@
                 </el-table-column>
                 <el-table-column prop="folder_name" label="操作" width="260"  >
                     <template #default="scope">
-                        <el-link  v-if="!scope.row.isFeed" @click="addToFolder(scope.row)"><el-icon :size="18"><Plus /></el-icon>&nbsp;加入</el-link>
-                        <el-link type="danger" v-else @click="removeFromFolder(scope.row)"><el-icon :size="18"><Minus /></el-icon>&nbsp;移除</el-link>
-                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        <el-popconfirm title="删除后其目录下的内容源都会被取消订阅，确认要删除此目录吗？" width="260" cancel-button-text="取消删除" @confirm="confirmDeleteFolder(scope.row)" @cancel="cancelDeleteFolder" confirm-button-text="确认删除">
-                            <template #reference>
-                                <el-link @click="deleteFolder(scope.row)"><el-icon :size="18"><FolderDelete /></el-icon>&nbsp;删除</el-link>
-                            </template>
-                        </el-popconfirm>
+                        <div v-if="action != 3">
+                            <el-link  v-if="!scope.row.isFeed" @click="addToFolder(scope.row)"><el-icon :size="18"><Plus /></el-icon>&nbsp;加入</el-link>
+                            <el-link type="danger" v-else @click="removeFromFolder(scope.row)"><el-icon :size="18"><Minus /></el-icon>&nbsp;移除</el-link>
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <el-popconfirm title="删除后其目录下的内容源都会被取消订阅，确认要删除此目录吗？" width="260" cancel-button-text="取消删除" @confirm="confirmDeleteFolder(scope.row)" @cancel="cancelDeleteFolder" confirm-button-text="确认删除">
+                                <template #reference>
+                                    <el-link @click="deleteFolder(scope.row)"><el-icon :size="18"><FolderDelete /></el-icon>&nbsp;删除</el-link>
+                                </template>
+                            </el-popconfirm>
+                        </div>
+                        <div v-if="action == 3">
+                            <el-link  @click="importToFolder(scope.row)"><el-icon :size="18"><Plus /></el-icon>&nbsp;导入到此文件夹</el-link>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -58,6 +64,7 @@ import userbiz from '@/service/user.js';
 import emitter from "@/service/event.js";
 
 import rssbiz from '@/service/rss/rss.js';
+import importbiz from '@/service/rss/import.js';
 import rssfolder from '@/service/rss/folder.js';
 import folder from '@/service/rss/folder.js';
 
@@ -80,17 +87,35 @@ export default defineNuxtComponent({
             folderList:[],
 
             feed:null,
+            action : 1,
         }
     },
 
     mounted(){
+        // param 参数说明：
+        //     currentFeed : 
+        //     action: 1, 2 ,3 | 
+        //            1 已有 Feed 加入Folder， 
+        //            2 直接订阅FeedURL,数据一般来自于上传的OPML中的一项 
+        //            3 导入全部Feed,按上传的OPML文件
         emitter.on("on_popup_selectfolder", (param) => {
-            this.show();
-
             this.feed = null;
-            if (param != undefined){
-                this.feed = param.currentFeed;
+            this.folderList = [];
+            if (param == undefined){
+                return;
             }
+
+            this.loadFolderList();
+            
+            this.action = param.action;
+            if (this.action == 1){
+                this.feed = param.currentFeed;
+            }else if (this.action == 2){
+                this.feed = param.currentFeed;
+                this.feed.folderList = [];
+            }else if (this.action == 3){
+            }
+            this.show();
         });
     },
 
@@ -101,11 +126,13 @@ export default defineNuxtComponent({
                 let folderList = responseData.data.page;
                 for(let index in folderList){
                     folderList[index].isFeed = false;
-                    for (let i in this.feed.folderList){
-                        if(this.feed.folderList[i].folder_id == folderList[index].folder_id){
-                            folderList[index].isFeed = true;
+                    if (this.feed != null){
+                        for (let i in this.feed.folderList){
+                            if(this.feed.folderList[i].folder_id == folderList[index].folder_id){
+                                folderList[index].isFeed = true;
+                            }
                         }
-                    }
+                    }   
                 }
                 this.folderList = folderList;
             }
@@ -113,7 +140,6 @@ export default defineNuxtComponent({
 
         show(){
             this.showDrawer = true;
-            this.loadFolderList();
         },
 
         onCloseClick(){
@@ -124,20 +150,34 @@ export default defineNuxtComponent({
         beforeClose(){
             emitter.emit("on_feed_folder_update", {feed: this.feed});
             this.showDrawer = false;
-            //return true;
         },
 
         async addToFolder(folderObj){
-            let responseData = await rssfolder.setFolderFeed(devicebiz.getDeviceID(),this.feed.feed_id, folderObj.folder_id);
-            if (helper.isResultOk(responseData)){
-                //this.onCloseClick();
-                folderObj.isFeed = true;
-                ElMessage.success("订阅成功");
-                return;
-            }else{
-                ElMessage.error("订阅失败，请稍后再试。");
+            if (this.action == 1){
+                let responseData = await rssfolder.setFolderFeed(devicebiz.getDeviceID(),this.feed.feed_id, folderObj.folder_id);
+                if (helper.isResultOk(responseData)){
+                    folderObj.isFeed = true;
+                    ElMessage.success("订阅成功");
+                    return;
+                }else{
+                    ElMessage.error("订阅失败，请稍后再试。");
+                }
+            }else if (this.action == 2){
+                let responseData = await importbiz.subscribeFeedURL(devicebiz.getDeviceID(),folderObj.folder_id,this.feed.name,this.feed.url,this.feed.feed_url,this.feed.desc,this.feed.lang);
+                if (helper.isResultOk(responseData)){
+                    ElMessage.success("订阅成功");
+                }else{
+                    ElMessage.error("订阅失败，请稍后再试。");
+                }
+            }else if(this.action == 3){
+
             }
-            //this.loadFeedState();
+        },
+
+        importToFolder(folderObj){
+            emitter.emit('on_import_all', {folderObj:folderObj})
+            //this.$emit('importToFodler', {folderObj:folderObj});
+            this.showDrawer = false;
         },
 
         async removeFromFolder(folderObj){

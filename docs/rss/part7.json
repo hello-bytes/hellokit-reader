@@ -1,0 +1,27 @@
+[
+    {
+        "name":"微软AI",
+        "url":"https://news.microsoft.com/source/topics/ai/",
+        "feed_url":"https://blogs.microsoft.com/ai/feed/",
+        "desc":"微软的AI博客",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/microsoft.ico",
+        "language":"zh-cn"
+    },
+    {
+        "name":"美团技术团队",
+        "url":"https://tech.meituan.com/",
+        "feed_url":"https://tech.meituan.com/feed/",
+        "desc":"美团技术团队以浓厚的学习和分享氛围享誉业界：每周都会有内部技术讲座与分享，还有荟萃业界专家的TopTalk、科技创新公开课，藏书过万的P2P图书馆，帮助同学拓展视野，追求卓越。当然，美团还有业内有口皆碑的美团技术团队博客与微信公众号（meituantech），每年多场公开的技术沙龙，与同行切磋交流……",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/meituan.png",
+        "language":"zh-cn"
+    },
+    {
+        "name":"cnBeta全文版",
+        "url":"https://m.cnbeta.com.tw/",
+        "feed_url":"https://plink.anyfeeder.com/cnbeta",
+        "desc":"cnBeta成立于 2003 年，是中国即时科技资讯站点，已成为重要的互联网IT消息集散地，提供软件更新，互联网、IT业界资讯、评论、观点和访谈 。",
+        "icon_url":"https://codingsky.oss-cn-hangzhou.aliyuncs.com/hellokit/assets/image/rss/cnbeta.png",
+        "language":"zh-cn"
+    }
+    
+]

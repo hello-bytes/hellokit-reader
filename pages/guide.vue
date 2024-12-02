@@ -9,7 +9,7 @@
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                 <a class="button_link" href="/feed-item">先逛一下</a>
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <a class="button_link" href="/user/login?src=https://reader.hellokit.com/my/today">登录账号，开启阅读</a>
+                <a class="button_link" href="https://www.hellokit.com.cn/user/login?src=https://reader.hellokit.com/my/today">登录账号，开启阅读</a>
             </div>
             <span style="margin-top:15px;display:inline-block;">哈喽阅读基于浏览器指纹自动生成您的专属账号，不用登陆即可使用绝大部分功能。</span>
         </div>

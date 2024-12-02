@@ -1,7 +1,7 @@
 <template>
     <div style="width:800px;margin:0px auto;padding-top:35px;">
         <h2>搜索您想看的频道</h2>
-        <el-input v-model="text" size="large" placeholder="" class="input-with-select">
+        <el-input v-model="text" @keyup.enter.native="onInputKeyDown" size="large" placeholder="" class="input-with-select">
             <template #append>
                 <el-button @click="onSearchClick"><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>
             </template>
@@ -55,6 +55,9 @@
 import {Search,FolderAdd,FolderChecked} from "@element-plus/icons-vue"
 import emitter from "@/service/event.js";
 import rssbiz from '@/service/rss/rss.js';
+import folder from '@/service/rss/folder.js';
+import devicebiz from '@/service/device';
+
 export default defineNuxtComponent({
     components: {
         Search,FolderAdd,FolderChecked
@@ -151,7 +154,7 @@ export default defineNuxtComponent({
 
         onSubscribeClick(feed){
             //this.currentSelectFeed = feed;
-            emitter.emit("on_popup_selectfolder",{ currentFeed:feed }) 
+            emitter.emit("on_popup_selectfolder",{ currentFeed:feed,action:1 }) 
             //this.$refs.selectFolderComp.show();
         },
 
@@ -231,6 +234,19 @@ export default defineNuxtComponent({
 
         handlePageChange(currentPage){
             this.loadPage(parseInt(currentPage));
+        },
+
+        onFeedClick(feed){
+            emitter.emit("on_popup_feed",{feed:feed}); 
+        },
+
+        onInputKeyDown(event){
+            if(this.text.length == 0){
+                window.location.href = "/feed/page/1.html";
+            }else{
+                window.location.href = "/feed/search/" + this.text;
+            }
+            
         }
     }
 

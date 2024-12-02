@@ -1,0 +1,66 @@
+[
+    {
+        "name":"MacTalk",
+        "url":"https://macshuo.com/",
+        "feed_url":"https://macshuo.com/?feed=rss2",
+        "desc":"池建强的随想录 | 让创作成为一种生活方式",
+        "icon_url":"",
+        "language":"zh-cn"
+    },
+    {
+        "name":"ZDDHUB 的博客",
+        "url":"https://zddhub.com/",
+        "feed_url":"https://zddhub.com/feed",
+        "desc":"ZDDHUB’s blog Just for fun",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/zddhub.png",
+        "language":"zh-cn"
+    },
+    {
+        "name":"Reorx’s Forge",
+        "url":"https://reorx.com/",
+        "feed_url":"https://reorx.com/feed.xml",
+        "desc":"Recent content on Reorx’s Forge",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/reorx.png",
+        "language":"zh-cn"
+    },
+    {
+        "name":"Phodal - 狼和凤凰",
+        "url":"https://www.phodal.com/",
+        "feed_url":"https://www.phodal.com/blog/feeds/rss/",
+        "desc":"编程 - 写作 - 设计",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/phodal.ico",
+        "language":"zh-cn"
+    },
+    {
+        "name":"罗磊的独立博客",
+        "url":"https://luolei.org/",
+        "feed_url":"https://luolei.org/feed/",
+        "desc":"",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/luolei.png",
+        "language":"zh-cn"
+    },
+    {
+        "name":"阁子",
+        "url":"https://dfine.tech/",
+        "feed_url":"https://dfine.tech/atom.xml",
+        "desc":"dfine's Blog",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/dfine.ico",
+        "language":"zh-cn"
+    },
+    {
+        "name":"代码家<",
+        "url":"https://daimajia.com/",
+        "feed_url":"https://daimajia.com/feed/",
+        "desc":"创办了掘金（2014-2016），在 峰瑞资本 深造过（2016-2019），目前在 真格基金（2019-至今）。",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/daimajia.png",
+        "language":"zh-cn"
+    },
+    {
+        "name":"技术小黑屋",
+        "url":"https://droidyue.com/",
+        "feed_url":"https://droidyue.com/atom.xml",
+        "desc":"Java,Android,Linux,Python,内存泄露，性能优化，最键实践",
+        "icon_url":"https://oss-cn-hangzhou.aliyuncs.com/codingsky/hellokit/assets/image/rss/droidyue.png",
+        "language":"zh-cn"
+    }
+]

@@ -1,12 +1,18 @@
 <template>
     <div style="width:800px;margin:0px auto;padding-top:35px;">
         <h2>搜索您想看的频道</h2>
-        <el-input v-model="searchFeedName" size="large" placeholder="" class="input-with-select">
+        <el-input v-model="searchFeedName" @keyup.enter.native="onInputKeyDown" size="large" placeholder="" class="input-with-select">
             <template #append>
                 <el-button @click="onSearchClick" ><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>
             </template>
         </el-input>
-        <p style="margin-bottom:5px;margin-top:30px;">共&nbsp;{{ totalCount }}&nbsp;个频道，{{ totalFeedItemCount }}&nbsp;篇文章。</p>
+        <div style="display: flex;margin-top:10px;">
+            <p style="flex:1;">共&nbsp;{{ totalCount }}&nbsp;个频道，{{ totalFeedItemCount }}&nbsp;篇文章。</p>
+            <div style="display:flex;align-items: center;justify-content: center;">
+                <el-button type="primary" @click="onImportRss">导入订阅源</el-button>
+            </div>
+        </div>
+        
         <div v-for="(item, index) in feeds" :key="index" class="feed_container" >
             <div class="feed_container_top">
                 <img :src='item.icon_url' />
@@ -178,7 +184,7 @@ export default defineNuxtComponent({
 
         onSubscribeClick(feed){
             //this.currentSelectFeed = feed;
-            emitter.emit("on_popup_selectfolder",{ currentFeed:feed }) 
+            emitter.emit("on_popup_selectfolder",{ currentFeed:feed, action:1 }) 
             //this.$refs.selectFolderComp.show();
         },
 
@@ -204,6 +210,20 @@ export default defineNuxtComponent({
 
         onSearchClick(){
             window.location.href = "/feed/search/" + this.searchFeedName;
+        },
+
+        onImportRss(){
+            window.location.href = "/import";
+        },
+
+        onInputKeyDown(event){
+            //console.log
+            if(this.searchFeedName.length == 0){
+                //window.location.href = "/feed/page/1.html";
+            }else{
+                window.location.href = "/feed/search/" + this.searchFeedName;
+            }
+            
         }
     }
 

@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div style="width:200px;padding-top:15px;text-align: right;">
-                    <el-button type="primary" size="large">&nbsp;&nbsp;<el-icon :size="20"><FolderAdd /></el-icon>&nbsp;订&nbsp;阅&nbsp;&nbsp;&nbsp;</el-button>
+                    <el-button @click="onAddSubscribe" type="primary" size="large">&nbsp;&nbsp;<el-icon :size="20"><FolderAdd /></el-icon>&nbsp;订&nbsp;阅&nbsp;&nbsp;&nbsp;</el-button>
                 </div>
             </div>
             <Loading v-if="viewState == 1"></Loading>
@@ -117,6 +117,11 @@ export default defineNuxtComponent({
 
         formatTime(time){
             return helper.getHumanTime(time);
+        },
+
+        onAddSubscribe(){
+            this.showDrawer = false;
+            emitter.emit("on_popup_selectfolder",{ currentFeed:this.feed, action:1 });
         }
     }
 })

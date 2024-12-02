@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div v-if="!isLogined" style="display: flex;padding-top:10px;padding-bottom:10px;border-bottom:1px solid #ccc;">
-                        <a href="/user/login" style="font-size:18px;font-weight: bold;">注册 / 登录</a>
+                        <a href="https://www.hellokit.com.cn/user/login?src=https://reader.hellokit.com.cn" style="font-size:18px;font-weight: bold;">注册 / 登录</a>
                     </div>
                     <div>
                         <a class="user_info_menu" href="/">
@@ -46,11 +46,15 @@
                             <el-icon :width="18"><Service /></el-icon>
                             <span>联系我们</span>
                         </a>
-                        <a v-if="false" class="user_info_menu" href="/user/logout">
+                        <a class="user_info_menu" href="/hello-reader-log">
+                            <el-icon :width="18"><Service /></el-icon>
+                            <span>更新日志</span>
+                        </a>
+                        <a v-if="false" class="user_info_menu" href="#">
                             <el-icon :width="18"><Share /></el-icon>
                             <span>分享给朋友</span>
                         </a>
-                        <a v-if="false" class="user_info_menu" href="/user/logout">
+                        <a v-if="false" class="user_info_menu" href="#">
                             <el-icon :width="18"><SwitchButton /></el-icon>
                             <span>数据隐私协议</span>
                         </a>
@@ -58,7 +62,7 @@
                             <el-icon :width="18"><HelloReadLogo /></el-icon>
                             <span>关于哈喽阅读</span>
                         </a>
-                        <a v-if="isLogined" class="user_info_menu" href="/user/logout">
+                        <a v-if="isLogined" class="user_info_menu" href="https://www.hellokit.com.cn/user/logout">
                             <el-icon :width="19"><LogoutIcon /></el-icon>
                             <span>登出</span>
                         </a>
@@ -427,7 +431,7 @@ export default defineNuxtComponent({
         },
 
         onGotoLogin(){
-            window.location.href = "/user/login";
+            window.location.href = "https://www.hellokit.com.cn/user/login?src=https://reader.hellokit.com.cn";
         }
     }
 })
