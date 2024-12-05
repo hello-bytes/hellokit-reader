@@ -4,7 +4,7 @@
         <div v-for="(item, index) in feedItems" :key="index" style="margin-top:20px;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:10px;">
             <div v-if="item.thumb_url.length > 0">
                 <div>
-                    <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                    <a v-if="item.feed != null" target="_blank" @click="onFeedClick(item.feed)"  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
                     <div class="feed_item_list_img_container">
                         <img class="feed_item_img" :src='item.thumb_url' />
                         <div class="feed_item_list_content_container">
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div v-if="item.thumb_url.length == 0">
-                <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                <a v-if="item.feed != null" target="_blank" @click="onFeedClick(item.feed)"  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
                 <a class="feed_item_list_container">
                     <a @click="showFeedItem(item)" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                     <p class="feed_item_list_container_desc">{{ item.desc }}</p>
@@ -395,6 +395,10 @@ export default defineNuxtComponent({
 
         setPageIndex(currentPage){
             this.currentPage = currentPage;
+        },
+
+        onFeedClick(feedObj){
+            emitter.emit("on_popup_feed",{feed:feedObj});
         }
     }
 })
@@ -503,6 +507,7 @@ export default defineNuxtComponent({
     max-height: 100px;
 }
 .feed_name_img{
+    cursor:pointer;
     display: flex;
     align-items: center;
     line-height: 12px;

@@ -16,7 +16,8 @@
                         <span class="feed_meta_text">{{ articleCount }}篇文章</span>
                     </div>
                 </div>
-                <div style="width:200px;padding-top:15px;text-align: right;">
+                <div style="width:280px;padding-top:15px;text-align: right;">
+                    <el-button @click="onFeedDetail" size="large">订阅源选项</el-button>
                     <el-button @click="onAddSubscribe" type="primary" size="large">&nbsp;&nbsp;<el-icon :size="20"><FolderAdd /></el-icon>&nbsp;订&nbsp;阅&nbsp;&nbsp;&nbsp;</el-button>
                 </div>
             </div>
@@ -122,6 +123,11 @@ export default defineNuxtComponent({
         onAddSubscribe(){
             this.showDrawer = false;
             emitter.emit("on_popup_selectfolder",{ currentFeed:this.feed, action:1 });
+        },
+
+        onFeedDetail(){
+            emitter.emit("on_popup_feed_info",{ feed:this.feed});
+            
         }
     }
 })

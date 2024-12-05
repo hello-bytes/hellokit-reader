@@ -33,7 +33,8 @@
             </div>
             <div class="article_content_container">
                 <div v-if="feedItem.content.length > 0" v-html="feedItem.content" tag="article" ></div>
-                <MDC v-else :value="feedItem.desc" tag="article" ></MDC>
+                <MDC v-else-if="feedItem.desc > 0" :value="feedItem.desc" tag="article" ></MDC>
+                <div v-else></div>
             </div>
             <div style="padding-top:40px;padding-bottom:40px;text-align: center;">
                 <el-button @click="onGotoSourceURL" size="large" style="width:100%;">访问网页原始链接</el-button>
@@ -92,6 +93,9 @@ export default defineNuxtComponent({
                 }
             }
         }
+
+        // console.log(feed);
+        //console.log(feedItem);
 
         return {
             feed:feed,
@@ -167,16 +171,6 @@ definePageMeta({
   layout: 'blank',
 })
 
-/*
-useHead(
-    {
-        titleTemplate: 'sddd' + ' - %s',
-        meta: [
-            { name: 'description', content: "sss bbb ccc" },
-        ],
-    }    
-)
-*/
 </script>
 
 <style scoped>

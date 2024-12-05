@@ -1,19 +1,14 @@
 <template>
-    <div style="width:800px;margin:0px auto;padding-top:35px;">
-        <h2>搜索您想看的频道</h2>
-        <el-input v-model="searchFeedName" @keyup.enter.native="onInputKeyDown" size="large" placeholder="" class="input-with-select">
-            <template #append>
-                <el-button @click="onSearchClick" ><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>
-            </template>
-        </el-input>
+    <div>
         <div style="display: flex;margin-top:10px;">
             <p style="flex:1;">共&nbsp;{{ totalCount }}&nbsp;个频道，{{ totalFeedItemCount }}&nbsp;篇文章。</p>
-            <div style="display:flex;align-items: center;justify-content: center;">
-                <el-button type="primary" @click="onImportRss">导入订阅源</el-button>
+            <div style="display: flex;align-items: center; justify-content: center;text-align: right;">
+                <a class="order_link" :class="{order_link_actived:orderType == 4}" :href='feedTimeURL'>按时间排序</a>
+                <span>&nbsp;&nbsp;</span>
+                <a class="order_link" :class="{order_link_actived:orderType == 2}" :href='feedItemTimeURL'>按最近更新</a>
             </div>
         </div>
-        
-        <div v-for="(item, index) in feeds" :key="index" class="feed_container" >
+        <div v-for="(item, index) in feeds" :key="index" class="feed_container"  >
             <div class="feed_container_top">
                 <img :src='item.icon_url' />
                 <div style="flex:1;margin-left:10px;">
@@ -58,35 +53,64 @@
 
 <script>
 
-
 import browser from '@/service/browser';
 import devicebiz from '@/service/device';
 import rssbiz from '@/service/rss/rss.js';
 import folder from '@/service/rss/folder.js';
 
-import {Search,FolderAdd,FolderChecked} from "@element-plus/icons-vue"
+import emitter from "@/service/event.js";
 
 import Pager from "@/components/base/Pager.vue"
-
-import emitter from "@/service/event.js";
+import {FolderAdd,FolderChecked} from "@element-plus/icons-vue"
 
 export default defineNuxtComponent({
     components: {
-        Search,Pager,FolderAdd,FolderChecked
+        Pager,FolderAdd,FolderChecked
     },
 
-    async asyncData() {
+    /*props:{
+        catetoryType:{
+            type:Number,
+            default:1,
+        },
+    },*/
+
+    async asyncData(data) {
+        //console.log("==============================")
+        //console.log(data.payload.path);
         const route = useRoute();
         let pageNumber = parseInt(route.params.page);
         if (pageNumber < 1) {
             pageNumber = 1;
         }
 
+        // console.log(route)
+
         let feeds = [];
         let feedIDs = [];
         let feedsCount = 0;
 
-        let feedListResponse = await rssbiz.queryFeedList(2, 30, (pageNumber-1) * 30);
+        let orderType = 2;
+        let categoryType = 0;
+        let feedTimeURL = "";
+        let feedItemTimeURL = "";
+        if (data.payload.path.indexOf("/feed/website/") >= 0){
+            categoryType = 1;
+            feedTimeURL = "/feed/website/ft/1.html";
+            feedItemTimeURL = "/feed/website/at/1.html";
+            if (data.payload.path.indexOf("/feed/website/ft/") >= 0){
+                orderType = 4
+            }
+        }else if (data.payload.path.indexOf("/feed/wechat/") >= 0){
+            categoryType = 3;
+            feedTimeURL = "/feed/wechat/ft/1.html";
+            feedItemTimeURL = "/feed/wechat/at/1.html";
+            if (data.payload.path.indexOf("/feed/wechat/ft/") >= 0){
+                orderType = 4
+            }
+        }
+
+        let feedListResponse = await rssbiz.queryFeedList(categoryType, 2, 30, (pageNumber-1) * 30);
         if(helper.isResultOk(feedListResponse)){
             feeds = feedListResponse.data.list;
             feedsCount = feedListResponse.data.total_count;
@@ -128,9 +152,15 @@ export default defineNuxtComponent({
             }
         }
 
+        
+
         return {
             feeds:feeds,
-            searchFeedName:"",
+            categoryType:1,
+            feedTimeURL : feedTimeURL,
+            feedItemTimeURL : feedItemTimeURL,
+            orderType:orderType,
+            // searchFeedName:"",
             totalCount:feedsCount,
             totalFeedItemCount : totalFeedItemCount,
             pageNumber:pageNumber,
@@ -146,7 +176,7 @@ export default defineNuxtComponent({
         });
     },
 
-    methods: {
+    methods:{
         async fetchFeedFolder(){
             if (this.feeds == null ){
                 return;
@@ -169,25 +199,6 @@ export default defineNuxtComponent({
             }
         },
 
-        wrapCountDisplay(count){
-            if (count < 1000){
-                return count
-            }else if (count < 1000 * 1000){
-                return (count / 1000).toFixed(2) + "K"
-            }else if (count < 1000 * 1000 * 1000){
-                return (count / (1000 * 1000)).toFixed(2) + "M"
-            }else if (count < 1000 * 1000 * 1000 * 1000){
-                return (count / (1000 * 1000 * 1000)).toFixed(2) + "B"
-            }
-            return "Infinity";
-        },
-
-        onSubscribeClick(feed){
-            //this.currentSelectFeed = feed;
-            emitter.emit("on_popup_selectfolder",{ currentFeed:feed, action:1 }) 
-            //this.$refs.selectFolderComp.show();
-        },
-
         async onFeedFolderUpdate(params){
             let feedID = params.feed.feed_id;
             let responseData = await folder.getFolderIDByFeedIDs(devicebiz.getDeviceID(),[feedID]);
@@ -204,30 +215,29 @@ export default defineNuxtComponent({
             }
         },
 
+        onSubscribeClick(feed){
+            emitter.emit("on_popup_selectfolder",{ currentFeed:feed, action:1 }) 
+        },
+
         onFeedClick(feed){
-            emitter.emit("on_popup_feed",{feed:feed}); 
+            emitter.emit("on_popup_feed",{feed:feed});
         },
 
-        onSearchClick(){
-            window.location.href = "/feed/search/" + this.searchFeedName;
-        },
-
-        onImportRss(){
-            window.location.href = "/import";
-        },
-
-        onInputKeyDown(event){
-            //console.log
-            if(this.searchFeedName.length == 0){
-                //window.location.href = "/feed/page/1.html";
-            }else{
-                window.location.href = "/feed/search/" + this.searchFeedName;
+        wrapCountDisplay(count){
+            if (count < 1000){
+                return count
+            }else if (count < 1000 * 1000){
+                return (count / 1000).toFixed(2) + "K"
+            }else if (count < 1000 * 1000 * 1000){
+                return (count / (1000 * 1000)).toFixed(2) + "M"
+            }else if (count < 1000 * 1000 * 1000 * 1000){
+                return (count / (1000 * 1000 * 1000)).toFixed(2) + "B"
             }
-            
-        }
+            return "Infinity";
+        },
     }
+})
 
-});
 
 </script>
 
@@ -243,6 +253,7 @@ export default defineNuxtComponent({
     /*border: 1px solid #009a61; */
 }
 
+
 .feed_container_top{
     display: flex;   
 }
@@ -252,6 +263,7 @@ export default defineNuxtComponent({
 .feed_container_top > div > a > h3{
     margin-bottom:8px;
 }
+
 
 .feed_name{
     margin-bottom:0px;
@@ -281,5 +293,13 @@ export default defineNuxtComponent({
     font-size: 14px;
     color:gray;
     text-align: center;
+}
+.order_link{
+    font-size:14px;
+    cursor: pointer;
+}
+.order_link_actived{
+    color:#2bb24c;
+    font-weight: bold;
 }
 </style>

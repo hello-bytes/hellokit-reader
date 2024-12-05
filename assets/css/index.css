@@ -642,3 +642,8 @@ article > blockquote{
 .page_root_desc{
     margin-top:0px;font-size: 20px;color:rgb(117, 117, 117);font-weight: 500;margin-bottom:10px;
 }
+
+.center_content_wrapper{
+    margin:0px auto;
+    width:800px;
+}
