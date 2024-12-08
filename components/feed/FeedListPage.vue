@@ -7,7 +7,7 @@
         </div>
         <div style="width:800px;margin:0px auto;padding-top:30px;">
             <FeedsTab :activeTab="activeTab"></FeedsTab>
-            <h2>搜索您想看的频道</h2>
+            <h2 style="margin-top:38px;">搜索您想看的频道</h2>
             <el-input v-model="searchFeedName" @keyup.enter.native="onInputKeyDown" size="large" placeholder="" class="input-with-select">
                 <template #append>
                     <el-button @click="onSearchClick" ><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>

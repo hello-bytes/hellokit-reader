@@ -3,9 +3,10 @@ import userbiz from "@/service/user.js"
 
 
 export default {
-    async queryFeedList(order,limit, offset){
+    async queryFeedList(categoryType,order,limit, offset){
         let params = {
             state : 1,
+            category_type:parseInt(categoryType),
             order:parseInt(order),
             limit:parseInt(limit),
             offset:parseInt(offset),

@@ -1,8 +1,8 @@
 <template>
     <div>
         <div style="display: flex;margin-top:10px;">
-            <p style="flex:1;">共&nbsp;{{ totalCount }}&nbsp;个频道，{{ totalFeedItemCount }}&nbsp;篇文章。</p>
-            <div style="display: flex;align-items: center; justify-content: center;text-align: right;">
+            <p style="flex:1;">共&nbsp;{{ totalCount }}&nbsp;个订阅源。</p>
+            <div v-show="totalCount > 0" style="display: flex;align-items: center; justify-content: center;text-align: right;">
                 <a class="order_link" :class="{order_link_actived:orderType == 4}" :href='feedTimeURL'>按时间排序</a>
                 <span>&nbsp;&nbsp;</span>
                 <a class="order_link" :class="{order_link_actived:orderType == 2}" :href='feedItemTimeURL'>按最近更新</a>
@@ -47,7 +47,7 @@
                 </div>
             </div>
         </div>
-        <Pager :baseURL='"/feed/page"' :activeIndex="pageNumber" :totalCount="totalCount"></Pager>
+        <Pager v-show="totalCount > 0" :baseURL='"/feed/page"' :activeIndex="pageNumber" :totalCount="totalCount"></Pager>
     </div>
 </template>
 
@@ -152,7 +152,8 @@ export default defineNuxtComponent({
             }
         }
 
-        
+        //console.log("===========");
+        //console.log(feeds);
 
         return {
             feeds:feeds,

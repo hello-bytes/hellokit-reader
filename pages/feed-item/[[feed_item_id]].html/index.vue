@@ -33,7 +33,7 @@
             </div>
             <div class="article_content_container">
                 <div v-if="feedItem.content.length > 0" v-html="feedItem.content" tag="article" ></div>
-                <MDC v-else-if="feedItem.desc > 0" :value="feedItem.desc" tag="article" ></MDC>
+                <MDC v-else-if="feedItem.desc.length > 0" :value="feedItem.desc" tag="article" ></MDC>
                 <div v-else></div>
             </div>
             <div style="padding-top:40px;padding-bottom:40px;text-align: center;">
@@ -94,9 +94,6 @@ export default defineNuxtComponent({
             }
         }
 
-        // console.log(feed);
-        //console.log(feedItem);
-
         return {
             feed:feed,
             feedItem:feedItem,
@@ -106,6 +103,7 @@ export default defineNuxtComponent({
     },
 
     mounted() {
+        // console.log(this.feed);
         this.loadReadLater();
         feedItemBiz.increaseFeedItemReadCount(false,this.feedItem.feed_item_id);
     },
@@ -158,6 +156,7 @@ export default defineNuxtComponent({
         },
 
         onGotoSourceURL(){
+            //console.log(this.feedItem.feed_url);
             window.location.href = this.feedItem.feed_url;
         },
 

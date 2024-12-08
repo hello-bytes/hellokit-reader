@@ -257,7 +257,7 @@ export default defineNuxtComponent({
                     let feedList = responseData.data.list;
                     for(let index in feedItems){
                         for(let j in feedList){
-                            if (feedList[j].feed_id = feedItems[index].feed_id){
+                            if (feedList[j].feed_id == feedItems[index].feed_id){
                                 feedItems[index].feed = feedList[j];
                             }
                         }
@@ -286,7 +286,7 @@ export default defineNuxtComponent({
         removeByFeedItemID(feedItemID){
             let i = 0;
             while (i < this.feedItems.length) {
-                if (this.feedItems[i].feed_item_id === feedItemID) {
+                if (this.feedItems[i].feed_item_id == feedItemID) {
                     this.feedItems.splice(i, 1);
                 } else {
                     ++i;

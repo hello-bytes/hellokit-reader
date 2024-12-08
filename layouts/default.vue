@@ -11,7 +11,7 @@
             </div>
             <div style="height:160px;"></div>
             <el-tooltip class="box-item" effect="dark" content="订阅您喜欢的内容源" placement="right-start" >
-                <a href="/feed/page/1.html">
+                <a href="/feed/website/ft/1.html">
                     <div class="rss_icon_bg">
                         <AddRss :width="28" :height="28"></AddRss>
                     </div>

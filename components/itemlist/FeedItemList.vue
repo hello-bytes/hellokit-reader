@@ -282,7 +282,7 @@ export default defineNuxtComponent({
                     let feedList = responseData.data.list;
                     for(let index in feedItems){
                         for(let j in feedList){
-                            if (feedList[j].feed_id = feedItems[index].feed_id){
+                            if (feedList[j].feed_id == feedItems[index].feed_id){
                                 feedItems[index].feed = feedList[j];
                             }
                         }

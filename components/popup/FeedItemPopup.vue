@@ -33,7 +33,8 @@
             
             <div class="feed_content_container">
                 <div v-if="feedItem.content.length > 0" v-html="feedItem.content" tag="article" ></div>
-                <MDC v-else :value="feedItem.desc" tag="article" ></MDC>
+                <MDC v-else-if="feedItem.desc.length > 0" :value="feedItem.desc" tag="article" ></MDC>
+                <div v-else></div>
             </div>
             <div style="padding-top:10px;padding-bottom:10px;">
                 <el-button @click="onGotoSourceURL" style="width:100%;color:#009a61;" size="large">访问网页原始链接</el-button>
