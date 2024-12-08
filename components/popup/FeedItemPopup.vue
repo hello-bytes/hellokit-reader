@@ -32,8 +32,9 @@
             </div>
             
             <div class="feed_content_container">
-                <div v-if="feedItem.content.length > 0" v-html="feedItem.content" tag="article" ></div>
-                <MDC v-else-if="feedItem.desc.length > 0" :value="feedItem.desc" tag="article" ></MDC>
+                <div v-if="feedItem.content.length > 0 && feed.content_format == 1" v-html="feedItem.content" class="feed_article_container" ></div>
+                <MDC v-else-if="feedItem.content.length > 0 && feed.content_format == 2" :value="feedItem.content" tag="div" class="feed_article_container"></MDC>
+                <MDC v-else-if="feedItem.desc.length > 0" :value="feedItem.desc" tag="div" class="feed_article_container" ></MDC>
                 <div v-else></div>
             </div>
             <div style="padding-top:10px;padding-bottom:10px;">
@@ -78,6 +79,7 @@ export default defineNuxtComponent({
 
     mounted(){
         emitter.on("on_popup_feeditem_content", (param) => {
+            console.log(param.feed)
             this.showFeedItem(param.feed,param.feedItem);
         });
     },
@@ -89,6 +91,7 @@ export default defineNuxtComponent({
 
             if(this.feedItem != null){
                 feedItemBiz.increaseFeedItemReadCount(false,this.feedItem.feed_item_id);
+                this.feedItem.read_count = this.feedItem.read_count + 1;
             }
 
             this.show();

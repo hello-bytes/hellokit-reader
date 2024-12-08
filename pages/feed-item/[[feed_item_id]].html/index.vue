@@ -31,9 +31,10 @@
                     <p class="feed_item_container_time">{{ feedItem.read_count }}次阅读</p>
                 </div>
             </div>
-            <div class="article_content_container">
-                <div v-if="feedItem.content.length > 0" v-html="feedItem.content" tag="article" ></div>
-                <MDC v-else-if="feedItem.desc.length > 0" :value="feedItem.desc" tag="article" ></MDC>
+            <div class="article_content_container" >
+                <div v-if="feedItem.content.length > 0 && feed.content_format == 1" v-html="feedItem.content" tag="article" ></div>
+                <MDC v-else-if="feedItem.content.length > 0 && feed.content_format == 2" :value="feedItem.content" tag="div" class="feed_article_container"></MDC>
+                <MDC v-else-if="feedItem.desc.length > 0" :value="feedItem.desc" tag="div" class="feed_article_container" ></MDC>
                 <div v-else></div>
             </div>
             <div style="padding-top:40px;padding-bottom:40px;text-align: center;">
@@ -200,8 +201,8 @@ definePageMeta({
 
 <style>
 .article_content_container{
-    padding:10px;
-    
+    padding:10px 0px 10px 0px;
+    margin-top:15px;
 }
 .article_content_container p{
     font-size: 16px;
