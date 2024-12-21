@@ -139,7 +139,6 @@ cp vue3-clipboard.package.json ./node_modules/vue-clipboard3/package.json
 - 支持显示作者
 - 支持查看RSS源（在RSS的详情里）
 - 支持反馈（找产品经理聊聊）
-- 后台可以查看每个RSS的文章
 - 后台可以查看RSS用户
 - 设置页面，方块有：文件夹管理，支持删除文件夹，创建文件夹等逻辑；
 - 设置页面，增加通用设置，包括：点文章标题跳新页面还是右侧弹出，是不是右侧弹出就算已读，
@@ -165,3 +164,4 @@ cp vue3-clipboard.package.json ./node_modules/vue-clipboard3/package.json
 - + RSS页面中，RSS的排序 (使用last_publish)排序
 - 不需要SEO的页面，点标题统一在右侧弹出；
 - 支持搜索RSS
+- 后台可以查看每个RSS的文章

@@ -21,7 +21,7 @@
                 </el-tooltip>
             </div>
         </div>
-        <div style="max-width:800px;margin:0px auto;" v-if="feedItem != null && feed != null">
+        <div style="max-width:800px;margin:0px auto;" v-if="feedItem != null && feed != null && feed.view_type == 1">
             <p class="feed_item_title">{{ feedItem.title }}</p>
             <div>
                 <a :href='feed.url' class="feed_item_url">{{ feed.name }}</a>
@@ -40,6 +40,9 @@
             <div style="padding-top:10px;padding-bottom:10px;">
                 <el-button @click="onGotoSourceURL" style="width:100%;color:#009a61;" size="large">访问网页原始链接</el-button>
             </div>
+        </div>
+        <div style="max-width:800px;margin:0px auto;" v-if="feedItem != null && feed != null && feed.view_type == 2">
+            <iframe :src=feedItem.feed_url ></iframe>
         </div>
     </el-drawer>
 </template>
@@ -73,13 +76,12 @@ export default defineNuxtComponent({
             showDrawer:false,
             feed:null,
             feedItem:null,
-
         }
     },
 
     mounted(){
         emitter.on("on_popup_feeditem_content", (param) => {
-            console.log(param.feed)
+            //param.feed.view_type = 2;
             this.showFeedItem(param.feed,param.feedItem);
         });
     },
@@ -88,7 +90,7 @@ export default defineNuxtComponent({
         showFeedItem(feed, feedItem){
             this.feed = feed;
             this.feedItem = feedItem;
-
+            
             if(this.feedItem != null){
                 feedItemBiz.increaseFeedItemReadCount(false,this.feedItem.feed_item_id);
                 this.feedItem.read_count = this.feedItem.read_count + 1;

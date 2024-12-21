@@ -242,7 +242,7 @@ export default defineNuxtComponent({
 
         onInputKeyDown(event){
             if(this.text.length == 0){
-                window.location.href = "/feed/page/1.html";
+                window.location.href = "/feed/website/ft/1.html";
             }else{
                 window.location.href = "/feed/search/" + this.text;
             }

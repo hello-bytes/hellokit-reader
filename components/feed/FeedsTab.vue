@@ -33,7 +33,7 @@ export default defineNuxtComponent({
 
     methods:{
         addFeedClick(){
-            window.location.href = "/feed/page/1.html";
+            window.location.href = "/feed/website/ft/1.html";
         }
     }
 })
