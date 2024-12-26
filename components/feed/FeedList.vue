@@ -47,7 +47,7 @@
                 </div>
             </div>
         </div>
-        <Pager v-show="totalCount > 0" :baseURL='"/feed/page"' :activeIndex="pageNumber" :totalCount="totalCount"></Pager>
+        <Pager v-show="totalCount > 0" :baseURL='baseURL' :activeIndex="pageNumber" :totalCount="totalCount"></Pager>
     </div>
 </template>
 
@@ -68,16 +68,14 @@ export default defineNuxtComponent({
         Pager,FolderAdd,FolderChecked
     },
 
-    /*props:{
-        catetoryType:{
-            type:Number,
-            default:1,
+    props:{
+        baseURL:{
+            type:String,
+            default:"",
         },
-    },*/
+    },
 
     async asyncData(data) {
-        //console.log("==============================")
-        //console.log(data.payload.path);
         const route = useRoute();
         let pageNumber = parseInt(route.params.page);
         if (pageNumber < 1) {

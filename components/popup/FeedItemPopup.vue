@@ -3,10 +3,10 @@
         <div style="height:50px;border-bottom: 1px solid #eee;">
             <div class="content_wrapper" style="display: flex;margin-top:-15px;">
                 <div @click="onCloseClick" class="svg_icon_container"><el-icon :size="20" color="#757575"><CloseBold /></el-icon></div>
-                <el-tooltip v-if="!isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
+                <el-tooltip v-if="feedItem != null && !feedItem.isReadLater" effect="dark" content="添加到稍后阅读" placement="top-start">
                     <div @click="setReadLater" class="svg_icon_container"><el-icon :size="20" color="#757575"><ReadLaterIcon /></el-icon></div>
                 </el-tooltip>
-                <el-tooltip v-if="isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
+                <el-tooltip v-if="feedItem != null && feedItem.isReadLater" effect="dark" content="取消稍后阅读" placement="top-start">
                     <div @click="removeReadLater" class="svg_icon_container"><el-icon :size="20" color="#009a61"><ReadLaterFillIcon /></el-icon></div>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="复制文章链接" placement="top-start" style="margin-left:5px;">
@@ -24,6 +24,7 @@
         <div style="max-width:800px;margin:0px auto;" v-if="feedItem != null && feed != null && feed.view_type == 1">
             <p class="feed_item_title">{{ feedItem.title }}</p>
             <div>
+                <span class="feed_item_time" v-if="this.authorItem != null">{{ this.authorItem == null ? "" : this.authorItem.author_name  }}&nbsp;&nbsp;</span>
                 <a :href='feed.url' class="feed_item_url">{{ feed.name }}</a>
                 <span>&nbsp;&nbsp;</span>
                 <span class="feed_item_time">{{ formatTime(feedItem.publish_time) }}</span>
@@ -75,13 +76,16 @@ export default defineNuxtComponent({
             drawWidth:"70%",
             showDrawer:false,
             feed:null,
-            feedItem:null,
+            feedItem:null,            
+
+            authorItem:null,
         }
     },
 
     mounted(){
         emitter.on("on_popup_feeditem_content", (param) => {
             //param.feed.view_type = 2;
+            console.log(param);
             this.showFeedItem(param.feed,param.feedItem);
         });
     },
@@ -90,11 +94,17 @@ export default defineNuxtComponent({
         showFeedItem(feed, feedItem){
             this.feed = feed;
             this.feedItem = feedItem;
+            if(this.feedItem.authorList.length > 0){
+                this.authorItem = this.feedItem.authorList[0];
+            }
+            
             
             if(this.feedItem != null){
                 feedItemBiz.increaseFeedItemReadCount(false,this.feedItem.feed_item_id);
                 this.feedItem.read_count = this.feedItem.read_count + 1;
             }
+
+            this.fetchAuthor();
 
             this.show();
         },
@@ -105,6 +115,16 @@ export default defineNuxtComponent({
 
         onCloseClick(){
             this.showDrawer = false;
+        },
+
+        async fetchAuthor(){
+            let responseData = feedItemBiz.fetchAuthor(false,[this.feedItem.feed_item_id]);
+            if(helper.isResultOk(responseData)){
+                if(responseData.data.length > 0){
+                    this.authorItem = responseData.data[0];
+                    console.log(this.authorItem);
+                }
+            }
         },
 
         async copyURL(){

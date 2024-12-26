@@ -21,7 +21,7 @@
         <ErrorView ref="errorViewComp" v-if="viewState == 2"></ErrorView>
         <EmptyFeed v-if="viewState == 3"></EmptyFeed>
         <AllDoneFeed @viewAllFeedItem="viewAllFeedItem" v-if="viewState == 4"></AllDoneFeed>
-        <FeedItemList1  v-show="viewState == 5" @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="1" ref="feedItemListComp"></FeedItemList1>
+        <FeedItemList3 :showFeedName=false v-show="viewState == 5" @onLoadMore="onLoadMore" @onReload="onReload" ref="feedItemListComp"></FeedItemList3>
     </div>
 </template>
 
@@ -36,14 +36,14 @@ import Loading from '~/components/base/Loading.vue';
 import ErrorView from '@/components/base/ErrorView.vue';
 import EmptyFeed from '@/components/feed/EmptyFeed.vue';
 import AllDoneFeed from '@/components/feed/AllDoneFeed.vue';
-import FeedItemList1 from '@/components/itemlist/FeedItemList1.vue'
+import FeedItemList3 from '@/components/itemlist/FeedItemListV3.vue'
 
 
 import { Refresh, Check } from "@element-plus/icons-vue"
 
 export default defineNuxtComponent({
     components: {
-        Refresh,FeedItemList1,Loading,EmptyFeed,ErrorView,AllDoneFeed,Check
+        Refresh,FeedItemList3,Loading,EmptyFeed,ErrorView,AllDoneFeed,Check
     },
     
     async asyncData() {
@@ -81,11 +81,11 @@ export default defineNuxtComponent({
     },
 
     mounted() {
-        this.loadFeedItems(1);
+        this.loadFeedItems("0",30, 0);
     },
 
     methods: {
-        async loadFeedItems(pageNumber){
+        async loadFeedItems(feedItemID, limit, offset){
             if (this.feed == null ){
                 return;
             }
@@ -94,7 +94,8 @@ export default defineNuxtComponent({
             if (this.showAllFeedItem){
                 readState = 0;
             }
-            let responseData = await rssbiz.getUserFeedItemsV3(devicebiz.getDeviceID(),"0", this.feed.feed_id, readState, 30, (pageNumber-1) * 30);
+            
+            let responseData = await rssfolder.getUserFeedItemListByFeed(devicebiz.getDeviceID(), this.feed.feed_id, feedItemID, readState, limit, offset);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -109,26 +110,20 @@ export default defineNuxtComponent({
                 if(totalCount == 0){
                     this.viewState = 4;
                 }else{
-                    await this.$refs.feedItemListComp.setFeedItems(feedItems, pageNumber, totalCount);
+                    await this.$refs.feedItemListComp.appendFeedItems(feedItems);
                     this.viewState = 5;
                 }
             }
         },
 
-        async onPageChange(obj){
-            await this.loadFeedItems(obj.pageNumber);
-            ElMessage.success("已为您加载新的内容。")
-        },
-
-        onFeedItemCountChange(feedItemCount){
-            if (feedItemCount == 0){
-                this.viewState = 4;
-            }
-        },
-
         onRefresh(){
-            this.loadFeedItems(1);
-            //this.$refs.feedItemListComp.setPageIndex(1);
+            // this.loadFeedItems("0",30,0);
+            this.viewState = 1;
+            
+            this.$refs.feedItemListComp.clear();
+            this.$refs.feedItemListComp.setLoadingMoreState();
+
+            this.loadFeedItems("0", 30, 0);
         },
 
         async onSetAllReaded(){
@@ -142,10 +137,26 @@ export default defineNuxtComponent({
         },
 
         viewAllFeedItem(){
+            //this.viewState = 1;
+            //this.showAllFeedItem = true;
+            //this.loadFeedItems(1);
+
             this.viewState = 1;
             this.showAllFeedItem = true;
-            this.loadFeedItems(1);
-        }
+
+            this.$refs.feedItemListComp.clear();
+            this.$refs.feedItemListComp.setLoadingMoreState();
+
+            this.loadFeedItems("0", 30, 0);
+        },
+
+        onLoadMore(params){
+            this.loadFeedItems(params.feedItemID, params.limit, 0 );
+        },
+
+        async onReload(){
+            window.location.reload();
+        },
     }
 
 });

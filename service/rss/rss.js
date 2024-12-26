@@ -175,6 +175,18 @@ export default {
         }   
     },
 
+    async setFeedItemReadStateV2(deviceID, feedItemIDs, readState){
+        let params = {
+            device_id:deviceID,
+            feeditem_ids:feedItemIDs,
+            read_state : parseInt(readState),
+            user_type : userbiz.isUserMode() ? 2:1,
+        };
+        return helper.postJsonAsync(false, "/api/tbs/rss/v2/user/feed-item/set-read-state", params);   
+    },
+
+    
+
     async fetchUserFeedItemByIds(deviceID, feedItemID){
         let params = {
             user_type:userbiz.isUserMode() ? 2 : 1,

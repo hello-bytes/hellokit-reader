@@ -4,7 +4,7 @@
         <div v-for="(item, index) in feedItems" :key="index" style="margin-top:20px;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:10px;">
             <div v-if="item.thumb_url.length > 0">
                 <div>
-                    <a v-if="item.feed != null" target="_blank" @click="onFeedClick(item.feed)"  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                    <a v-if="item.feed != null" target="_blank" @click="onFeedClick(item.feed)"  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}{{ item.authorList.length > 0 ? " · " + item.authorList[0].author_name : "" }}</a>
                     <div class="feed_item_list_img_container">
                         <img class="feed_item_img" :src='item.thumb_url' />
                         <div class="feed_item_list_content_container">
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div v-if="item.thumb_url.length == 0">
-                <a v-if="item.feed != null" target="_blank" @click="onFeedClick(item.feed)"  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                <a v-if="item.feed != null" target="_blank" @click="onFeedClick(item.feed)"  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}{{ item.authorList.length > 0 ? " · " + item.authorList[0].author_name : "" }}</a>
                 <a class="feed_item_list_container">
                     <a @click="showFeedItem(item)" class="feed_item_list_container_title" :class="{ feed_item_list_container_title_readed:item.readState != 1 }">{{ item.title }}</a>
                     <p class="feed_item_list_container_desc">{{ item.desc }}</p>
@@ -93,9 +93,13 @@
                     </el-dropdown>
                 </div>    
             </div>
-            
         </div>
+        <div v-if="showSetReadedButton" style="margin:30px 0px;text-align: center;">
+            <el-button @click="onSetReadAndNextPage" size="large" style="width:100%;">&nbsp;&nbsp;&nbsp;&nbsp;<el-icon :size="24" color="#757575"><Check /></el-icon>&nbsp;&nbsp;本页已读，加载下一页&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+        </div>
+        
         <el-pagination v-if="pageMode==1" @current-page="currentPage" @current-change="handlePageChange" background layout="prev, pager, next" :total="totalCount"  :page-size="30" />
+        
         <div style="height:30px"></div>
     </div>
 </template>
@@ -132,6 +136,11 @@ export default defineNuxtComponent({
         readedMode : {
             type : Number,
             default : 0, // 0 全部显示， 1 只显示未读， 3 只显示已读
+        },
+
+        showSetReadedButton : {
+            type : Boolean,
+            default : false, // 0 全部显示， 1 只显示未读， 3 只显示已读
         },
         
     },
@@ -302,7 +311,6 @@ export default defineNuxtComponent({
             }
 
             let responseData = await feedItem.fetchAuthor( false,feedItemIds);
-            console.log(responseData);
             if (helper.isResultOk(responseData)){
                 let authorList = responseData.data;
                 for(let i in authorList){
@@ -337,6 +345,10 @@ export default defineNuxtComponent({
             this.$emit('onPageChange', {pageNumber:parseInt(pageNumber)});
         },
 
+        onSetReadAndNextPage(){
+            this.$emit('setReadedAndNextPage', { feedItems : this.feedItems, currentPage:this.currentPage });
+        },
+
         removeByFeedItemID(feedItemID){
             let i = 0;
             while (i < this.feedItems.length) {
@@ -353,15 +365,20 @@ export default defineNuxtComponent({
             let readStateInt = parseInt(readState);
             let responseData = await rssbiz.setFeedItemReadState(devicebiz.getDeviceID(), feedItem.feed_item_id, readStateInt);
             if (helper.isResultOk(responseData)){
-                if (this.readedMode == 1){
+                feedItem.readState = readStateInt;
+                //console.log("===")
+
+                /*if (this.readedMode == 1){
                     if(readStateInt == 2){
-                        this.removeByFeedItemID(feedItem.feed_item_id);
+                        this.readState = 2;
+                        //this.removeByFeedItemID(feedItem.feed_item_id);
                     }
                 }else if(this.readedMode == 2) {
                     if(readStateInt == 1){
-                        this.removeByFeedItemID(feedItem.feed_item_id);
+                        this.readState = 1;
+                        //this.removeByFeedItemID(feedItem.feed_item_id);
                     }
-                }
+                }*/
             }else{
                 ElMessage.error("设置为\"" + (readStateInt == 1 ? "未读" : "已读") + "\"失败，请稍后再试。")
             }
@@ -399,6 +416,10 @@ export default defineNuxtComponent({
 
         onFeedClick(feedObj){
             emitter.emit("on_popup_feed",{feed:feedObj});
+        },
+
+        loadMoreFeedItem(){
+            // emitter.emit("on_popup_feed",{feed:feedObj});
         }
     }
 })
@@ -515,6 +536,7 @@ export default defineNuxtComponent({
     color: rgb(158, 158, 158);
     margin-bottom:8px;
 }
+
 .feed_name_img > img{
     height:14px;
     margin-right:3px;

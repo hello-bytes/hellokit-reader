@@ -5,21 +5,21 @@
         <Loading v-if="viewState == 1"></Loading>
         <EmptyFolder v-if="viewState == 2"></EmptyFolder>
         <AllDoneFolder @viewAllFeedItem="viewAllFeedItem" v-if="viewState == 3"></AllDoneFolder>
-        <FeedItemList @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="1" :pageMode="1" v-show="viewState == 4"  ref="feedItemListComp"></FeedItemList>
+        <FeedItemListV3 @onLoadMore="onLoadMore" @onReload="onReload" v-show="viewState == 4"  ref="feedItemListComp"></FeedItemListV3>
     </div>
 </template>
 
 <script>
 
-import browser from '@/service/browser';
-
 import rssbiz from '@/service/rss/rss.js';
+import rssfolder from '@/service/rss/folder.js';
+
 import devicebiz  from '@/service/device.js';
 
 import Loading from '~/components/base/Loading.vue';
 
 
-import FeedItemList from '~/components/itemlist/FeedItemList.vue';
+import FeedItemListV3 from '~/components/itemlist/FeedItemListV3.vue';
 import AddRssWhite from "@/icons/AddRssWhite.vue"
 import EmptyFolder from "@/components/folder/EmptyFolder.vue"
 import AllDoneFolder from "@/components/folder/AllDoneFolder.vue"
@@ -27,7 +27,7 @@ import Good from "@/icons/Good.vue"
 
 export default defineNuxtComponent({
     components: {
-        Loading,EmptyFolder,FeedItemList,AddRssWhite,Good,AllDoneFolder
+        Loading,EmptyFolder,FeedItemListV3,AddRssWhite,Good,AllDoneFolder
     },
 
     async asyncData() {
@@ -39,16 +39,16 @@ export default defineNuxtComponent({
     },
 
     mounted() {
-        this.loadFeedItems(1);
+        this.loadFeedItems("0", 30, 0);
     },
 
     methods: {
-        async loadFeedItems(pageNumber){
+        async loadFeedItems(feedItemID, limit, offset ){
             let readState = 1;
             if (this.showAllFeedItem){
                 readState = 0;
             }
-            let responseData = await rssbiz.getUserFeedItems(devicebiz.getDeviceID(),readState, 30, (pageNumber-1) * 30);
+            let responseData = await rssfolder.getUserFeedItemList(devicebiz.getDeviceID(), feedItemID, readState, limit, offset);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -71,34 +71,32 @@ export default defineNuxtComponent({
                     this.viewState = 4;
                 }
             }else{
-                await this.$refs.feedItemListComp.setFeedItems(feedItems,pageNumber, totalCount);
+                // offset 是本次加载的起点，
+                await this.$refs.feedItemListComp.appendFeedItems(feedItems);
                 this.viewState = 4;
-
-                // ElMessage.success("已为您加载新的内容。")
             }
-        },
-
-        async onPageChange(obj){
-            // window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-            await this.loadFeedItems(obj.pageNumber);
-            ElMessage.success("已为您加载新的内容。")
         },
 
         onSubscribeFeed(){
             window.location.href = "/feed/website/ft/1.html";
         },
 
-        onFeedItemCountChange(feedItemCount){
-            if (feedItemCount == 0){
-                this.viewState = 3;
-            }
-        },
-
         viewAllFeedItem(){
             this.viewState = 1;
             this.showAllFeedItem = true;
+
+            this.$refs.feedItemListComp.clear();
+            this.$refs.feedItemListComp.setLoadingMoreState();
             
-            this.loadFeedItems(1);
+            this.loadFeedItems("0", 30, 0);
+        },
+
+        async onReload(){
+            window.location.reload();
+        },
+
+        onLoadMore(params){
+            this.loadFeedItems(params.feedItemID, params.limit, 0 );
         }
     }
 });

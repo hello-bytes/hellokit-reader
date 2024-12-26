@@ -13,7 +13,7 @@
                     <el-button @click="onSearchClick" ><el-icon><Search /></el-icon>&nbsp;&nbsp;搜索</el-button>
                 </template>
             </el-input>
-            <FeedList></FeedList>
+            <FeedList :baseURL=baseURL></FeedList>
         </div>
         <div style="height:40px;"></div>
     </div>
@@ -66,7 +66,19 @@ export default defineNuxtComponent({
             activeTab = "wechat";
         }
 
+        let baseURL = "";
+        if (data.payload.path.indexOf("/feed/website/at") >= 0){
+            baseURL = "/feed/website/at";
+        }else if (data.payload.path.indexOf("/feed/website/ft") >= 0){
+            baseURL = "/feed/website/ft";
+        }else if (data.payload.path.indexOf("/feed/wechat/at") >= 0){
+            baseURL = "/feed/wechat/at";
+        }else if (data.payload.path.indexOf("/feed/wechat/ft") >= 0){
+            baseURL = "/feed/wechat/ft";
+        }
+
         return {
+            baseURL:baseURL,
             searchFeedName:"",
             totalCount:feedsCount,
             activeTab:activeTab,

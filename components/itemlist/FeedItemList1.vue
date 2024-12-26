@@ -10,6 +10,8 @@
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                         <div style="display: flex;margin-top:5px;">
                             <div style="height:30px;line-height:30px;">
+                                <span class="feed_item_list_container_time" v-if="item.authorList.length > 0">{{ item.authorList.length > 0 ? item.authorList[0].author_name : "" }}</span>
+                                <span class="feed_item_list_container_time" v-if="item.authorList.length > 0">&nbsp;·&nbsp;</span>
                                 <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
                                 <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
                                 <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
@@ -54,6 +56,8 @@
                 </a> 
                 <div style="display: flex;margin-top:5px;">
                     <div style="height:30px;line-height:30px;">
+                        <span class="feed_item_list_container_time" v-if="item.authorList.length > 0">{{ item.authorList.length > 0 ? item.authorList[0].author_name : "" }}</span>
+                        <span class="feed_item_list_container_time" v-if="item.authorList.length > 0">&nbsp;·&nbsp;</span>
                         <span class="feed_item_list_container_time">{{ formatHumanTime(item.publish_time) }}</span>
                         <span class="feed_item_list_container_time">&nbsp;·&nbsp;</span>
                         <span class="feed_item_list_container_time">{{ item.read_count }}次阅读</span>
@@ -108,6 +112,8 @@ import helper from '@/utils/helper.js'
 import rssbiz from '@/service/rss/rss.js'
 import readLater from '@/service/rss/read_later.js'
 
+import feedItemBiz from '@/service/rss/feedItem.js'
+
 import emitter from "@/service/event.js";
 
 import browser from '@/service/browser';
@@ -160,6 +166,7 @@ export default defineNuxtComponent({
                 await this.loadReadedFlag(feedItems);
                 await this.loadReadLaterFlag(feedItems);
                 await this.loadFeedForFeedItem(feedItems)
+                await this.loadAuthorForFeedItem(feedItems);
 
                 this.feedItems = feedItems;
                 this.totalCount = totalCount;
@@ -170,6 +177,7 @@ export default defineNuxtComponent({
             await this.loadReadedFlag(feedItems);
             await this.loadReadLaterFlag(feedItems);
             await this.loadFeedForFeedItem(feedItems)
+            await this.loadAuthorForFeedItem(feedItems);
 
             this.currentPage = pageNumber;
             this.feedItems = feedItems;
@@ -260,6 +268,30 @@ export default defineNuxtComponent({
                             if (feedList[j].feed_id == feedItems[index].feed_id){
                                 feedItems[index].feed = feedList[j];
                             }
+                        }
+                    }
+                }
+            }
+        },
+
+        async loadAuthorForFeedItem(feedItems){
+            let feedItemIds = [];
+            for(let index in feedItems){
+                feedItems[index].authorList = [];
+                if(this.isFeedIdExist(feedItems[index].feed_item_id, feedItemIds)){
+                }else{
+                    feedItemIds.push(feedItems[index].feed_item_id);
+                }
+            }
+
+            let responseData = await feedItemBiz.fetchAuthor( false, feedItemIds);
+            if (helper.isResultOk(responseData)){
+                let authorList = responseData.data;
+                for(let i in authorList){
+                    for(let j in feedItems){
+                        if (authorList[i].feed_item_id == feedItems[j].feed_item_id){
+                            feedItems[j].authorList.push(authorList[i]);
+                            break;
                         }
                     }
                 }

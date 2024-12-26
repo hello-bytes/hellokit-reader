@@ -131,7 +131,7 @@
                 <span>所有文章</span>
             </a>
         </div>
-        <div class="rss_right">
+        <div id="right_content_rootcontainer" class="rss_right">
             <slot></slot>
         </div>
         <AllPopup></AllPopup>
@@ -190,7 +190,6 @@ export default defineNuxtComponent({
         const route = useRoute();
         let currentFeedID = "";
         let currentFolderID = "";
-        
 
         let isReaded = false;
         let isMyFeed = false;

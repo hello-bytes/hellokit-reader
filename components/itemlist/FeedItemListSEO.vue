@@ -7,7 +7,7 @@
             <div v-for="(item, index) in feedItems" :key="index" class="feed_item_root_container">
                 <div v-if="item.thumb_url.length > 0">
                     <div>
-                        <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><div style="flex:1"></div><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                        <div><a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}{{ item.authorList.length > 0 ? " · " + item.authorList[0].author_name : "" }}</a></div>
                         <div class="feed_item_list_img_container">
                             <img class="feed_item_img" :src='item.thumb_url' />
                             <div class="feed_item_list_content_container">
@@ -49,7 +49,7 @@
                 </div>
                 <div v-if="item.thumb_url.length == 0">
                     <div class="feed_item_list_container">
-                        <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><div style="flex:1"></div><img :src=item.feed.icon_url /> {{ item.feed.name }}</a>
+                        <a v-if="item.feed != null" target="_blank" :href='item.feed.url'  class="feed_name_img"><img :src=item.feed.icon_url /> {{ item.feed.name }}{{ item.authorList.length > 0 ? " · " + item.authorList[0].author_name : "" }}</a>
                         <a :href='"/feed-item/" + item.feed_item_id + ".html"' target="_blank" class="feed_item_list_container_title">{{ item.title }}</a>
                         <p class="feed_item_list_container_desc">{{ item.desc }}</p>
                     </div> 
@@ -142,8 +142,7 @@ export default defineNuxtComponent({
     mounted() {
     },
 
-    methods:{
-        
+    methods:{        
         notifyFeedItemChange(){
             this.$emit('feedItemCountChange', this.feedItems.length);
         },
@@ -324,12 +323,17 @@ export default defineNuxtComponent({
     max-height: 100px;
 }
 .feed_name_img{
+    cursor:pointer;
     display: flex;
-    align-items: center;
-    line-height: 12px;
+    align-items: left;
+    /*justify-content: center;*/
+    /*display: inline-block;*/
+    height:16px;
+    line-height: 16px;
     font-size:14px;
     color: rgb(158, 158, 158);
     margin-bottom:8px;
+    text-align: left;
 }
 .feed_name_img > img{
     height:14px;
