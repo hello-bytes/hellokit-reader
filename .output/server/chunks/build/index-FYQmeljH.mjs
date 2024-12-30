@@ -1,0 +1,67 @@
+import { I as success_filled_default, w as warning_filled_default, J as circle_close_filled_default, K as info_filled_default, t as close_default, G as loading_default, o as circle_check_default, q as circle_close_default } from './index-DkfqKprI.mjs';
+import { d as definePropType, b as buildProps } from './base-BSYjTNA2.mjs';
+import { getCurrentInstance, inject, ref, computed } from 'vue';
+import { isFunction } from '@vue/shared';
+
+const iconPropType = definePropType([
+  String,
+  Object,
+  Function
+]);
+const TypeComponents = {
+  Close: close_default,
+  SuccessFilled: success_filled_default,
+  InfoFilled: info_filled_default,
+  WarningFilled: warning_filled_default,
+  CircleCloseFilled: circle_close_filled_default
+};
+const TypeComponentsMap = {
+  success: success_filled_default,
+  warning: warning_filled_default,
+  error: circle_close_filled_default,
+  info: info_filled_default
+};
+const ValidateComponentsMap = {
+  validating: loading_default,
+  success: circle_check_default,
+  error: circle_close_default
+};
+const emptyValuesContextKey = Symbol("emptyValuesContextKey");
+const DEFAULT_EMPTY_VALUES = ["", void 0, null];
+const DEFAULT_VALUE_ON_CLEAR = void 0;
+const useEmptyValuesProps = buildProps({
+  emptyValues: Array,
+  valueOnClear: {
+    type: [String, Number, Boolean, Function],
+    default: void 0,
+    validator: (val) => isFunction(val) ? !val() : !val
+  }
+});
+const useEmptyValues = (props, defaultValue) => {
+  const config = getCurrentInstance() ? inject(emptyValuesContextKey, ref({})) : ref({});
+  const emptyValues = computed(() => props.emptyValues || config.value.emptyValues || DEFAULT_EMPTY_VALUES);
+  const valueOnClear = computed(() => {
+    if (isFunction(props.valueOnClear)) {
+      return props.valueOnClear();
+    } else if (props.valueOnClear !== void 0) {
+      return props.valueOnClear;
+    } else if (isFunction(config.value.valueOnClear)) {
+      return config.value.valueOnClear();
+    } else if (config.value.valueOnClear !== void 0) {
+      return config.value.valueOnClear;
+    }
+    return DEFAULT_VALUE_ON_CLEAR;
+  });
+  const isEmptyValue = (value) => {
+    return emptyValues.value.includes(value);
+  };
+  if (!emptyValues.value.includes(valueOnClear.value)) ;
+  return {
+    emptyValues,
+    valueOnClear,
+    isEmptyValue
+  };
+};
+
+export { TypeComponentsMap as T, ValidateComponentsMap as V, TypeComponents as a, useEmptyValues as b, emptyValuesContextKey as e, iconPropType as i, useEmptyValuesProps as u };
+//# sourceMappingURL=index-FYQmeljH.mjs.map

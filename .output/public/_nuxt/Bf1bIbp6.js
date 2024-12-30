@@ -1,0 +1,1 @@
+import{_ as o,c as t,A as c,o as r}from"./C-CnRt1-.js";const s={},n={style:{"background-color":"white"}};function a(e,l){return r(),t("div",n,[c(e.$slots,"default")])}const d=o(s,[["render",a]]);export{d as default};

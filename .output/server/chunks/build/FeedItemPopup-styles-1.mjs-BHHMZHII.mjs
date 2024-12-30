@@ -1,0 +1,4 @@
+const FeedItemPopup_vue_vue_type_style_index_0_scoped_178907e7_lang = ".el-drawer__body[data-v-178907e7]{padding-top:0}.feed_item_title[data-v-178907e7]{color:#1b1b1f;font-size:28px;font-weight:700;margin-bottom:5px;margin-top:5px}.feed_item_url[data-v-178907e7]{color:#84868f;font-size:12px;font-weight:400;margin-bottom:0;margin-top:0}.feed_item_url[data-v-178907e7]:hover{text-decoration:underline}.feed_item_time[data-v-178907e7]{color:#84868f;font-size:12px;font-weight:400;margin-bottom:0;margin-top:0}.close_wrapper[data-v-178907e7]{border-radius:5px;display:inline-block;padding-left:5px;padding-right:5px;padding-top:5px}.close_wrapper[data-v-178907e7]:hover{background-color:#eee}";
+
+export { FeedItemPopup_vue_vue_type_style_index_0_scoped_178907e7_lang as F };
+//# sourceMappingURL=FeedItemPopup-styles-1.mjs-BHHMZHII.mjs.map

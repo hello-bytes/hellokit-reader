@@ -1,0 +1,1 @@
+import{l as r}from"./C-CnRt1-.js";const i={isUserMode(e,t){return r.getUserToken().length>0},isDeviceMode(e,t){return r.getUserToken().length==0},getNickName(){let e=r.getMst();return e==null?"":e.n!=null&&e.n.length>0?e.n:""}};export{i as u};

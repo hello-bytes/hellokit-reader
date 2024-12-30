@@ -1,0 +1,1 @@
+import{m as n,z as a}from"./Bj0pkxMM.js";function u(e,t,s){return e==null?e:n(e,t,s)}const c=e=>Object.keys(e),f=e=>Object.entries(e),g=(e,t,s)=>({get value(){return a(e,t,s)},set value(r){u(e,t,r)}});export{f as e,g,c as k};
