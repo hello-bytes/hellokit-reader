@@ -3,13 +3,25 @@
         <h2 class="page_root_title">设置</h2>
         <el-divider></el-divider>
         <el-row>
-            <el-col :span="6" style="padding-right:12px;">
-                <div class="setting_entry_block">
+            <el-col :span="8" class="col_left_block" style="padding-right:12px;">
+                <div class="setting_entry_block" @click="onGeneralSetting()">
                     <p style="margin:0px;color:#333333;">常规设置</p>
                     <el-icon><Setting /></el-icon>
                 </div>
             </el-col>
-            <el-col :span="6" style="padding-left:12px;padding-right:12px;">
+            <el-col :span="8" class="col_block">
+                <div class="setting_entry_block">
+                    <p style="margin:0px;color:#333333;">文件夹管理</p>
+                    <el-icon><User /></el-icon>
+                </div>
+            </el-col>
+            <el-col :span="8" class="col_right_block">
+                <div class="setting_entry_block">
+                    <p style="margin:0px;color:#333333;">订阅源管理</p>
+                    <el-icon><User /></el-icon>
+                </div>
+            </el-col>
+            <el-col :span="8" class="col_left_block not_first_line_block">
                 <div class="setting_entry_block">
                     <p style="margin:0px;color:#333333;">个人资料</p>
                     <el-icon><User /></el-icon>
@@ -23,6 +35,9 @@
 
 import User from "@/icons/User.vue"
 import { Setting } from "@element-plus/icons-vue"
+
+import emitter from "@/service/event.js";
+
 export default defineNuxtComponent({
     components: {
         Setting,User
@@ -37,7 +52,11 @@ export default defineNuxtComponent({
     },
 
     methods: {
-
+        onGeneralSetting(){
+            // on_popup_general_setting
+            emitter.emit("on_popup_general_setting",{});
+        }
+        
     }
 
 });
@@ -55,4 +74,22 @@ export default defineNuxtComponent({
 .setting_entry_block > p {
     color:#333333;
 }
+
+.not_first_line_block{
+    margin-top:20px;
+}
+
+.col_left_block{
+    padding-right:8px;   
+}
+
+.col_block{
+    padding-left:4px;
+    padding-right:4px;
+}
+
+.col_right_block{
+    padding-left:8px;
+}
+
 </style>

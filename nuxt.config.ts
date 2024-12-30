@@ -47,8 +47,8 @@ export default defineNuxtConfig({
         server: {
             proxy: {
                 '/api': {
-                //target: 'https://hellokit.com.cn', // 线上环境
-                  target: 'http://127.0.0.1:9016', // 本地环境
+                  target: 'https://hellokit.com.cn', // 线上环境
+                  // target: 'http://127.0.0.1:9016', // 本地环境
                   "secure": false,
                 },
               },
@@ -59,8 +59,8 @@ export default defineNuxtConfig({
     nitro: {
         routeRules: {
             '/api/**': {
-                //proxy: 'https://www.hellokit.com.cn/api/**'
-                 proxy: 'http://127.0.0.1:9016/api/**', // 本地环境
+                proxy: 'https://www.hellokit.com.cn/api/**'
+                // proxy: 'http://127.0.0.1:9016/api/**', // 本地环境
             }
         }
     },

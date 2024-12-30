@@ -40,6 +40,18 @@ export default {
         }
     },
 
+    async fetchReadLaterV2(deviceID, feedItemID, limit, offset){
+        let params = {
+            user_type : userbiz.isUserMode() ? 2:1,
+            feed_item_id:feedItemID,
+            device_id: deviceID,
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        };
+        
+        return helper.postJsonAsync(false, "/api/tbs/rss/v2/user/feed-item/fetch-read-later", params);
+    },
+
     async getReadLaterByFeedItems(deviceID, feedItemIds){
         let params = {
             device_id: deviceID,

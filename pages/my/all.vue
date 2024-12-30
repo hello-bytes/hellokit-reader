@@ -43,7 +43,7 @@ export default defineNuxtComponent({
     },
 
     methods: {
-        async loadFeedItems(feedItemID, limit, offset ){
+        async loadFeedItems(feedItemID, limit, offset){
             let readState = 1;
             if (this.showAllFeedItem){
                 readState = 0;

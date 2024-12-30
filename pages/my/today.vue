@@ -22,19 +22,21 @@
             <p style="margin-top:16px;margin-bottom:20px;">遇到未知错误，请稍后再试。</p>
         </div>
         
-        <FeedItemList  @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :readedMode="1" :pageMode="1" v-show="viewState == 5"  ref="feedItemListComp"></FeedItemList>
+        <FeedItemListV3  :showFeedName="true"  v-show="viewState == 5"  @onLoadMore="onLoadMore" @onReload="onReload" ref="feedItemListComp"></FeedItemListV3>
     </div>
 </template>
 
 <script>
 
 import rssbiz from '@/service/rss/rss.js';
+import rssfolder from '@/service/rss/folder.js';
+
 import devicebiz  from '@/service/device.js';
 
 import Loading from '~/components/base/Loading.vue';
 
 
-import FeedItemList from '~/components/itemlist/FeedItemList.vue';
+import FeedItemListV3 from '~/components/itemlist/FeedItemListV3.vue';
 import AddRssWhite from "@/icons/AddRssWhite.vue"
 import EmptyFolder from "@/icons/EmptyFolder.vue"
 import Good from "@/icons/Good.vue"
@@ -42,7 +44,7 @@ import NetworkError from "@/icons/NetworkError.vue"
 
 export default defineNuxtComponent({
     components: {
-        Loading,EmptyFolder,FeedItemList,AddRssWhite,Good,NetworkError
+        Loading,EmptyFolder,FeedItemListV3,AddRssWhite,Good,NetworkError
     },
 
     async asyncData() {
@@ -54,13 +56,20 @@ export default defineNuxtComponent({
     },
 
     mounted() {
-        this.loadFeedItems(1);
+        this.loadFeedItems("0",30,0);
     },
 
     methods: {
-        async loadFeedItems(pageNumber){
-            let responseData = await  rssbiz.getTodayFeedItems(devicebiz.getDeviceID(), 30, (pageNumber-1) * 30);
+        async loadFeedItems(feedItemID, limit, offset){
+            let readState = 1;
+            /*if (this.showAllFeedItem){
+                readState = 0;
+            }*/
+            let responseData = await  rssfolder.getUserFeedItemListByToday(devicebiz.getDeviceID(),  feedItemID, readState, limit, offset);
             if (!helper.isResultOk(responseData)){
+                if(feedItemID == "0"){
+                    this.viewState = 4;
+                }
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
             }
@@ -82,7 +91,7 @@ export default defineNuxtComponent({
                     this.viewState = 4;
                 }
             }else{
-                await this.$refs.feedItemListComp.setFeedItems(feedItems,pageNumber, totalCount);
+                await this.$refs.feedItemListComp.appendFeedItems(feedItems);
                 this.viewState = 5;
             }
         },
@@ -91,16 +100,13 @@ export default defineNuxtComponent({
             window.location.href = "/feed/website/ft/1.html";
         },
 
-        onFeedItemCountChange(feedItemCount){
-            if (feedItemCount == 0){
-                this.viewState = 3;
-            }
+        async onReload(){
+            window.location.reload();
         },
 
-        async onPageChange(obj){
-            await this.loadFeedItems(obj.pageNumber);
-            ElMessage.success("已为您加载新的内容。")
-        },
+        onLoadMore(params){
+            this.loadFeedItems(params.feedItemID, params.limit, 0 );
+        }
 
     }
 

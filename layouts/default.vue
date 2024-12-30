@@ -77,11 +77,11 @@
                 <span>今日阅读</span>
             </a>
             <div v-if=false class="middle_entry">
-                <AllFeedItem :width="19" :height="18"></AllFeedItem>
+                <AllFeedItem :width="18" :height="18"></AllFeedItem>
                 <span>所有资讯</span>
             </div>
             <a href="/my/read-later" :class="{feed_entry_active:isReadLater}" class="middle_entry" style="padding-left:22px;">
-                <el-icon :size="18"><CollectionTag></CollectionTag></el-icon>
+                <ReadLaterEntry :width="18" :height="18"></ReadLaterEntry>
                 <span>稍后阅读</span>
             </a>
             <a href="/my/already-read" :class="{feed_entry_active:isReaded}" class="middle_entry" style="padding-left:22px;">
@@ -173,6 +173,8 @@ import emitter from "@/service/event.js";
 import HelloReadLogo from "@/icons/HelloReadLogo.vue"
 import {ArrowRight,ArrowDown,Files,CollectionTag} from "@element-plus/icons-vue"
 
+import ReadLaterEntry from '@/icons/ReadLaterEntry.vue';
+
 import { SwitchButton,Service,Share } from "@element-plus/icons-vue"
 
 import LogoutIcon from "@/icons/LogoutIcon.vue"
@@ -183,7 +185,7 @@ import WelcomeIcon from "@/icons/WelcomeIcon.vue"
 export default defineNuxtComponent({
     components: {
 		RssLogo,SideBar,AddRss,User,RssLogoGray,CreateRssFolder,AllFeed,LaterRead,Recent,AllSubscribeFeed,AllFeedItem,Today,AllPopup,ArrowRight,ArrowDown,AllSubscribeFeedActive,Files,CollectionTag,ReadedIcon,AllArticleIcon,HelloReadLogo,
-        LogoutIcon,WelcomeIcon,SwitchButton,Service,Share
+        LogoutIcon,WelcomeIcon,SwitchButton,Service,Share,ReadLaterEntry
 	},
 
     async asyncData(params) {

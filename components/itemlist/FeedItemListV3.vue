@@ -60,6 +60,12 @@ export default defineNuxtComponent({
         showFeedName : {
             type : Boolean,
             default : true, // 是否显示Feed信息
+        },
+
+        // 当前List是给ReadLater使用的
+        readLaterMode:{
+            type : Boolean,
+            default : false, // 是否显示Feed信息
         }
     },
 
@@ -86,7 +92,7 @@ export default defineNuxtComponent({
             feedItem:null, // 当前被选中（点击）的 FeedItem
 
             element:null,
-            distance:100,
+            distance:200,
         }
     },
 
@@ -108,11 +114,56 @@ export default defineNuxtComponent({
         isFeedItemExist(feedItemId){
             for(let i in this.feedItems){
                 if(this.feedItems[i].feed_item_id == feedItemId){
-                    //console.log("feed item exist : ",this.feedItems[i].feed_item_id," = ",feedItemId, ", title = ", this.feedItems[i].title);
                     return true;
                 }
             }
             return false;
+        },
+
+        async appendFeedItemIDs(feedItemIDs){
+            // 如果 feedItems 为空，表示都加载完了，置一下标记位
+            if(feedItemIDs.length == 0 ){
+                this.loadFinish = true;
+                this.loadingMore = false;
+                return;
+            }
+
+            let feedItems = [];
+            let responseData = await rssbiz.getFeedItemByIDs(false,feedItemIDs);
+            if (helper.isResultOk(responseData)){
+                feedItems = responseData.data;
+
+                let sortedFeedItems = [];
+                for(let i in feedItemIDs){
+                    for(let j in feedItems){
+                        if (feedItemIDs[i] == feedItems[j].feed_item_id){
+                            sortedFeedItems.push(feedItems[j]);
+                            break;
+                        }
+                    }
+                }
+
+                await this.loadReadedFlag(sortedFeedItems);
+                await this.loadReadLaterFlag(sortedFeedItems);
+                await this.loadFeedForFeedItem(sortedFeedItems);
+                await this.loadAuthorForFeedItem(sortedFeedItems);
+
+                //console.log(sortedFeedItems);
+
+                this.feedItems.push(...sortedFeedItems);
+                
+                this.buildFeedCount();
+
+                this.loadingMore = false;
+
+                console.log(this.feedItems);
+                console.log("=======");
+
+                // 单页大于100条以上，不再加载更多
+                if(this.feedItems.length >= 100 ){
+                    this.loadTooMuch = true;
+                }
+            }
         },
 
         // , totalCount
@@ -396,16 +447,28 @@ export default defineNuxtComponent({
             this.loadingMore = true;
 
             let lastFeedItem = null;
-            let total = this.feedItems.length;
-            for(let i = total -1 ; i >= 0; i--){
-                if (this.feedItems[i].readState == 1){
-                    lastFeedItem = this.feedItems[i];
-                    break;
-                }
-            }
 
-            if (lastFeedItem == null){
-                this.loadingMore = false;
+            if (this.readLaterMode) {
+                console.log("load more...");
+                let total = this.feedItems.length;
+                for(let i = total -1 ; i >= 0; i--){
+                    if (this.feedItems[i].isReadLater){
+                        lastFeedItem = this.feedItems[i];
+                        break;
+                    }
+                }
+            }else{
+                let total = this.feedItems.length;
+                for(let i = total -1 ; i >= 0; i--){
+                    if (this.feedItems[i].readState == 1){
+                        lastFeedItem = this.feedItems[i];
+                        break;
+                    }
+                }
+
+                if (lastFeedItem == null){
+                    this.loadingMore = false;
+                }
             }
 
             if (lastFeedItem != null){

@@ -199,5 +199,21 @@ export default {
         return helper.postClientJsonAsync("/api/tbs/rss/v2/user/feeditem", params);
     },
 
+    async getUserFeedItemListByToday(deviceID, feedItemID,readState, limit, offset ){
+        let params = {
+            user_type : userbiz.isUserMode() ? 2:1,
+            device_id:deviceID,
+            folder_id:"0",
+            limit:parseInt(limit),
+            offset:parseInt(offset),
+            read_state:parseInt(readState),
+            hide_state:0,
+            only_today : true,
+            feed_id:"0",
+            feed_item_id:feedItemID,
+        };
+        // console.log(params);
+        return helper.postClientJsonAsync("/api/tbs/rss/v2/user/feeditem", params);
+    },
     
 }

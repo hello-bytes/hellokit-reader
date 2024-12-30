@@ -9,7 +9,7 @@
             <p style="margin-bottom:0px;font-size:30px;">空空如也</p>
             <p style="margin-bottom:0px;font-size:16px;">你设置为“稍后阅读”的文章将会出现这里。</p>
         </div>
-        <FeedItemList :pageMode="1"  @feedItemCountChange="onFeedItemCountChange" @onPageChange="onPageChange" :onlyShowReadLater="true" v-show="viewState == 3"  ref="feedItemListComp"></FeedItemList>
+        <FeedItemListV3  v-show="viewState == 3" :readLaterMode="true"  @onLoadMore="onLoadMore" @onReload="onReload"   ref="feedItemListComp"></FeedItemListV3>
     </div>
 </template>
 
@@ -24,7 +24,7 @@ import devicebiz  from '@/service/device.js';
 import Loading from '~/components/base/Loading.vue';
 
 
-import FeedItemList from '~/components/itemlist/FeedItemList.vue';
+import FeedItemListV3 from '~/components/itemlist/FeedItemListV3.vue';
 import AddRssWhite from "@/icons/AddRssWhite.vue"
 import EmptyFolder from "@/components/folder/EmptyFolder.vue"
 import AllDoneFolder from "@/components/folder/AllDoneFolder.vue"
@@ -32,7 +32,7 @@ import Good from "@/icons/Good.vue"
 
 export default defineNuxtComponent({
     components: {
-        Loading,EmptyFolder,FeedItemList,AddRssWhite,Good,AllDoneFolder
+        Loading,EmptyFolder,FeedItemListV3,AddRssWhite,Good,AllDoneFolder
     },
 
     async asyncData() {
@@ -43,12 +43,12 @@ export default defineNuxtComponent({
     },
 
     mounted() {
-        this.loadFeedItems(1);
+        this.loadFeedItems("0", 30, 0);
     },
 
     methods: {
-        async loadFeedItems(pageNumber){
-            let responseData = await readLater.fetchReadLater(devicebiz.getDeviceID(), 30, (pageNumber-1) * 30);
+        async loadFeedItems(feedItemID, limit, offset){
+            let responseData = await readLater.fetchReadLaterV2(devicebiz.getDeviceID(), feedItemID, limit, offset);
             if (!helper.isResultOk(responseData)){
                 ElMessage.error("文章列表加载失败，请检查网络或稍后再试。");
                 return;
@@ -64,25 +64,23 @@ export default defineNuxtComponent({
                     feedItemIds.push(readLaterItems[index].feed_item_id);
                 }
                 
-                await this.$refs.feedItemListComp.setFeedItemIDs(feedItemIds, totalCount);
+                await this.$refs.feedItemListComp.appendFeedItemIDs(feedItemIds);
                 this.viewState = 3;
             }
+        },
+
+        async onReload(){
+            window.location.reload();
+        },
+
+        onLoadMore(params){
+            this.loadFeedItems(params.feedItemID, params.limit, 0 );
         },
 
         onSubscribeFeed(){
             window.location.href = "/feed/website/ft/1.html";
         },
 
-        onFeedItemCountChange(feedItemCount){
-            if (feedItemCount == 0){
-                this.viewState = 2;
-            }
-        },
-
-        async onPageChange(obj){
-            await this.loadFeedItems(obj.pageNumber);
-            ElMessage.success("已为您加载新的内容。")
-        },
     }
 });
 
