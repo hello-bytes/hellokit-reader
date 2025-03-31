@@ -5,11 +5,11 @@
             <h1 class="brand_title">哈喽·阅读</h1>
             <p style="font-weight: 500;font-size: 36px;text-align: center;margin-top:0px;">每一次阅读，都成为知识的深度探索之旅。</p>
             <div>
-                <a @click="onGotoReader" class="button_link button_link_active">无需登录，直接使用</a>
+                <a @click="onGotoReader" class="button_link button_link_active">直接匿名使用</a>
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <a class="button_link" href="/feed-item">先逛一下</a>
+                <a class="button_link" href="/article/page/1.html">先逛一下</a>
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <a class="button_link" href="https://www.hellokit.com.cn/user/login?src=https://reader.hellokit.com/my/today">登录账号，开启阅读</a>
+                <a class="button_link" style="cursor:pointer;" @click="onWechatLogin" >微信扫码登录使用</a>
             </div>
             <span style="margin-top:15px;display:inline-block;">哈喽阅读基于浏览器指纹自动生成您的专属账号，不用登陆即可使用绝大部分功能。</span>
         </div>
@@ -85,6 +85,7 @@
 <script>
 
 import helper from "@/utils/helper"
+import emitter from "@/service/event.js";
 
 export default defineNuxtComponent({
     async asyncData() {
@@ -97,10 +98,12 @@ export default defineNuxtComponent({
 
     methods: {
         onGotoReader(){
-            helper.saveKV("hellokit.reader.state","inited");
-            setTimeout(()=>{
-                window.location.href = "/my/today";
-            },200);
+            emitter.emit("on_popup_anonymity_warning",{});
+        },
+
+        // href="https://www.hellokit.com.cn/user/login?src=https://reader.hellokit.com/my/today"
+        onWechatLogin(){
+            emitter.emit("on_popup_wechatlogin",{});
         }
     }
 
@@ -126,6 +129,11 @@ definePageMeta({
     font-size: 20px;
     border:1px solid #009a61;
     border-radius: 5px;
+    cursor: pointer;
+}
+.button_link:hover{
+    background-color: #009a61;
+    color:#fff;
 }
 .button_link_active{
     background-color:#009a61;

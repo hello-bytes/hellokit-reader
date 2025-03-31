@@ -1,5 +1,5 @@
 import { hasInjectionContext, inject, version, ref, watchEffect, watch, getCurrentInstance, shallowRef, toRef, onServerPrefetch, defineAsyncComponent, computed, unref, defineComponent, h, provide, shallowReactive, Suspense, nextTick, Fragment, Transition, useSSRContext, toValue, reactive, mergeProps, toRefs, createApp, effectScope, getCurrentScope, onErrorCaptured, createVNode, resolveDynamicComponent, isReadonly, withCtx, isRef, isShallow, isReactive, toRaw } from 'vue';
-import { $ as $fetch, m as hasProtocol, n as isScriptProtocol, o as joinURL, w as withQuery, p as getRequestHeaders, q as defu, r as sanitizeStatusCode, t as hash, v as createHooks, i as createError$1, x as toRouteMatcher, y as createRouter$1 } from '../runtime.mjs';
+import { $ as $fetch, l as hasProtocol, m as isScriptProtocol, n as joinURL, w as withQuery, o as getRequestHeaders, p as defu, q as sanitizeStatusCode, r as hash, t as createHooks, h as createError$1, v as toRouteMatcher, x as createRouter$1 } from '../runtime.mjs';
 import { b as baseURL } from '../routes/renderer.mjs';
 import { CapoPlugin, getActiveHead } from 'unhead';
 import { defineHeadPlugin, composableNames } from '@unhead/shared';
@@ -10,16 +10,10 @@ import { isNil } from 'lodash-unified';
 import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode, ssrRenderAttrs } from 'vue/server-renderer';
 import 'node:http';
 import 'node:https';
-import 'node:zlib';
-import 'node:stream';
-import 'node:buffer';
-import 'node:util';
-import 'node:url';
-import 'node:net';
-import 'node:fs';
-import 'node:path';
 import 'fs';
 import 'path';
+import 'node:fs';
+import 'node:url';
 import 'ipx';
 import 'vue-bundle-renderer/runtime';
 import 'devalue';
@@ -721,53 +715,58 @@ const _routes = [
   {
     name: "about",
     path: "/about",
-    component: () => import('./index-BeX3Glq0.mjs').then((m) => m.default || m)
+    component: () => import('./index-DaMi98zp.mjs').then((m) => m.default || m)
+  },
+  {
+    name: "article-page-pageNumber.html",
+    path: "/article/page/:pageNumber?.html",
+    component: () => import('./index-CfMasRpR.mjs').then((m) => m.default || m)
   },
   {
     name: "contact",
     path: "/contact",
-    component: () => import('./contact-Dk49efWu.mjs').then((m) => m.default || m)
+    component: () => import('./contact-cK8tUp3H.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-item-feed_item_id.html",
     path: "/feed-item/:feed_item_id?.html",
     meta: __nuxt_page_meta$3 || {},
-    component: () => import('./index-CcAkoS__.mjs').then((m) => m.default || m)
+    component: () => import('./index-C13fJX9b.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-item",
     path: "/feed-item",
-    component: () => import('./index-B8owSdfG.mjs').then((m) => m.default || m)
+    component: () => import('./index-BxQdiXXs.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-item-page-pageNumber.html",
     path: "/feed-item/page/:pageNumber?.html",
-    component: () => import('./index-BGd9NCtN.mjs').then((m) => m.default || m)
+    component: () => import('./index-BRKILMGa.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-search-text",
     path: "/feed/search/:text?",
-    component: () => import('./index-Du4t2Q6v.mjs').then((m) => m.default || m)
+    component: () => import('./index-CCo3uJOi.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-website-at-page.html",
     path: "/feed/website/at/:page?.html",
-    component: () => import('./index-CJbdb04h.mjs').then((m) => m.default || m)
+    component: () => import('./index-DgPBTsKp.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-website-ft-page.html",
     path: "/feed/website/ft/:page?.html",
-    component: () => import('./index-ClS4iIVg.mjs').then((m) => m.default || m)
+    component: () => import('./index-eWpSkH9n.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-wechat-at-page.html",
     path: "/feed/wechat/at/:page?.html",
-    component: () => import('./index-rAJqDIzL.mjs').then((m) => m.default || m)
+    component: () => import('./index-Dw3jCMjg.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-wechat-ft-page.html",
     path: "/feed/wechat/ft/:page?.html",
-    component: () => import('./index-4HIGd1cD.mjs').then((m) => m.default || m)
+    component: () => import('./index-DaTlFiU9.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-wx-public-account-mp_id",
@@ -777,23 +776,23 @@ const _routes = [
   {
     name: "feed-wx-public-account-at-page.html",
     path: "/feed/wx-public-account/at/:page?.html",
-    component: () => import('./index-BdVWZEG7.mjs').then((m) => m.default || m)
+    component: () => import('./index-Cnc_TUkX.mjs').then((m) => m.default || m)
   },
   {
     name: "feed-wx-public-account-ft-page.html",
     path: "/feed/wx-public-account/ft/:page?.html",
-    component: () => import('./index-wgWJipLx.mjs').then((m) => m.default || m)
+    component: () => import('./index-BUDqRfHK.mjs').then((m) => m.default || m)
   },
   {
     name: "guide",
     path: "/guide",
     meta: __nuxt_page_meta$2 || {},
-    component: () => import('./guide-Ch9mxerg.mjs').then((m) => m.default || m)
+    component: () => import('./guide-7Dm5AXwD.mjs').then((m) => m.default || m)
   },
   {
     name: "import",
     path: "/import",
-    component: () => import('./import-Dq9QAZZ3.mjs').then((m) => m.default || m)
+    component: () => import('./import-B0JGudKU.mjs').then((m) => m.default || m)
   },
   {
     name: "index",
@@ -804,53 +803,53 @@ const _routes = [
   {
     name: "my-all",
     path: "/my/all",
-    component: () => import('./all-BV98SW2N.mjs').then((m) => m.default || m)
+    component: () => import('./all-DOCyQunj.mjs').then((m) => m.default || m)
   },
   {
     name: "my-already-read",
     path: "/my/already-read",
-    component: () => import('./already-read-bIXUU--t.mjs').then((m) => m.default || m)
+    component: () => import('./already-read-C3ja8S51.mjs').then((m) => m.default || m)
   },
   {
     name: "my-feed-feed_id-feed_item_id.html",
     path: "/my/feed/:feed_id?/:feed_item_id?.html",
     meta: __nuxt_page_meta || {},
-    component: () => import('./index-tVBQoGMe.mjs').then((m) => m.default || m)
+    component: () => import('./index-31cOwamI.mjs').then((m) => m.default || m)
   },
   {
     name: "my-feed-feed_id",
     path: "/my/feed/:feed_id?",
-    component: () => import('./index-CDnBz_2s.mjs').then((m) => m.default || m)
+    component: () => import('./index-DyYt6TLV.mjs').then((m) => m.default || m)
   },
   {
     name: "my-folder-folder_id.html",
     path: "/my/folder/:folder_id?.html",
-    component: () => import('./index-3CmTtzQV.mjs').then((m) => m.default || m)
+    component: () => import('./index-BqVS5-Fz.mjs').then((m) => m.default || m)
   },
   {
     name: "my-read-later",
     path: "/my/read-later",
-    component: () => import('./read-later-BcMZj4FB.mjs').then((m) => m.default || m)
+    component: () => import('./read-later-Dq3TZ9hr.mjs').then((m) => m.default || m)
   },
   {
     name: "my-setting",
     path: "/my/setting",
-    component: () => import('./index-B2T1Yp6P.mjs').then((m) => m.default || m)
+    component: () => import('./index-DMVSmUNy.mjs').then((m) => m.default || m)
   },
   {
     name: "my-today",
     path: "/my/today",
-    component: () => import('./today-DzOmj2QM.mjs').then((m) => m.default || m)
+    component: () => import('./today-DOTp6AxF.mjs').then((m) => m.default || m)
   },
   {
     name: "user-device",
     path: "/user/device",
-    component: () => import('./device-B8KkvB0A.mjs').then((m) => m.default || m)
+    component: () => import('./device-DTL_XaNs.mjs').then((m) => m.default || m)
   },
   {
     name: "user-service",
     path: "/user/service",
-    component: () => import('./service-C6jOhbVF.mjs').then((m) => m.default || m)
+    component: () => import('./service-B-ETvnIN.mjs').then((m) => m.default || m)
   }
 ];
 const _wrapIf = (component, props, slots) => {
@@ -1285,6 +1284,28 @@ const helper = {
       xmlHttp.send(JSON.stringify(data));
     });
   },
+  async postClientJsonAsyncWithToken(url, token, data) {
+    return new Promise((resolve, reject) => {
+      var xmlHttp = new (void 0)();
+      xmlHttp.open("POST", url, true);
+      xmlHttp.setRequestHeader("hbs-tk", token);
+      xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4) {
+          if (xmlHttp.status == 200) {
+            let result = JSON.parse(xmlHttp.responseText);
+            if (result != null && result.code == 0) {
+              resolve({ errorType: 0, code: 0, data: result.data });
+            } else {
+              resolve({ errorType: 1, code: result.code, data: result.data });
+            }
+          } else {
+            resolve({ errorType: 2, code: xmlHttp.status, data: null });
+          }
+        }
+      };
+      xmlHttp.send(JSON.stringify(data));
+    });
+  },
   async postJsonAsync(serverSideRequest, url, requestData) {
     if (!serverSideRequest) {
       return this.postClientJsonAsync(url, requestData);
@@ -1457,6 +1478,30 @@ const helper = {
       return (fileSize / 1024).toFixed(2) + " KB";
     }
     return fileSize + " B";
+  },
+  // ========== KV Storage ==================
+  setKV(key, val) {
+    localStorage.setItem(key, val);
+  },
+  setKVObject(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+  },
+  getK(key) {
+    var t = localStorage.getItem(key);
+    if (t == void 0) {
+      return "";
+    }
+    return t;
+  },
+  getKObject(key) {
+    var t = localStorage.getItem(key);
+    if (t == void 0) {
+      return null;
+    }
+    return JSON.parse(t);
+  },
+  deleteKey(key) {
+    localStorage.removeItem(key);
   }
 };
 const article = {
@@ -1958,8 +2003,8 @@ const plugins = [
   element_plus_injection_plugin_1RNPi6ogby
 ];
 const layouts = {
-  blank: () => import('./blank-BvFxNWUf.mjs').then((m) => m.default || m),
-  default: () => import('./default-CChh03MC.mjs').then((m) => m.default || m)
+  blank: () => import('./blank-kcyItdv6.mjs').then((m) => m.default || m),
+  default: () => import('./default-CXeYwCDh.mjs').then((m) => m.default || m)
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -2442,5 +2487,5 @@ let entry;
 }
 const entry$1 = (ssrContext) => entry(ssrContext);
 
-export { zIndexContextKey as A, throwError as B, useRequestHeaders as C, isPropAbsent as D, useRequestEvent as E, useNuxtApp as F, _export_sfc as _, useRouter as a, navigateTo as b, useRuntimeConfig as c, defineNuxtComponent as d, entry$1 as default, useNamespace as e, useRoute as f, executeAsync as g, helper as h, isNumber as i, devicebiz as j, isBoolean as k, useGetDerivedNamespace as l, useIdInjection as m, nuxtLinkDefaults as n, debugWarn as o, useZIndex as p, useId as q, resolveRouteObject as r, isStringNumber as s, isUndefined as t, useHead as u, useAsyncData as v, isElement as w, defaultNamespace as x, defaultInitialZIndex as y, namespaceContextKey as z };
+export { useAsyncData as A, throwError as B, useRequestHeaders as C, isPropAbsent as D, useRequestEvent as E, useNuxtApp as F, _export_sfc as _, useRouter as a, navigateTo as b, useRuntimeConfig as c, defineNuxtComponent as d, entry$1 as default, useNamespace as e, useRoute as f, executeAsync as g, helper as h, isNumber as i, devicebiz as j, isBoolean as k, useGetDerivedNamespace as l, useIdInjection as m, nuxtLinkDefaults as n, debugWarn as o, useZIndex as p, useId as q, resolveRouteObject as r, isStringNumber as s, isUndefined as t, useHead as u, isElement as v, defaultNamespace as w, defaultInitialZIndex as x, namespaceContextKey as y, zIndexContextKey as z };
 //# sourceMappingURL=server.mjs.map

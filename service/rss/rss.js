@@ -39,6 +39,19 @@ export default {
         return helper.postJsonAsync(serverSideRequest, "/api/tbs/rss/v1/feeditem/fetch", params);
     },
 
+    async queryFeedItemsByFeedIDV2(serverSideRequest, feedID, hasThumbmail ,limit, offset){
+        let params = {
+            feed_id:feedID,
+            state:1,
+            order:2,
+            limit:parseInt(limit),
+            offset:parseInt(offset),
+            has_thumbnail:parseInt(hasThumbmail),
+        }
+        console.log(params);
+        return helper.postJsonAsync(serverSideRequest, "/api/tbs/rss/v2/feeditem/fetch", params);
+    },
+
     async getFeedItemByID(feedItemID){
         let params = {
             feed_item_id:feedItemID,

@@ -113,6 +113,32 @@ export default {
         })
     },
 
+    async postClientJsonAsyncWithToken(url,token, data){
+        return new Promise((resolve, reject) => {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("POST",url,true);
+
+            //let token = this.getUserToken();
+            xmlHttp.setRequestHeader("hbs-tk",token);
+
+            xmlHttp.onreadystatechange = function(){
+                if (xmlHttp.readyState == 4) {
+                    if (xmlHttp.status == 200) {
+                        let result = JSON.parse(xmlHttp.responseText);
+                        if(result != null && result.code == 0){
+                            resolve({ errorType : 0, code : 0, data : result.data });
+                        }else{
+                            resolve({ errorType : 1, code : result.code, data : result.data });
+                        }
+                    }else{
+                        resolve({ errorType : 2, code : xmlHttp.status, data : null });
+                    }
+                }
+            };
+            xmlHttp.send(JSON.stringify(data));
+        })
+    },
+
     
     async postJsonAsync(serverSideRequest,url, requestData){
         if (!serverSideRequest){
@@ -314,5 +340,34 @@ export default {
             return (fileSize / 1024).toFixed(2) + " KB"
         }
         return fileSize + " B"
+    },
+
+    // ========== KV Storage ==================
+    setKV(key, val){
+        localStorage.setItem(key, val);
+    },
+
+    setKVObject(key, val){
+        localStorage.setItem(key, JSON.stringify(val));
+    },
+    
+    getK(key){
+        var t = localStorage.getItem(key);
+        if (t == undefined){
+            return ""
+        }
+        return t
+    },
+
+    getKObject(key){
+        var t = localStorage.getItem(key);
+        if (t == undefined){
+            return null
+        }
+        return JSON.parse(t);
+    },
+    
+    deleteKey(key){
+        localStorage.removeItem(key);
     },
 }

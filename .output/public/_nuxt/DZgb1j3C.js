@@ -1,0 +1,1 @@
+import{h as r,n as a}from"./Co8Oxmti.js";function u(e,t,s){return e==null?e:r(e,t,s)}const c=e=>Object.keys(e),f=e=>Object.entries(e),g=(e,t,s)=>({get value(){return a(e,t,s)},set value(n){u(e,t,n)}});export{f as e,g,c as k};

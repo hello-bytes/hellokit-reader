@@ -99,21 +99,23 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ## 打包部署
 
 ### 本地打包，服务器（Ubuntu）运行
+docker  build  -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.31 .
 
 ```
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.31 .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32 .
 
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.31
+docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32
 
 
 -------------------------
 
 
-docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.31
+docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32
 
 docker stop website-hellokit-reader && docker rm website-hellokit-reader
 
-docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.31
+
+docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32
 ```
 
 docker stop hellokit-reader && docker rm hellokit-reader
@@ -137,6 +139,8 @@ cp vue3-clipboard.package.json ./node_modules/vue-clipboard3/package.json
 
 - 支持反馈（找产品经理聊聊）
 - 后台可以查看RSS用户
+- 微信用户，支持设置nickname；
+- 登录页面，弹出对话框，微信快速登录；
 - /my/feed/298637370192957440 置为全部已读时，左侧树没有刷新
 - 设置页面，方块有：文件夹管理，支持删除文件夹，创建文件夹等逻辑；
 - 设置页面，增加通用设置，包括：点文章标题跳新页面还是右侧弹出，是不是右侧弹出就算已读，
@@ -168,3 +172,13 @@ cp vue3-clipboard.package.json ./node_modules/vue-clipboard3/package.json
 - 支持显示作者
 - 支持查看RSS源（在RSS的详情里）
 - 阅读我的文件夹里的内容时，最下面支持整页标记为已读
+
+
+
+
+
+
+
+sudo docker stop de666379cbb6 && sudo docker rm de666379cbb6
+
+docker run -p 8000:8080 -p 50000:50000 --network local_docker_bridge --network-alias jenkins -v /root/jenkins/workspace:/var/jenkins_home -v /root/jenkins/tasks:/var/jenkins_tasks -d jenkins

@@ -135,6 +135,7 @@
             <slot></slot>
         </div>
         <AllPopup></AllPopup>
+        <AllDialog></AllDialog>
     </div>
 </template>
 
@@ -160,6 +161,8 @@ import Today from "@/icons/Today.vue"
 import AllArticleIcon from "@/icons/AllArticleIcon.vue"
 
 import AllPopup from '~/components/popup/AllPopup.vue'
+import AllDialog from '~/components/dialog/AllDialog.vue'
+
 
 import devicebiz from '@/service/device.js'
 
@@ -185,7 +188,7 @@ import WelcomeIcon from "@/icons/WelcomeIcon.vue"
 export default defineNuxtComponent({
     components: {
 		RssLogo,SideBar,AddRss,User,RssLogoGray,CreateRssFolder,AllFeed,LaterRead,Recent,AllSubscribeFeed,AllFeedItem,Today,AllPopup,ArrowRight,ArrowDown,AllSubscribeFeedActive,Files,CollectionTag,ReadedIcon,AllArticleIcon,HelloReadLogo,
-        LogoutIcon,WelcomeIcon,SwitchButton,Service,Share,ReadLaterEntry
+        LogoutIcon,WelcomeIcon,SwitchButton,Service,Share,ReadLaterEntry,AllDialog
 	},
 
     async asyncData(params) {

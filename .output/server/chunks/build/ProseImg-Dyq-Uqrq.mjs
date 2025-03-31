@@ -1,7 +1,7 @@
 import { useSSRContext, defineComponent, computed, createVNode, resolveDynamicComponent, unref, mergeProps, useAttrs, ref } from 'vue';
 import { ssrRenderVNode, ssrRenderAttrs } from 'vue/server-renderer';
 import { c as useRuntimeConfig, u as useHead, F as useNuxtApp } from './server.mjs';
-import { F as withLeadingSlash, D as withTrailingSlash, o as joinURL, G as encodeParam, m as hasProtocol, H as parseURL, q as defu, I as encodePath } from '../runtime.mjs';
+import { E as withLeadingSlash, C as withTrailingSlash, n as joinURL, F as encodeParam, l as hasProtocol, G as parseURL, p as defu, H as encodePath } from '../runtime.mjs';
 import '../routes/renderer.mjs';
 import 'vue-bundle-renderer/runtime';
 import 'devalue';
@@ -14,16 +14,10 @@ import '@vue/shared';
 import 'lodash-unified';
 import 'node:http';
 import 'node:https';
-import 'node:zlib';
-import 'node:stream';
-import 'node:buffer';
-import 'node:util';
-import 'node:url';
-import 'node:net';
-import 'node:fs';
-import 'node:path';
 import 'fs';
 import 'path';
+import 'node:fs';
+import 'node:url';
 import 'ipx';
 
 async function imageMeta(_ctx, url) {

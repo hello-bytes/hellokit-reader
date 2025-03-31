@@ -1,5 +1,5 @@
 import { defineComponent, ref, h, resolveComponent, computed } from 'vue';
-import { C as parseQuery, m as hasProtocol, o as joinURL, D as withTrailingSlash, E as withoutTrailingSlash } from '../runtime.mjs';
+import { B as parseQuery, l as hasProtocol, n as joinURL, C as withTrailingSlash, D as withoutTrailingSlash } from '../runtime.mjs';
 import { a as useRouter, n as nuxtLinkDefaults, r as resolveRouteObject, b as navigateTo, c as useRuntimeConfig } from './server.mjs';
 
 const firstNonUndefined = (...args) => args.find((arg) => arg !== void 0);
