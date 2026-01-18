@@ -99,27 +99,23 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ## 打包部署
 
 ### 本地打包，服务器（Ubuntu）运行
-docker  build  -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.31 .
 
 ```
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32 .
+NODE_ENV=production yarn run build
 
-docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.35 .
 
+docker push registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.35
 
 -------------------------
 
-
-docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32
+docker pull registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.35
 
 docker stop website-hellokit-reader && docker rm website-hellokit-reader
 
 
-docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.32
+docker run -d --name "website-hellokit-reader" --network local_docker_bridge --network-alias website-hellokit-reader --security-opt seccomp=unconfined registry.cn-hangzhou.aliyuncs.com/hellobytes/website-hellokit-reader:v1.0.35
 ```
-
-docker stop hellokit-reader && docker rm hellokit-reader
-
 
 
 ## 使用的开源库
